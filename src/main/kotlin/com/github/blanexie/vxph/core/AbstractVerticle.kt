@@ -5,9 +5,10 @@ import com.github.blanexie.vxph.core.entity.ReplyMessage
 import io.vertx.core.json.Json
 import io.vertx.kotlin.coroutines.CoroutineVerticle
 import io.vertx.kotlin.coroutines.awaitResult
+import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 
-abstract class AbstractEventBusVerticle(
+abstract class AbstractVerticle(
   private val flowId: String,
   private val id: String,
   private val type: String
@@ -15,6 +16,7 @@ abstract class AbstractEventBusVerticle(
   CoroutineVerticle() {
 
   private val log = LoggerFactory.getLogger(this::class.java)
+
 
   override suspend fun start() {
     log.info("$type $flowId $id start......")
@@ -26,6 +28,10 @@ abstract class AbstractEventBusVerticle(
     log.info("$type $flowId $id handleEnd......")
   }
 
+  suspend fun getTopic(): String {
+    return "$type:$flowId:$id"
+  }
+
   protected suspend fun sendMessage(message: Message): Message {
     val reply = awaitResult<io.vertx.core.eventbus.Message<Message>> { h ->
       vertx.eventBus().request(message.receiver, message, h)
@@ -35,23 +41,25 @@ abstract class AbstractEventBusVerticle(
     return body
   }
 
-  private fun initConsumer() {
-    val topic = "$type:$flowId:$id"
+  private suspend fun initConsumer() {
+    val topic = getTopic()
     vertx.eventBus()
       .localConsumer(topic) { message ->
         log.info("receive message : $message ")
         val body: String = message.body()
         val bodyJson = Json.decodeValue(body, Message::class.java)
-        val result = this.handleReceive(bodyJson)
-        log.info("reply message: $message ")
-        message.reply(Json.encode(result))
+        launch {
+          val result = handleReceive(bodyJson)
+          log.info("reply message: $result ")
+          message.reply(Json.encode(result))
+        }
       }
   }
 
-  abstract fun handleEnd()
+  abstract suspend fun handleStart()
 
-  abstract fun handleStart()
+  abstract suspend fun handleEnd()
 
-  abstract fun handleReceive(message: Message): ReplyMessage
+  abstract suspend fun handleReceive(message: Message): ReplyMessage
 
 }

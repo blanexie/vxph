@@ -1,7 +1,11 @@
 package com.github.blanexie.vxph.core.entity
 
+import cn.hutool.core.util.IdUtil
+
+
 data class Message(
-  val messageId: List<String>,
   val receiver: String,
-  val data: Map<String, Any>
+  val sender: String,
+  val data: Map<String, Any> = hashMapOf(),
+  val id: Long = IdUtil.getSnowflakeNextId(),
 )
