@@ -1,8 +1,8 @@
-package com.github.blanexie.vxph.component
+package com.github.blanexie.vxph.plugin.outbund
 
 import io.vertx.kotlin.coroutines.CoroutineVerticle
 
-class HttpClientVerticle : CoroutineVerticle() {
+class HttpClientPlugin : CoroutineVerticle() {
 
 
   override suspend fun start() {

@@ -3,7 +3,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-  kotlin ("jvm") version "1.7.21"
+  kotlin("jvm") version "1.7.21"
   application
   id("com.github.johnrengelman.shadow") version "7.1.2"
 }
@@ -37,6 +37,7 @@ dependencies {
   implementation("io.vertx:vertx-mail-client")
   implementation("io.vertx:vertx-lang-kotlin")
   implementation(kotlin("stdlib-jdk8"))
+  implementation("ch.qos.logback:logback-classic:1.4.11")
   testImplementation("io.vertx:vertx-junit5")
   testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
 }
@@ -60,5 +61,11 @@ tasks.withType<Test> {
 }
 
 tasks.withType<JavaExec> {
-  args = listOf("run", mainVerticleName, "--redeploy=$watchForChange", "--launcher-class=$launcherClassName", "--on-redeploy=$doOnChange")
+  args = listOf(
+    "run",
+    mainVerticleName,
+    "--redeploy=$watchForChange",
+    "--launcher-class=$launcherClassName",
+    "--on-redeploy=$doOnChange"
+  )
 }
