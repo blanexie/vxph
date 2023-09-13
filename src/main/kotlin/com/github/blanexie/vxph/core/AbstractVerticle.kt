@@ -2,6 +2,7 @@ package com.github.blanexie.vxph.core
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.blanexie.vxph.core.entity.Message
+import com.github.blanexie.vxph.core.entity.MessageType
 import io.vertx.core.AsyncResult
 import io.vertx.core.Handler
 import io.vertx.kotlin.coroutines.CoroutineVerticle
@@ -21,13 +22,13 @@ abstract class AbstractVerticle(
 
 
   override suspend fun start() {
-    log.info("$type $flowId $id start......")
+    log.info("${getTopic()} start......")
     this.handleStart()
-    log.info("$type $flowId $id handleStart......")
+    log.info("${getTopic()} handleStart OK ......")
     this.initConsumer()
-    log.info("$type $flowId $id initConsumer......")
+    log.info("${getTopic()} initConsumer OK ......")
     this.handleEnd()
-    log.info("$type $flowId $id handleEnd......")
+    log.info("${getTopic()} handleEnd OK ......")
   }
 
   suspend fun getTopic(): String {
@@ -39,36 +40,41 @@ abstract class AbstractVerticle(
       if (it.succeeded()) {
         val result = it.result()
         val replyMessage = result.body()
-        log.info("receive reply message:$replyMessage  ")
+        log.info("receive reply message: $replyMessage ")
         handler.handle(toBodyMessage(result))
       } else {
         throw it.cause()
       }
     }
-    vertx.eventBus().send(message.receiver, objectMapper.writeValueAsString(message))
-    log.info("send Message   receiver:${message.receiver}   sender:${message.sender}  id:${message.id}")
+    vertx.eventBus().request(message.receiver, objectMapper.writeValueAsString(message), h)
+    log.info("sendMessage  message:$message")
   }
 
   private suspend fun initConsumer() {
     val topic = getTopic()
-    log.info("load localConsumer topic: $topic ")
     vertx.eventBus()
       .localConsumer(topic) { message ->
-        log.info("receive message : $message ")
         launch {
           val result = handleReceive(toBodyMessage(message))
-          result.type = "reply"
-          log.info("reply message: $result ")
+          result.type = MessageType.reply
+          log.info("reply message: $result")
           message.reply(objectMapper.writeValueAsString(result))
         }
       }
   }
 
-  abstract suspend fun handleStart()
+  open suspend fun handleStart() {
 
-  abstract suspend fun handleEnd()
+  }
 
-  abstract suspend fun handleReceive(message: Message): Message
+  open suspend fun handleEnd() {
+
+  }
+
+  open suspend fun handleReceive(message: Message): Message {
+    log.info("handleReceive message: $message")
+    return Message(message.receiver, getTopic(), id = message.id, type = MessageType.reply)
+  }
 
 }
 
@@ -78,9 +84,10 @@ fun toBodyMessage(message: io.vertx.core.eventbus.Message<String>): Message {
   val readValue = objectMapper.readValue(body, Map::class.java)
 
   return Message(
-    readValue.get("receiver") as String, readValue.get("sender") as String,
-    readValue.get("data") as Map<String, Any>,
-    readValue.get("id") as Long, readValue.get("type") as String
+    readValue["receiver"] as String, readValue["sender"] as String,
+    readValue["data"] as Map<String, Any>,
+    readValue["id"] as Long,
+    MessageType.valueOf(readValue["type"] as String)
   )
 
 }

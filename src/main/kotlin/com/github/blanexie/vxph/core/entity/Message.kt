@@ -11,5 +11,9 @@ class Message(
   val receiver: String,
   val data: Map<String, Any> = hashMapOf(),
   val id: Long = IdUtil.getSnowflakeNextId(),
-  var type: String = "send"  // or reply
-)
+  var type: MessageType = MessageType.send  // or reply
+) {
+  override fun toString(): String {
+    return "Message{id:${id} , type:$type , sender:$sender , receiver:$receiver , data:$data}"
+  }
+}

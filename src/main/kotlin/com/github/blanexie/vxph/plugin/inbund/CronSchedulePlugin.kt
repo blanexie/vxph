@@ -1,34 +1,20 @@
 package com.github.blanexie.vxph.plugin.inbund
 
-import cn.hutool.core.thread.ThreadUtil
 import cn.hutool.cron.CronUtil
-import cn.hutool.cron.Scheduler
-import cn.hutool.cron.pattern.CronPattern
-import cn.hutool.cron.pattern.CronPatternUtil
 import cn.hutool.cron.task.Task
-import cn.hutool.http.HttpUtil
 import com.github.blanexie.vxph.core.AbstractVerticle
 import com.github.blanexie.vxph.core.entity.Message
-import com.github.blanexie.vxph.core.entity.ReplyMessage
-import io.vertx.core.Vertx
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
-import java.util.*
 import java.util.concurrent.Callable
-import javax.xml.crypto.Data
-import kotlin.time.Duration
 
-class CronSchedulePlugin(val cron: String) :
+class CronSchedulePlugin(private val cron: String) :
   AbstractVerticle("cronSchedule", cron, "_") {
 
   private val log = LoggerFactory.getLogger(this::class.java)
 
   private val topicSet = mutableSetOf<String>()
-
-  override suspend fun handleStart() {
-
-  }
 
 
   override suspend fun handleEnd() {
@@ -48,7 +34,6 @@ class CronSchedulePlugin(val cron: String) :
       CronUtil.setMatchSecond(true)
       CronUtil.start()
     }
-
     vertx.executeBlocking(callable)
   }
 
@@ -56,7 +41,7 @@ class CronSchedulePlugin(val cron: String) :
    * 接受初始化消息
    */
   override suspend fun handleReceive(message: Message): Message {
-    log.info("receive message: $message")
+    log.info("handleReceive message: $message")
     val topic = message.data["topic"] as String
     val method = message.data["method"] as String
     if (method == "add") topicSet.add(topic)
