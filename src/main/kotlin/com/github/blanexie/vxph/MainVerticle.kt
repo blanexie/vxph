@@ -8,9 +8,16 @@ import io.vertx.core.Vertx
 import io.vertx.core.eventbus.Message
 import org.slf4j.LoggerFactory
 
+
+/**
+ * 启动三件事
+ * 1. 加载框架verticle
+ * 2. 加载插件
+ * 3. 加载flow
+ */
 class MainVerticle : AbstractVerticle() {
 
-  val log = LoggerFactory.getLogger(this::class.java)
+  private val log = LoggerFactory.getLogger(this::class.java)
   override fun start(startPromise: Promise<Void>) {
     log.info("vertx start..........")
     vertx.deployVerticle(CronSchedulePlugin("0/5 * * * * ?"))
