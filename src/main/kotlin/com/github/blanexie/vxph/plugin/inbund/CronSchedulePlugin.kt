@@ -22,7 +22,7 @@ class CronSchedulePlugin(private val cron: String) :
       launch {
         val time = LocalDateTime.now().toString()
         topicSet.forEach { receiver ->
-          sendMessage(Message(getTopic(), receiver, mapOf("cron" to cron, "time" to time))) {
+          sendMessage(Message(topic, receiver, mapOf("cron" to cron, "time" to time))) {
             log.info(" cron fired success,  replyMessage: ${it.sender}")
           }
         }
@@ -40,13 +40,13 @@ class CronSchedulePlugin(private val cron: String) :
   /**
    * 接受初始化消息
    */
-  override suspend fun handleReceive(message: Message): Message {
+  override suspend fun handleReceiveSync(message: Message): Message {
     log.info("handleReceive message: $message")
     val topic = message.data["topic"] as String
     val method = message.data["method"] as String
     if (method == "add") topicSet.add(topic)
     if (method == "remove") topicSet.remove(topic)
-    return Message(message.receiver, getTopic(), id = message.id)
+    return message.toReplyMessage()
   }
 
 

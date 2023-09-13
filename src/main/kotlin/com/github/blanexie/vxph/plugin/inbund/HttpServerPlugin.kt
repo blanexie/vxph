@@ -43,8 +43,7 @@ class HttpServerPlugin(private val path: String, private val port: Int) :
 
   private fun sendBodyMessage(receiver: String, buffer: Buffer) {
     launch {
-      val currentTopic = getTopic()
-      val message = Message(currentTopic, receiver, mapOf("body" to buffer.bytes.decodeToString()))
+      val message = Message(topic, receiver, mapOf("body" to buffer.bytes.decodeToString()))
       sendMessage(message) {}
     }
   }
@@ -58,12 +57,12 @@ class HttpServerPlugin(private val path: String, private val port: Int) :
   /**
    * 接受初始化消息
    */
-  override suspend fun handleReceive(message: Message): Message {
+  override suspend fun handleReceiveSync(message: Message): Message {
     log.info("handleReceive message: $message")
     val topic = message.data["topic"] as String
     val method = message.data["method"] as String
     if (method == "add") topicSet.add(topic)
     if (method == "remove") topicSet.remove(topic)
-    return Message(message.receiver, getTopic(), id = message.id)
+    return message.toReplyMessage()
   }
 }
