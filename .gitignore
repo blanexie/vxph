@@ -60,6 +60,7 @@ local.properties
 # User-specific stuff:
 .idea/
 
+.build/
 
 # CMake
 cmake-buildTool-debug/
