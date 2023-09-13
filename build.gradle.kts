@@ -37,8 +37,11 @@ dependencies {
   implementation("io.vertx:vertx-mail-client")
   implementation("io.vertx:vertx-lang-kotlin")
   implementation(kotlin("stdlib-jdk8"))
+
   implementation("ch.qos.logback:logback-classic:1.4.11")
   implementation("cn.hutool:hutool-all:5.8.21")
+  implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
+
   testImplementation("io.vertx:vertx-junit5")
   testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
 }

@@ -1,17 +1,19 @@
 package com.github.blanexie.vxph.core
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.github.blanexie.vxph.core.entity.Message
-import com.github.blanexie.vxph.core.entity.ReplyMessage
-import io.vertx.core.json.Json
+import io.vertx.core.AsyncResult
+import io.vertx.core.Handler
 import io.vertx.kotlin.coroutines.CoroutineVerticle
-import io.vertx.kotlin.coroutines.awaitResult
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 
+val objectMapper: ObjectMapper = ObjectMapper()
+
 abstract class AbstractVerticle(
+  private val type: String,
   private val flowId: String,
   private val id: String,
-  private val type: String
 ) :
   CoroutineVerticle() {
 
@@ -32,26 +34,32 @@ abstract class AbstractVerticle(
     return "$type:$flowId:$id"
   }
 
-  protected suspend fun sendMessage(message: Message): Message {
-    val reply = awaitResult<io.vertx.core.eventbus.Message<Message>> { h ->
-      vertx.eventBus().request(message.receiver, message, h)
+  protected suspend fun sendMessage(message: Message, handler: Handler<Message>) {
+    val h = Handler<AsyncResult<io.vertx.core.eventbus.Message<String>>> {
+      if (it.succeeded()) {
+        val result = it.result()
+        val replyMessage = result.body()
+        log.info("receive reply message:$replyMessage  ")
+        handler.handle(toBodyMessage(result))
+      } else {
+        throw it.cause()
+      }
     }
-    val body = reply.body()
-    log.info("send Message:$message  ; receive ReplyMessage:$body")
-    return body
+    vertx.eventBus().send(message.receiver, objectMapper.writeValueAsString(message))
+    log.info("send Message   receiver:${message.receiver}   sender:${message.sender}  id:${message.id}")
   }
 
   private suspend fun initConsumer() {
     val topic = getTopic()
+    log.info("load localConsumer topic: $topic ")
     vertx.eventBus()
       .localConsumer(topic) { message ->
         log.info("receive message : $message ")
-        val body: String = message.body()
-        val bodyJson = Json.decodeValue(body, Message::class.java)
         launch {
-          val result = handleReceive(bodyJson)
+          val result = handleReceive(toBodyMessage(message))
+          result.type = "reply"
           log.info("reply message: $result ")
-          message.reply(Json.encode(result))
+          message.reply(objectMapper.writeValueAsString(result))
         }
       }
   }
@@ -60,6 +68,19 @@ abstract class AbstractVerticle(
 
   abstract suspend fun handleEnd()
 
-  abstract suspend fun handleReceive(message: Message): ReplyMessage
+  abstract suspend fun handleReceive(message: Message): Message
+
+}
+
+
+fun toBodyMessage(message: io.vertx.core.eventbus.Message<String>): Message {
+  val body = message.body()
+  val readValue = objectMapper.readValue(body, Map::class.java)
+
+  return Message(
+    readValue.get("receiver") as String, readValue.get("sender") as String,
+    readValue.get("data") as Map<String, Any>,
+    readValue.get("id") as Long, readValue.get("type") as String
+  )
 
 }
