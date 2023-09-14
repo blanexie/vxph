@@ -60,7 +60,7 @@ local.properties
 # User-specific stuff:
 .idea/
 
-.build/
+/build/
 
 # CMake
 cmake-buildTool-debug/
@@ -163,3 +163,4 @@ nbdist/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
