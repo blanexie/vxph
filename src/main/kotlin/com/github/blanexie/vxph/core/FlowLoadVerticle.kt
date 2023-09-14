@@ -1,4 +1,12 @@
 package com.github.blanexie.vxph.core
 
-class FlowLoadVerticle {
+class FlowLoadVerticle  : AbstractVerticle(
+  type = "flowLoad", flowId = "flowLoad", id = "flowLoad"
+) {
+
+  
+
+
+
+
 }

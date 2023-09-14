@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory
 
 val objectMapper: ObjectMapper = ObjectMapper()
 
+
 abstract class AbstractVerticle(
   private val type: String,
   private val flowId: String,
@@ -23,13 +24,10 @@ abstract class AbstractVerticle(
   val topic = "$type:$flowId:$id"
 
   override suspend fun start() {
-    log.info("$topic start......")
     this.handleStart()
-    log.info("$topic handleStart OK ......")
     this.initConsumer()
-    log.info("$topic initConsumer OK ......")
     this.handleEnd()
-    log.info("$topic handleEnd OK ......")
+    log.info("$topic verticle start OK ......")
   }
 
 
@@ -78,17 +76,15 @@ abstract class AbstractVerticle(
     log.info("handleReceive message: $message")
     return message.toReplyMessage()
   }
-
+  @Suppress("UNCHECKED_CAST")
   private fun toBodyMessage(message: io.vertx.core.eventbus.Message<String>): Message {
     val body = message.body()
     val readValue = objectMapper.readValue(body, Map::class.java)
-
     return Message(
       readValue["receiver"] as String, readValue["sender"] as String,
       readValue["data"] as Map<String, Any>,
       readValue["id"] as Long,
       MessageType.valueOf(readValue["type"] as String)
     )
-
   }
 }

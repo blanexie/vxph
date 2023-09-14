@@ -1,7 +1,12 @@
 package com.github.blanexie.vxph
 
+import cn.hutool.setting.Setting
+import cn.hutool.setting.SettingUtil
+import com.github.blanexie.vxph.core.FlowLoadVerticle
+import com.github.blanexie.vxph.core.PluginLoadVerticle
 import com.github.blanexie.vxph.plugin.inbund.CronSchedulePlugin
 import com.github.blanexie.vxph.plugin.inbund.HttpServerPlugin
+import com.github.blanexie.vxph.plugin.outbund.JdbcPlugin
 import io.vertx.core.AbstractVerticle
 import io.vertx.core.Promise
 import io.vertx.core.Vertx
@@ -18,12 +23,22 @@ import org.slf4j.LoggerFactory
 class MainVerticle : AbstractVerticle() {
 
   private val log = LoggerFactory.getLogger(this::class.java)
+  private val setting = SettingUtil.get("vxph.properties")
   override fun start(startPromise: Promise<Void>) {
-    log.info("vertx start..........")
-    vertx.deployVerticle(CronSchedulePlugin("0/5 * * * * ?"))
-    log.info("vertx CronSchedulePlugin load end  ..........")
-    vertx.deployVerticle(HttpServerPlugin("/api/send", 11017))
-    log.info("vertx HttpServerPlugin load end  ..........")
+    val jdbcUrl = setting.getStr("vxph.database.jdbc.url")
+    val username = setting.getStr("vxph.database.username", "")
+    val password = setting.getStr("vxph.database.password", "")
+    val maxPoolSize = setting.getInt("vxph.database.maxPoolSize", 16)
+    val jdbcPlugin = JdbcPlugin(jdbcUrl, username, password, maxPoolSize)
+
+    vertx.deployVerticle(jdbcPlugin) {
+      if (it.succeeded()) {
+        vertx.deployVerticle(PluginLoadVerticle())
+        vertx.deployVerticle(FlowLoadVerticle())
+      } else {
+        log.info("vxph core jdbcPlugin load ERROR", it.cause())
+      }
+    }
   }
 
 }

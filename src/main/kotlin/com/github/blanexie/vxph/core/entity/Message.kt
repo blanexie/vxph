@@ -17,7 +17,6 @@ class Message(
     return "Message{id:${id} , type:$type , sender:$sender , receiver:$receiver , data:$data}"
   }
 
-
   fun toReplyMessage(): Message {
     return Message(receiver, sender, id = id, type = MessageType.reply)
   }
