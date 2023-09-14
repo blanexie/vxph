@@ -42,6 +42,10 @@ dependencies {
   implementation("ch.qos.logback:logback-classic:1.4.11")
   implementation("cn.hutool:hutool-all:5.8.21")
   implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
+  //implementation("io.agroal:agroal-pool:2.2")
+  //implementation("com.zaxxer:HikariCP:5.0.1")
+
+  implementation("org.xerial:sqlite-jdbc:3.43.0.0")
 
   testImplementation("io.vertx:vertx-junit5")
   testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")

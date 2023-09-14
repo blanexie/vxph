@@ -22,7 +22,8 @@ create table main.v_plugin
   description TEXT              not null,
   status      integer default 0 not null,
   createTime  TEXT              not null,
-  updateTime  text              not null
+  updateTime  text              not null,
+  script     text
 );
 
 create table main.v_verticle

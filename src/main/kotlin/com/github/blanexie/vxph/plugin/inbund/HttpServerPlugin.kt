@@ -30,9 +30,7 @@ class HttpServerPlugin(private val path: String, private val port: Int) :
         val request = ctx.request()
         val receiver = getReceiver(request)
         if (topicSet.contains(receiver)) {
-          request.bodyHandler {
-            sendBodyMessage(receiver, it)
-          }
+          request.bodyHandler { sendBodyMessage(receiver, it) }
           Future.succeededFuture(JsonObject.of("code", 200, "message", ""))
         } else {
           Future.succeededFuture(JsonObject.of("code", 404, "message", "not found flowId and id"))
