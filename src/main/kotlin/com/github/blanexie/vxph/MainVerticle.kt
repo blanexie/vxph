@@ -8,9 +8,12 @@ import com.github.blanexie.vxph.plugin.inbund.CronSchedulePlugin
 import com.github.blanexie.vxph.plugin.inbund.HttpServerPlugin
 import com.github.blanexie.vxph.plugin.outbund.JdbcPlugin
 import io.vertx.core.AbstractVerticle
+import io.vertx.core.AsyncResult
+import io.vertx.core.Handler
 import io.vertx.core.Promise
 import io.vertx.core.Vertx
 import io.vertx.core.eventbus.Message
+import io.vertx.kotlin.coroutines.awaitResult
 import org.slf4j.LoggerFactory
 
 
@@ -40,6 +43,20 @@ class MainVerticle : AbstractVerticle() {
       }
     }
   }
+
+  private suspend fun loadCoreJdbcPlugin() {
+    val jdbcUrl = setting.getStr("vxph.database.jdbc.url")
+    val username = setting.getStr("vxph.database.username", "")
+    val password = setting.getStr("vxph.database.password", "")
+    val maxPoolSize = setting.getInt("vxph.database.maxPoolSize", 16)
+    val jdbcPlugin = JdbcPlugin(jdbcUrl, username, password, maxPoolSize)
+
+    val result = awaitResult<String> {
+      vertx.deployVerticle(jdbcPlugin, it)
+    }
+
+  }
+
 
 }
 
