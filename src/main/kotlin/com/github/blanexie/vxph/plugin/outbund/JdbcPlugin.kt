@@ -45,7 +45,7 @@ class JdbcPlugin(
       .execute(params)
       .onSuccess {
         val result = it.map(Row::toJson).toList()
-        replyMessage.data = mapOf("result" to result, "statusCode" to 200)
+        replyMessage.data = mapOf("rows" to result, "statusCode" to 200)
         handler.handle(replyMessage)
       }.onFailure {
         log.info("jdbc error", it)

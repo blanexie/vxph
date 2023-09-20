@@ -2,19 +2,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-plugins {
-  kotlin("jvm") version "1.7.21"
-  application
-  id("com.github.johnrengelman.shadow") version "7.1.2"
-}
-
-group = "com.github.blanexie"
-version = "1.0.0-SNAPSHOT"
-
-repositories {
-  mavenCentral()
-}
-
+val kotlinVersion = "1.7.21"
 val vertxVersion = "4.4.5"
 val junitJupiterVersion = "5.9.1"
 
@@ -23,6 +11,20 @@ val launcherClassName = "io.vertx.core.Launcher"
 
 val watchForChange = "src/**/*"
 val doOnChange = "${projectDir}/gradlew classes"
+
+
+group = "com.github.blanexie"
+version = "1.0.0-SNAPSHOT"
+
+plugins {
+  kotlin("jvm") version "1.7.21"
+  application
+  id("com.github.johnrengelman.shadow") version "7.1.2"
+}
+
+repositories {
+  mavenCentral()
+}
 
 application {
   mainClass.set(launcherClassName)
@@ -46,6 +48,8 @@ dependencies {
   //implementation("com.zaxxer:HikariCP:5.0.1")
 
   implementation("org.xerial:sqlite-jdbc:3.43.0.0")
+
+  implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
 
   testImplementation("io.vertx:vertx-junit5")
   testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
