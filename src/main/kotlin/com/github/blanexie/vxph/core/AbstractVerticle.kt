@@ -6,6 +6,8 @@ import com.github.blanexie.vxph.core.entity.MessageType
 import io.vertx.core.AsyncResult
 import io.vertx.core.Handler
 import io.vertx.kotlin.coroutines.CoroutineVerticle
+import io.vertx.kotlin.coroutines.awaitResult
+import io.vertx.kotlin.ext.sql.resultSetOf
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 
@@ -29,15 +31,20 @@ abstract class AbstractVerticle(type: String, flowId: String, id: String) : Coro
         val h = Handler<AsyncResult<io.vertx.core.eventbus.Message<String>>> {
             if (it.succeeded()) {
                 val result = it.result()
-                val replyMessage = result.body()
-                log.info("receive reply message: $replyMessage ")
                 handler.handle(toBodyMessage(result))
             } else {
                 throw it.cause()
             }
         }
-        vertx.eventBus().request(message.receiver, objectMapper.writeValueAsString(message),h)
+        vertx.eventBus().request(message.receiver, objectMapper.writeValueAsString(message), h)
         log.info("sendMessage  message:$message")
+    }
+
+    protected suspend fun sendMessageSync(message: Message): Message {
+        val replyMessage: io.vertx.core.eventbus.Message<String> = awaitResult {
+            vertx.eventBus().request(message.receiver, objectMapper.writeValueAsString(message), it)
+        }
+        return toBodyMessage(replyMessage)
     }
 
     private suspend fun initConsumer() {

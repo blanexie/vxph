@@ -58,7 +58,6 @@ class PluginFactory {
 
 
      fun buildCoreJdbcPlugin(): JdbcPlugin {
-        val receiver = getCoreJdbcPluginTopic();
         val jdbcUrl = setting.getStr("vxph.database.jdbc.url")
         val username = setting.getStr("vxph.database.username", "")
         val password = setting.getStr("vxph.database.password", "")

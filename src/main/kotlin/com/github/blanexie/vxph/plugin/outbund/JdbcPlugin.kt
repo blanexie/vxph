@@ -48,7 +48,6 @@ class JdbcPlugin(
      */
     private suspend fun initCoreDB() {
         //检查核心数据库是否存在
-
         val rowSet = awaitResult {
             val sql = "SELECT name FROM sqlite_master WHERE type='table' AND name='v_plugin'"
             SqlTemplate.forQuery(pool, sql).execute(mapOf())
