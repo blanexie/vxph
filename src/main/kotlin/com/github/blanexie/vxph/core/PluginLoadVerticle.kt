@@ -5,7 +5,6 @@ import com.github.blanexie.vxph.core.entity.Message
 import com.github.blanexie.vxph.plugin.getCoreJdbcPluginTopic
 import com.github.blanexie.vxph.plugin.pluginFactory
 import io.vertx.kotlin.coroutines.awaitResult
-import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
 
 
