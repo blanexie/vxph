@@ -1,6 +1,7 @@
 package com.github.blanexie.vxph.core
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.github.blanexie.vxph.core.entity.Line
 import com.github.blanexie.vxph.core.entity.Message
 import com.github.blanexie.vxph.core.entity.MessageType
 import io.vertx.core.AsyncResult
@@ -10,6 +11,7 @@ import io.vertx.kotlin.coroutines.awaitResult
 import io.vertx.kotlin.ext.sql.resultSetOf
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
+import java.util.*
 
 val objectMapper: ObjectMapper = ObjectMapper()
 
@@ -19,6 +21,25 @@ abstract class AbstractVerticle(type: String, flowId: String, id: String) : Coro
     private val log = LoggerFactory.getLogger(this::class.java)
 
     val topic = "$type:$flowId:$id"
+    val input = hashMapOf<String, LinkedList<Message>>()
+    val output = hashMapOf<String, Line>()
+
+    fun initPoint(pointMap: Map<String, *>) {
+        val inputPoint = pointMap["input"] as List<*>
+        inputPoint.filterNotNull()
+            .map { it as String }
+            .forEach {
+                input[it] = LinkedList<Message>()
+            }
+
+        val outputPoint = pointMap["output"] as Map<*, *>
+        outputPoint.forEach { (k, v) ->
+            k as String
+            val lineMap = v as Map<*, *>
+            val line = Line(lineMap["outPoint"] as String, lineMap["end"] as String, lineMap["endInPoint"] as String)
+            output[k] = line
+        }
+    }
 
     override suspend fun start() {
         this.handleStart()

@@ -9,7 +9,7 @@ import io.vertx.core.json.JsonObject
 class Message(
     var sender: String,
     var receiver: String,
-    var data: HashMap<String, Any> = hashMapOf<String, Any>(),
+    var data: Map<String, *> = hashMapOf<String, Any>(),
     val id: Long = IdUtil.getSnowflakeNextId(),
     var type: MessageType = MessageType.send  // or reply
 ) {

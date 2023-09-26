@@ -17,68 +17,68 @@ group = "com.github.blanexie"
 version = "1.0.0-SNAPSHOT"
 
 plugins {
-  kotlin("jvm") version "1.7.21"
-  application
-  id("com.github.johnrengelman.shadow") version "7.1.2"
+    kotlin("jvm") version "1.7.21"
+    application
+    id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 repositories {
-  mavenCentral()
+    mavenCentral()
 }
 
 application {
-  mainClass.set(launcherClassName)
+    mainClass.set(launcherClassName)
 }
 
 dependencies {
-  implementation(platform("io.vertx:vertx-stack-depchain:$vertxVersion"))
-  implementation("io.vertx:vertx-web-client")
-  implementation("io.vertx:vertx-jdbc-client")
-  implementation("io.vertx:vertx-sql-client-templates:4.4.0")
-  implementation("io.vertx:vertx-web")
-  implementation("io.vertx:vertx-lang-kotlin-coroutines")
-  implementation("io.vertx:vertx-mail-client")
-  implementation("io.vertx:vertx-lang-kotlin")
-  implementation(kotlin("stdlib-jdk8"))
+    implementation(platform("io.vertx:vertx-stack-depchain:$vertxVersion"))
+    implementation("io.vertx:vertx-web-client")
+    implementation("io.vertx:vertx-jdbc-client")
+    implementation("io.vertx:vertx-sql-client-templates:4.4.0")
+    implementation("io.vertx:vertx-web")
+    implementation("io.vertx:vertx-lang-kotlin-coroutines")
+    implementation("io.vertx:vertx-mail-client")
+    implementation("io.vertx:vertx-lang-kotlin")
+    implementation(kotlin("stdlib-jdk8"))
 
-  implementation("ch.qos.logback:logback-classic:1.4.11")
-  implementation("cn.hutool:hutool-all:5.8.21")
-  implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
-  //implementation("io.agroal:agroal-pool:2.2")
-  //implementation("com.zaxxer:HikariCP:5.0.1")
+    implementation("ch.qos.logback:logback-classic:1.4.11")
+    implementation("cn.hutool:hutool-all:5.8.21")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
+    implementation("com.zaxxer:HikariCP:5.0.1")
 
-  implementation("org.xerial:sqlite-jdbc:3.43.0.0")
+    implementation("org.xerial:sqlite-jdbc:3.43.0.0")
 
-  implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
+    implementation("com.dampcake:bencode:1.4.1")
 
-  testImplementation("io.vertx:vertx-junit5")
-  testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
+    testImplementation("io.vertx:vertx-junit5")
+    testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
 }
 
 val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions.jvmTarget = "17"
 
 tasks.withType<ShadowJar> {
-  archiveClassifier.set("fat")
-  manifest {
-    attributes(mapOf("Main-Verticle" to mainVerticleName))
-  }
-  mergeServiceFiles()
+    archiveClassifier.set("fat")
+    manifest {
+        attributes(mapOf("Main-Verticle" to mainVerticleName))
+    }
+    mergeServiceFiles()
 }
 
 tasks.withType<Test> {
-  useJUnitPlatform()
-  testLogging {
-    events = setOf(PASSED, SKIPPED, FAILED)
-  }
+    useJUnitPlatform()
+    testLogging {
+        events = setOf(PASSED, SKIPPED, FAILED)
+    }
 }
 
 tasks.withType<JavaExec> {
-  args = listOf(
-    "run",
-    mainVerticleName,
-    "--redeploy=$watchForChange",
-    "--launcher-class=$launcherClassName",
-    "--on-redeploy=$doOnChange"
-  )
+    args = listOf(
+        "run",
+        mainVerticleName,
+        "--redeploy=$watchForChange",
+        "--launcher-class=$launcherClassName",
+        "--on-redeploy=$doOnChange"
+    )
 }

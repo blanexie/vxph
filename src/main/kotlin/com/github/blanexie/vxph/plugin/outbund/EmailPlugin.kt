@@ -3,6 +3,7 @@ package com.github.blanexie.vxph.plugin.outbund
 import cn.hutool.core.codec.Base64Decoder
 import com.github.blanexie.vxph.core.AbstractVerticle
 import com.github.blanexie.vxph.core.entity.Message
+import com.github.blanexie.vxph.core.objectMapper
 import io.vertx.core.Handler
 import io.vertx.core.buffer.Buffer
 import io.vertx.ext.mail.*
@@ -29,38 +30,8 @@ class EmailPlugin(
 
 
     override suspend fun handleReceive(message: Message, handler: Handler<Message>) {
-        val from = message.data["from"] as String
-        val to = message.data["to"] as String
-        val cc = message.data["cc"] as List<String>?
-
-        val text = message.data["text"] as String?
-        val html = message.data["html"] as String?
-
-        val attachments = message.data["attachment"] as Map<*, *>?
-        val inlineAttachments = message.data["inlineAttachment"] as Map<*, *>?
-
-        val mailMessage = MailMessage()
-        mailMessage.setFrom(from)
-        mailMessage.setTo(to)
-        cc?.let { mailMessage.cc = cc }
-        text?.let { mailMessage.text = text }
-        html?.let { mailMessage.html = html }
-
-        attachments?.let {
-            val attachment = MailAttachment.create()
-            attachment.setContentType(it["contentType"] as String)
-            writeData(it, attachment)
-            appendAttachment(mailMessage, attachment)
-        }
-
-        inlineAttachments?.let {
-            val attachment = MailAttachment.create()
-            attachment.setContentType(it["contentType"] as String)
-            attachment.setDisposition("inline")
-            attachment.setContentId(it["contentId"] as String)
-            writeData(it, attachment)
-            appendAttachment(mailMessage, attachment)
-        }
+        val emailStr = message.data["email"] as String
+        val mailMessage = objectMapper.readValue(emailStr, MailMessage::class.java)
         val replyMessage = message.toReplyMessage()
         mailClient.sendMail(mailMessage)
             .onSuccess {
@@ -72,23 +43,6 @@ class EmailPlugin(
                 replyMessage.data = mapOf("statusCode" to "500", "errorMessage" to it.message)
                 handler.handle(replyMessage)
             }
-    }
-
-    private fun appendAttachment(mailMessage: MailMessage, attachment: MailAttachment) {
-        if (mailMessage.attachment == null) {
-            mailMessage.attachment = arrayListOf()
-        }
-        mailMessage.attachment.add(attachment)
-    }
-
-    private fun writeData(it: Map<*, *>, attachment: MailAttachment) {
-        val dataType = it["dataType"]
-        if (dataType == "String") {
-            attachment.setData(Buffer.buffer(it["data"] as String))
-        }
-        if (dataType == "base64") {
-            attachment.setData(Buffer.buffer(Base64Decoder.decodeStr(it["data"] as String)))
-        }
     }
 
 
