@@ -3,9 +3,8 @@ package com.github.blanexie.vxph.service
 import cn.hutool.core.collection.CollUtil
 import cn.hutool.core.util.IdUtil
 import cn.hutool.crypto.digest.DigestUtil
-import cn.hutool.extra.mail.MailUtil
 import com.github.blanexie.vxph.core.AbstractVerticle
-import io.vertx.core.Vertx
+import com.github.blanexie.vxph.dht.bencode
 import org.slf4j.LoggerFactory
 import java.net.DatagramPacket
 import java.net.DatagramSocket
@@ -60,7 +59,8 @@ fun main() {
     //router.utorrent.com:6881
     //dht.transmissionbt.com:6881
     //dht.aelitis.com
-    DatagramSocket(10086).use { socket ->
+    DatagramSocket(10087).use { socket ->
+        val datagramPacket = DatagramPacket(ByteArray(1024), 1024)
         val mapOf = mapOf(
             "t" to IdUtil.fastUUID(),
             "y" to "q",
@@ -68,8 +68,12 @@ fun main() {
             "a" to mapOf("id" to DigestUtil.sha1("zxc"), "target" to DigestUtil.sha1("zxc1"))
         )
         val encode = bencode.encode(mapOf)
-        val packet = DatagramPacket(encode, encode.size, InetSocketAddress("127.0.0.1", 10086))
-
+        val packet = DatagramPacket(encode, encode.size, InetSocketAddress("router.utorrent.com", 6881))
         socket.send(packet)
+
+        while (true) {
+            socket.receive(datagramPacket)
+            println(datagramPacket)
+        }
     }
 }
