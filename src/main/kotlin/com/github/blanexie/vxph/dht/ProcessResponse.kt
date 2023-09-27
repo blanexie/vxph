@@ -2,7 +2,7 @@ package com.github.blanexie.vxph.dht
 
 import java.nio.ByteBuffer
 
-class ProcessResponse(val bucket: Bucket) {
+class ProcessResponse(val bucket: KBucket) {
     fun replyPack(dictionary: Map<String, Any>): ByteArray? {
 
         val t = dictionary.readString("t")

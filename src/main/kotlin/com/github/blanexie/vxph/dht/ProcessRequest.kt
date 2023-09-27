@@ -2,7 +2,7 @@ package com.github.blanexie.vxph.dht
 
 import cn.hutool.core.util.IdUtil
 
-class ProcessRequest(val bucket: Bucket) {
+class ProcessRequest(val bucket: KBucket) {
     fun replyPack(dictionary: Map<String, Any>): ByteArray? {
         val q = dictionary.readString("q")
         when (q) {

@@ -42,7 +42,6 @@ class DhtVerticle(val port: Int) : CoroutineVerticle() {
 
     fun send() {
         val fastSimpleUUID = IdUtil.fastSimpleUUID()
-        bucket.tCache.put(fastSimpleUUID, fastSimpleUUID)
         val mapOf = mapOf(
             "t" to fastSimpleUUID,
             "y" to "q",

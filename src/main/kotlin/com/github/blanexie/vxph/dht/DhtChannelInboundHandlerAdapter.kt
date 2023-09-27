@@ -1,5 +1,7 @@
 package com.github.blanexie.vxph.dht
 
+import cn.hutool.core.util.IdUtil
+import cn.hutool.crypto.digest.DigestUtil
 import com.dampcake.bencode.Bencode
 import com.dampcake.bencode.Type
 import io.netty.buffer.Unpooled
@@ -7,9 +9,10 @@ import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelInboundHandlerAdapter
 import io.netty.channel.socket.DatagramPacket
 import org.slf4j.LoggerFactory
+import java.math.BigInteger
 
 
-val bucket = Bucket("vxph")
+val bucket = KBucket(DigestUtil.sha1("vxph"))
 val bencode = Bencode(true)
 val processRequest = ProcessRequest(bucket)
 val processResponse = ProcessResponse(bucket)
