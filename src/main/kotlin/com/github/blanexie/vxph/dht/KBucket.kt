@@ -1,5 +1,7 @@
 package com.github.blanexie.vxph.dht
 
+import cn.hutool.cache.CacheUtil
+import cn.hutool.cache.impl.TimedCache
 import cn.hutool.core.collection.CollUtil
 import java.net.InetSocketAddress
 import java.nio.ByteBuffer
@@ -7,27 +9,27 @@ import kotlin.experimental.xor
 
 class KBucket(
     val nodeId: ByteArray,
-    val bucketMap: HashMap<Int, ArrayList<Node>> = hashMapOf()
+    val bucketMap: HashMap<Int, ArrayList<Node>> = hashMapOf(),
+    val tCache: TimedCache<String, String> = CacheUtil.newTimedCache<String, String>(30 * 1000)
 ) {
+
+
 
     fun findNodes(target: ByteArray): List<ByteArray> {
         val difference = difference(target)
-        val get = bucketMap.getOrDefault(difference, listOf())
+        val get: List<Node> = bucketMap.getOrDefault(difference, listOf())
         return get.map { it.id }.toList()
     }
-
 
     private fun difference(target: ByteArray): Int {
         var distanceVal = 0
         var bits = 24
         for (i in 0..19) {
-            val byte = nodeId[i]
-            val byte2 = target[i]
-            val b = byte xor byte2
-            if (b.toInt() == 0) {
+            val byte = nodeId[i] xor target[i]
+            if (byte.toInt() == 0) {
                 distanceVal += 8
             } else {
-                while (b.toInt().shl(bits + 1) != 0) {
+                while (byte.toInt().shl(bits + 1) != 0) {
                     bits++
                 }
                 break

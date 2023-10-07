@@ -1,6 +1,5 @@
 package com.github.blanexie.vxph.dht
 
-import cn.hutool.core.util.IdUtil
 import cn.hutool.crypto.digest.DigestUtil
 import com.dampcake.bencode.Bencode
 import com.dampcake.bencode.Type
@@ -9,7 +8,6 @@ import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelInboundHandlerAdapter
 import io.netty.channel.socket.DatagramPacket
 import org.slf4j.LoggerFactory
-import java.math.BigInteger
 
 
 val bucket = KBucket(DigestUtil.sha1("vxph"))
@@ -29,7 +27,7 @@ class DhtChannelInboundHandlerAdapter : ChannelInboundHandlerAdapter() {
         val dictionary = buf.bencodeContentDict()
         val y = dictionary.readString("y")
         if (y == "q") {
-            val replyPack = processRequest.replyPack(dictionary)
+            val replyPack = processRequest.replyPack(dictionary, sender)
             replyPack?.let {
                 log.info("reply pack ,  becode str : {}", String(replyPack))
                 val wrappedBuffer = Unpooled.wrappedBuffer(it)
@@ -37,7 +35,7 @@ class DhtChannelInboundHandlerAdapter : ChannelInboundHandlerAdapter() {
             }
         }
         if (y == "r") {
-            processResponse.replyPack(dictionary)
+            processResponse.replyPack(dictionary,sender)
         }
     }
 }
