@@ -14,7 +14,7 @@ abstract class BaseRequest(
     val t: String,
     val y: String,
     val q: String,
-    val a: Map<String, ByteArray>,
+    val a: Map<String, Any>,
     var ip4: InetSocketAddress? = null,
     var ip6: InetSocketAddress? = null,
 ) {

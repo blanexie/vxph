@@ -1,10 +1,7 @@
 package com.github.blanexie.vxph.dht.message
 
 import cn.hutool.core.util.IdUtil
-import com.github.blanexie.vxph.dht.KBucket
-import com.github.blanexie.vxph.dht.Node
-import com.github.blanexie.vxph.dht.NodeId
-import com.github.blanexie.vxph.dht.readByteArray
+import com.github.blanexie.vxph.dht.*
 import java.net.Inet4Address
 import java.net.Inet6Address
 import java.net.InetSocketAddress
@@ -21,16 +18,16 @@ class FindNodeRequest(
     t: String,
     y: String,
     q: String,
-    a: Map<String, ByteArray>,
+    a: Map<String, Any>,
     ip4: InetSocketAddress? = null,
     ip6: InetSocketAddress? = null,
 ) : BaseRequest(t, y, q, a, ip4, ip6) {
 
     constructor(dict: Map<String, Any>, ip: InetSocketAddress) : this(
-        dict["t"] as String,
-        dict["y"] as String,
-        dict["q"] as String,
-        dict["a"] as Map<String, ByteArray>,
+        dict.readString("t"),
+        dict.readString("y"),
+        dict.readString("q"),
+        dict.readMap("a"),
         ip4 = if (ip.address is Inet4Address) {
             ip
         } else {

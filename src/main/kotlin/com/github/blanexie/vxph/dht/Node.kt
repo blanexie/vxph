@@ -56,22 +56,21 @@ data class Node(
 
 data class NodeId(val key: ByteArray) {
 
-
     fun difference(target: NodeId): Int {
         var distanceVal = 0
-        var bits = 24
+        var bits = 0
         for (i in 0..19) {
             val byte = key[i] xor target.key[i]
             if (byte.toInt() == 0) {
                 distanceVal += 8
             } else {
-                while (byte.toInt().shl(bits + 1) != 0) {
+                while (byte.toInt().ushr(bits + 1) != 0) {
                     bits++
                 }
                 break
             }
         }
-        distanceVal = distanceVal + bits - 24
+        distanceVal = distanceVal + 8 - bits
         return distanceVal
     }
 

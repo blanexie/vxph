@@ -65,7 +65,7 @@ fun main() {
             "t" to IdUtil.fastUUID(),
             "y" to "q",
             "q" to "find_node",
-            "a" to mapOf("id" to DigestUtil.sha1("zxc"), "target" to DigestUtil.sha1("zxc1"))
+            "a" to mapOf("id" to DigestUtil.sha1("124zxc"), "target" to DigestUtil.sha1("zx124c1"))
         )
         val encode = bencode.encode(mapOf)
         val packet = DatagramPacket(encode, encode.size, InetSocketAddress("router.utorrent.com", 6881))

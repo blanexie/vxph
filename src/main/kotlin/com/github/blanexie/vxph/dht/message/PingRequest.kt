@@ -27,16 +27,16 @@ class PingRequest(
     t: String,
     y: String,
     q: String,
-    a: Map<String, ByteArray>,
+    a: Map<String, Any>,
     ip4: InetSocketAddress? = null,
     ip6: InetSocketAddress? = null,
 ) : BaseRequest(t, y, q, a, ip4, ip6) {
 
     constructor(dict: Map<String, Any>, ip: InetSocketAddress) : this(
-        dict["t"] as String,
-        dict["y"] as String,
-        dict["q"] as String,
-        dict["a"] as Map<String, ByteArray>,
+        dict.readString("t"),
+        dict.readString("y"),
+        dict.readString("q"),
+        dict.readMap("a"),
         ip4 = if (ip.address is Inet4Address) {
             ip
         } else {

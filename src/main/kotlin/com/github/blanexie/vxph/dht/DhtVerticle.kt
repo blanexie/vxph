@@ -1,5 +1,9 @@
 package com.github.blanexie.vxph.dht
 
+import cn.hutool.core.util.RandomUtil
+import cn.hutool.crypto.digest.DigestUtil
+import com.github.blanexie.vxph.dht.message.FindNodeRequest
+import com.github.blanexie.vxph.dht.message.PingRequest
 import io.netty.bootstrap.Bootstrap
 import io.netty.buffer.*
 import io.netty.channel.Channel
@@ -12,6 +16,7 @@ import io.netty.channel.socket.nio.NioDatagramChannel
 import io.vertx.core.Vertx
 import io.vertx.kotlin.coroutines.CoroutineVerticle
 import org.slf4j.LoggerFactory
+import java.net.InetSocketAddress
 
 
 class DhtVerticle(val port: Int) : CoroutineVerticle() {
@@ -32,32 +37,20 @@ class DhtVerticle(val port: Int) : CoroutineVerticle() {
             })
         channel = bootstrap.bind(port).sync().channel()
         log.info("DHT 功能开始启动，监听端口：{}", port)
-
-
-        vertx.setPeriodic(10 * 60 * 1000) {
-
-        }
+        sendFindNode()
     }
 
-    fun sendFindNode(node: Node) {
-        val t = System.currentTimeMillis().toString()
-        val mapOf = mapOf(
-            "t" to t,
-            "y" to "q",
-            "q" to "find_node",
-            "a" to mapOf("id" to kBucket.nodeId, "target" to node.nodeId)
-        )
-        val encode = bencode.encode(mapOf)
-
+    fun sendFindNode() {
         //router.bittorrent.com:6881
         //router.utorrent.com:6881
         //dht.transmissionbt.com:6881
         //dht.aelitis.com
-        val inetSocketAddress = node.ip4
-        val wrappedBuffer = Unpooled.wrappedBuffer(encode)
-        val datagramPacket = DatagramPacket(wrappedBuffer, inetSocketAddress)
-        log.info("send data , remote addrss:{}  becode :{} ", datagramPacket.recipient(), String(encode))
-        channel!!.writeAndFlush(datagramPacket).sync()
+        val inetSocketAddress = InetSocketAddress("192.168.1.6", 16881)
+        val nodeId = NodeId(DigestUtil.sha1(RandomUtil.randomString(9)))
+        val target = NodeId(DigestUtil.sha1(RandomUtil.randomString(9)))
+        val node = Node(nodeId, System.currentTimeMillis(), inetSocketAddress)
+        val findNodeRequest = FindNodeRequest(node, target, kBucket)
+        findNodeRequest.send(channel!!, kBucket)
     }
 
 
@@ -72,5 +65,5 @@ class DhtVerticle(val port: Int) : CoroutineVerticle() {
 
 fun main() {
     val vertx = Vertx.vertx()
-    vertx.deployVerticle(DhtVerticle(10086))
+    vertx.deployVerticle(DhtVerticle(17616))
 }

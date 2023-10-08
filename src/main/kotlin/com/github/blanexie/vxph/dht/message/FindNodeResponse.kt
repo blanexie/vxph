@@ -1,9 +1,6 @@
 package com.github.blanexie.vxph.dht.message
 
-import cn.hutool.core.net.Ipv4Util
-import cn.hutool.core.util.ByteUtil
 import com.github.blanexie.vxph.dht.*
-import io.netty.util.NetUtil
 import java.net.Inet4Address
 import java.net.Inet6Address
 import java.net.InetSocketAddress
@@ -11,15 +8,15 @@ import java.net.InetSocketAddress
 class FindNodeResponse(
     t: String,
     y: String,
-    r: Map<String, ByteArray>,
+    r: Map<String, Any>,
     ip4: InetSocketAddress? = null,
     ip6: InetSocketAddress? = null,
 ) : BaseResponse(t, y, r, ip4, ip6) {
 
     constructor(dict: Map<String, Any>, ip: InetSocketAddress) : this(
-        dict["t"] as String,
-        dict["y"] as String,
-        dict["r"] as Map<String, ByteArray>,
+        dict.readString("t"),
+        dict.readString("y"),
+        dict.readMap("r"),
         ip4 = if (ip.address is Inet4Address) {
             ip
         } else {
@@ -39,16 +36,14 @@ class FindNodeResponse(
         val nodes = r.readByteArray("nodes")
         var index = 0
         while (index < nodes.size) {
-            val nodeId = NodeId(nodes.copyOfRange(index, index + 20))
+            val nodeId = nodes.readNodeId(index)
             index += 20
-            val ip4 = nodes.copyOfRange(index, index + 4)
-            index += 4
-            val port = nodes.copyOfRange(index, index + 2)
-            index += 2
+            val inetSocketAddress = nodes.readIp4(index)
+            index += 6
             val node = Node(
                 nodeId,
                 System.currentTimeMillis(),
-                InetSocketAddress(NetUtil.bytesToIpAddress(ip4), ByteUtil.bytesToInt(port))
+                inetSocketAddress
             )
             kBucket.addNode(node)
         }

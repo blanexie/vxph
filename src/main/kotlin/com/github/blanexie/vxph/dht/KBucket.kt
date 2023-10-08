@@ -46,17 +46,3 @@ class KBucket(
         addNode(Node(NodeId(id), System.currentTimeMillis(), ip4))
     }
 }
-
-fun Map<String, Any>.readString(key: String): String {
-    val any = this[key] as ByteBuffer
-    return String(any.array())
-}
-
-fun Map<String, Any>.readByteArray(key: String): ByteArray {
-    val any = this[key] as ByteBuffer
-    return any.array()
-}
-
-fun Map<String, Any>.readMap(key: String): Map<String, Any> {
-    return this[key] as Map<String, Any>
-}
