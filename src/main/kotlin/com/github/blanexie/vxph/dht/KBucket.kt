@@ -5,56 +5,45 @@ import cn.hutool.cache.impl.TimedCache
 import cn.hutool.core.collection.CollUtil
 import java.net.InetSocketAddress
 import java.nio.ByteBuffer
-import kotlin.experimental.xor
 
 class KBucket(
-    val nodeId: ByteArray,
+    val nodeId: NodeId,
     val bucketMap: HashMap<Int, ArrayList<Node>> = hashMapOf(),
-    val tCache: TimedCache<String, String> = CacheUtil.newTimedCache<String, String>(30 * 1000)
+    //key 是 t , value 是远端的 地址
+    val tCache: TimedCache<String, TReqInfo> = CacheUtil.newTimedCache(30 * 1000)
 ) {
 
 
-
-    fun findNodes(target: ByteArray): List<ByteArray> {
-        val difference = difference(target)
-        val get: List<Node> = bucketMap.getOrDefault(difference, listOf())
-        return get.map { it.id }.toList()
+    fun findNodes(target: NodeId): List<Node> {
+        val difference = nodeId.difference(target)
+        return bucketMap.getOrDefault(difference, listOf())
     }
 
-    private fun difference(target: ByteArray): Int {
-        var distanceVal = 0
-        var bits = 24
-        for (i in 0..19) {
-            val byte = nodeId[i] xor target[i]
-            if (byte.toInt() == 0) {
-                distanceVal += 8
-            } else {
-                while (byte.toInt().shl(bits + 1) != 0) {
-                    bits++
-                }
-                break
-            }
-        }
-        distanceVal = distanceVal + bits - 24
-        return distanceVal
-    }
 
-    fun addNode(id: ByteArray, inetSocketAddress: InetSocketAddress) {
-        val difference = difference(id)
+    fun addNode(node: Node) {
+        val difference = nodeId.difference(node.nodeId)
         val nodeList = bucketMap.computeIfAbsent(difference) {
             arrayListOf()
         }
 
-        val node = CollUtil.findOne(nodeList) {
-            it.id.contentEquals(id)
+        val nodeF = CollUtil.findOne(nodeList) {
+            it.nodeId == node.nodeId
         }
-        node?.let {
-            node.lastChange = System.currentTimeMillis()
-            node.inetSocketAddress = inetSocketAddress
+        if (nodeF == null) {
+            nodeList.add(node)
+        } else {
+            nodeF.lastChange = System.currentTimeMillis()
+            node.ip4?.let {
+                nodeF.ip4 = it
+            }
+            node.ip6?.let {
+                nodeF.ip6 = it
+            }
         }
-        if (node == null) {
-            nodeList.add(Node(id, System.currentTimeMillis(), inetSocketAddress))
-        }
+    }
+
+    fun addNode(id: ByteArray, ip4: InetSocketAddress) {
+        addNode(Node(NodeId(id), System.currentTimeMillis(), ip4))
     }
 }
 
