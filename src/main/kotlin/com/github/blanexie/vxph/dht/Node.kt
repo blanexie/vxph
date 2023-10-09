@@ -6,8 +6,31 @@ data class Node(
     val nodeId: NodeId,
     var lastChange: Long,
     var ip4: InetSocketAddress? = null,
-    var ip6: InetSocketAddress? = null
-) {
+    var ip6: InetSocketAddress? = null,
+    var version: Int = 0
+) : Comparable<Node> {
+
+
+    fun upgradeVersion() {
+        version += 1
+    }
+
+    override fun compareTo(other: Node): Int {
+        if (this.version > other.version) {
+            return -1
+        }
+        if (this.version < other.version) {
+            return 1
+        }
+
+        if (this.lastChange > other.lastChange) {
+            return -1
+        }
+        if (this.lastChange < other.lastChange) {
+            return 1
+        }
+        return 0
+    }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

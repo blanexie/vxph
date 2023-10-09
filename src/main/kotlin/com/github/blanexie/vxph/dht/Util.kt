@@ -1,3 +1,5 @@
+
+
 package com.github.blanexie.vxph.dht
 
 import cn.hutool.core.util.RandomUtil
@@ -16,6 +18,16 @@ val bencode = Bencode(true)
 val requestFactory = RequestFactory()
 val responseFactory = ResponseFactory(kBucket)
 
+//10分钟刷新一次
+const val nodeRefreshTime = 30 * 1000L
+const val nodeUnUsedTime = nodeRefreshTime * 2   //过期时间是刷新时间的2倍
+const val bucketSize = 8
+
+//router.bittorrent.com:6881
+//router.utorrent.com:6881
+//dht.transmissionbt.com:6881
+//dht.aelitis.com
+val initNodeInetSocketAddress = InetSocketAddress("dht.transmissionbt.com", 6881)
 
 fun Map<String, Any>.readString(key: String): String {
     val any = this[key] as ByteBuffer
@@ -33,6 +45,7 @@ fun Map<String, Any>.readLongIfExist(key: String): Long? {
 }
 
 fun Map<String, Any>.readMap(key: String): Map<String, Any> {
+    @Suppress("UNCHECKED_CAST")
     return this[key] as Map<String, Any>
 }
 
