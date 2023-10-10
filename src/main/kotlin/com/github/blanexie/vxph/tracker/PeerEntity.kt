@@ -1,61 +1,73 @@
 package com.github.blanexie.vxph.tracker
 
 import cn.hutool.core.bean.BeanUtil
-import cn.hutool.core.map.MapUtil
-import cn.hutool.core.util.StrUtil
-import io.vertx.core.net.SocketAddress
-import io.vertx.jdbcclient.JDBCPool
-import io.vertx.sqlclient.templates.SqlTemplate
+import cn.hutool.db.Db
+import cn.hutool.db.Entity
+import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
 
-class PeerEntity(
-    var passkey: String,
-    var peerId: String,
-    var infoHash: ByteArray,
-    var remoteAddress: String,
-    var port: Int,
-    var downloaded: Long,
-    var left: Long,
-    var uploaded: Long,
-    var event: String,
-    var createTime: LocalDateTime,
-    var updateTime: LocalDateTime,
-    var status: Int,
-) {
 
+class PeerEntity() {
+    lateinit var passkey: String
+    lateinit var peerId: String
+    lateinit var infoHash: String
+    lateinit var remoteAddress: String
+    var port: Int = 0
+    var downloaded: Long = 0
+    var left: Long = 0
+    var uploaded: Long = 0
+    var event: String? = null
+    lateinit var createTime: LocalDateTime
+    lateinit var updateTime: LocalDateTime
+    var status: Int = 0
 
-    init {
-     val insertOrUpdateSql  = "";
-        val beanToMap = BeanUtil.beanToMap(this)
-        beanToMap.forEach { k, v ->
+    constructor(
+        passkey: String,
+        peerId: String,
+        infoHash: String,
+        remoteAddress: String,
+        port: Int,
+        downloaded: Long,
+        left: Long,
+        uploaded: Long,
+        event: String?,
+        createTime: LocalDateTime,
+        updateTime: LocalDateTime,
+        status: Int,
+    ) : this() {
+        this.passkey = passkey
+        this.peerId = peerId
+        this.infoHash = infoHash
+        this.remoteAddress = remoteAddress
+        this.port = port
+        this.downloaded = downloaded
+        this.left = left
+        this.uploaded = uploaded
+        this.event = event
+        this.createTime = createTime
+        this.updateTime = updateTime
+        this.status = status
+    }
 
+    private val log = LoggerFactory.getLogger(this::class.java)
 
-
+    fun insertOrUpdate() {
+        val entity = Entity.create("peer")
+        BeanUtil.beanToMap(this).map {
+            entity.set(it.key, it.value)
         }
-
+        val insertOrUpdate = Db.use(hikariDataSource())
+            .insertOrUpdate(entity, "passkey", "peerId", "infoHash")
     }
 
 
-    fun insertOrUpdate(jdbcPool: JDBCPool) {
-        val sql =
-            """
-               INSERT INTO peer(passkey,peerId,infoHash,remoteAddress,port,downloaded,left,uploaded,event,createTime, updateTime,status) 
-               VALUES(#{passkey}, #{peerId}, #{infoHash}, #{remoteAddress},#{port},#{downloaded},#{left},#{uploaded},#{event},#{createTime},#{updateTime},#{status}) 
-               ON CONFLICT(passkey,peerId,infoHash) DO UPDATE
-               SET passkey=excluded.passkey, peerId=excluded.peerId, infoHash=excluded.infoHash , remoteAddress=excluded.remoteAddress,
-               port=excluded.port , downloaded=excluded.downloaded , uploaded=excluded.uploaded ,createTime=excluded.createTime ,
-               updateTime=excluded.updateTime ,status=excluded.status 
-            """
-
-
-
-      //  StrUtil.toUnderlineCase()
-//
-
-        SqlTemplate.forUpdate(jdbcPool, sql)
-           // .execute(beanToMap)
-
-
+    companion object {
+        fun findByInfoHash(infoHash: String): List<PeerEntity> {
+            val entity = Entity.create("peer")
+            entity.set("infoHash", infoHash)
+            return Db.use(hikariDataSource())
+                .find(entity, PeerEntity::class.java)
+        }
     }
 
 

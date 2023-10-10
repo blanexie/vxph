@@ -1,33 +1,32 @@
-
------------------------------------------------------------------------
-create table v_plugin
+create table IF NOT EXISTS peer
 (
-    id          integer           not null
-        constraint v_plugin_pk
-            primary key autoincrement,
-    type        TEXT              not null,
-    name        TEXT              not null,
-    class       TEXT              not null,
-    args        TEXT              not null,
-    description TEXT              not null,
-    status      integer default 0 not null,
-    createTime  TEXT              not null,
-    updateTime  text              not null
+    passkey       TEXT              not null,
+    peerId        TEXT              not null,
+    infoHash      TEXT              not null,
+    remoteAddress TEXT              not null,
+    port          INTEGER,
+    downloaded    TEXT              not null,
+    "left"        TEXT              not null,
+    uploaded      TEXT              not null,
+    event         TEXT,
+    status        INTEGER default 0 not null,
+    createTime    TEXT              not null,
+    updateTime    TEXT              not null,
+    constraint peer_pk primary key (infoHash, passkey, peerId)
 );
 
-INSERT INTO v_plugin (id, type, name, class, args, description, status, createTime, updateTime) VALUES (1, 'httpServer', 'Http服务器', 'com.github.blanexie.vxph.plugin.inbund.HttpServerPlugin', '{"path":"/api","port":8816}', '服务器插件', 1, '2023-09-20 18:36:00', '2023-09-20 18:36:00');
+create index peer_updateTime_index
+    on peer (updateTime);
 
----------------------------------------------------
-create table main.v_properties
-(
-    id          integer not null
-        constraint v_properties_pk
-            primary key autoincrement,
-    key         text    not null,
-    value       TEXT    not null,
-    create_time TEXT    not null,
-    update_time text    not null,
-    version     integer,
-    status      integer
-);
+create index peer_createTime_index
+    on peer (createTime);
+
+create index peer_passkey_index
+    on peer (passkey);
+
+create index peer_peerId_index
+    on peer (peerId);
+
+------------------------------------------------------------
+
 

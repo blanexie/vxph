@@ -46,6 +46,7 @@ dependencies {
     implementation("cn.hutool:hutool-all:5.8.21")
 
     implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2")
 
     implementation("com.zaxxer:HikariCP:5.0.1")
 

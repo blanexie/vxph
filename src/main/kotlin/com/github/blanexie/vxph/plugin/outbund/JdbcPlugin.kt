@@ -9,6 +9,7 @@ import com.github.blanexie.vxph.core.entity.Message
 import com.github.blanexie.vxph.core.objectMapper
 import io.vertx.core.Handler
 import io.vertx.core.json.JsonObject
+import io.vertx.ext.jdbc.JDBCClient
 import io.vertx.jdbcclient.JDBCPool
 import io.vertx.kotlin.coroutines.awaitResult
 import io.vertx.sqlclient.Row

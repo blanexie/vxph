@@ -93,7 +93,6 @@ open class BaseEntity {
     uk = "c4"
 )
 class A(
-    @PK(true)
     var id: Int?,
     var c1: Double?,
     var c2: Long?,
