@@ -1,6 +1,7 @@
 package com.github.blanexie.vxph.dht.message
 
 import com.github.blanexie.vxph.dht.*
+import org.slf4j.LoggerFactory
 import java.net.Inet4Address
 import java.net.Inet6Address
 import java.net.InetSocketAddress
@@ -12,6 +13,8 @@ class FindNodeResponse(
     ip4: InetSocketAddress? = null,
     ip6: InetSocketAddress? = null,
 ) : BaseResponse(t, y, r, ip4, ip6) {
+
+    private val log = LoggerFactory.getLogger(this::class.java)
 
     constructor(dict: Map<String, Any>, ip: InetSocketAddress) : this(
         dict.readString("t"),
@@ -47,7 +50,6 @@ class FindNodeResponse(
             )
             kBucket.addNode(node)
         }
-
     }
 
 }

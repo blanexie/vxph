@@ -6,6 +6,7 @@ import cn.hutool.core.codec.Base64
 import cn.hutool.core.collection.CollUtil
 import com.github.blanexie.vxph.dht.message.FindNodeRequest
 import com.github.blanexie.vxph.dht.message.PingRequest
+import org.slf4j.LoggerFactory
 import java.net.InetSocketAddress
 import java.util.SortedSet
 
@@ -17,25 +18,32 @@ class KBucket(
 ) {
 
 
+    private val log = LoggerFactory.getLogger(this::class.java)
+
     /**
      * 规整Bucket。 并返回缺少数据的桶的
      */
     fun regularity(): List<FindNodeRequest> {
+
         val distinct = hashSetOf<String>()
         val ret = arrayListOf<FindNodeRequest>()
         var currentNode = Node(nodeId, System.currentTimeMillis(), initNodeInetSocketAddress)
+        var size = 0;
         for (i in 0..159) {
             val nodes = bucketMap.getOrDefault(i, sortedSetOf())
+            size += nodes.size
+            //限制大小
+            if (ret.size > 3) {
+                continue
+            }
             //移除超出数量的Node
             while (nodes.size > bucketSize) {
                 val last = nodes.last()
                 nodes.remove(last)
             }
-
             if (nodes.isNotEmpty()) {
                 currentNode = nodes.first()
             }
-
             if (nodes.size < bucketSize / 2) {
                 val targetNodeId = buildTargetNodeId(i)
                 if (distinct.add(Base64.encode(targetNodeId.key))) {
@@ -43,12 +51,8 @@ class KBucket(
                     ret.add(FindNodeRequest(currentNode, targetNodeId, this))
                 }
             }
-
         }
-
-
-
-
+        log.info("kbucket中目前，共有{}个K桶， 合计{}个Node", bucketMap.size, size)
         return ret
     }
 
@@ -85,6 +89,7 @@ class KBucket(
                 between > nodeUnUsedTime
             }.toList()
         }.flatMap { it.asIterable() }.map { PingRequest(it, this) }
+        log.info("共找到过期Node的数量是：{}", nodes.size)
         return nodes
     }
 

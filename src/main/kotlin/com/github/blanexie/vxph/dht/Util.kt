@@ -27,7 +27,7 @@ const val bucketSize = 8
 //router.utorrent.com:6881
 //dht.transmissionbt.com:6881
 //dht.aelitis.com
-val initNodeInetSocketAddress = InetSocketAddress("dht.transmissionbt.com", 6881)
+val initNodeInetSocketAddress = InetSocketAddress("192.168.1.6", 16881)
 
 fun Map<String, Any>.readString(key: String): String {
     val any = this[key] as ByteBuffer

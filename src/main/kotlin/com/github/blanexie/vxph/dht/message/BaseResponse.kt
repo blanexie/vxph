@@ -19,11 +19,11 @@ abstract class BaseResponse(
     private val log = LoggerFactory.getLogger(this::class.java)
     abstract fun apply(kBucket: KBucket)
 
-    fun send(channel: Channel, kBucket: KBucket) {
+     fun send(channel: Channel, kBucket: KBucket) {
         ip4?.let {
             val wrappedBuffer = Unpooled.wrappedBuffer(encode())
             val datagramPacket = DatagramPacket(wrappedBuffer, ip4, null)
-            log.info("send data , remote addrss:{}  becode :{} ", datagramPacket.recipient(), this.toString())
+            log.info("发送数据包, remote addrss:{}  becode :{} ", datagramPacket.recipient(), this.toString())
             channel.writeAndFlush(datagramPacket).sync()
             kBucket.tCache.remove(t)
         }
