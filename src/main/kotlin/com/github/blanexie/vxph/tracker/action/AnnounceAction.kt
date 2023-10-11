@@ -1,24 +1,32 @@
-package com.github.blanexie.vxph.tracker
+package com.github.blanexie.vxph.tracker.action
 
+import com.github.blanexie.vxph.tracker.http.Path
+import com.github.blanexie.vxph.tracker.entity.PeerEntity
+import com.github.blanexie.vxph.tracker.objectMapper
 import io.vertx.core.http.HttpServerRequest
 import io.vertx.core.http.HttpServerResponse
 import java.time.LocalDateTime
 
-@Path("/announce")
+@Path("/")
 class AnnounceAction() {
-
 
     /**
      * GET /announce?peer_id=aaaaaaaaaaaaaaaaaaaa&info_hash=aaaaaaaaaaaaaaaaaaaa
      * &port=6881&left=0&downloaded=100&uploaded=0&compact=1
      */
+    @Path("/announce", method = "GET")
     fun process(request: HttpServerRequest): HttpServerResponse {
         val peerEntity = getPeerFromRequest(request)
-        peerEntity.insertOrUpdate()
-        val findByInfoHash = PeerEntity.findByInfoHash(peerEntity.infoHash)
+        //检查是否符合要求
+
+
+        peerEntity.upsert()
+        val peerEntities = PeerEntity.findByInfoHash(peerEntity.infoHash)
+
+
         val compact = request.getParam("compact")
         val response = request.response()
-        response.end(objectMapper.writeValueAsString(findByInfoHash))
+        response.end(objectMapper.writeValueAsString(peerEntities))
         return response
     }
 

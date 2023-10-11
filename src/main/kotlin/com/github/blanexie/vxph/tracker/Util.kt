@@ -3,6 +3,7 @@ package com.github.blanexie.vxph.tracker
 import cn.hutool.core.lang.Singleton
 import cn.hutool.core.util.ClassUtil
 import cn.hutool.db.DbUtil
+import cn.hutool.db.Entity
 import cn.hutool.db.dialect.impl.Sqlite3Dialect
 import cn.hutool.log.level.Level
 import cn.hutool.setting.Setting
@@ -13,6 +14,7 @@ import com.zaxxer.hikari.HikariDataSource
 import io.vertx.core.json.JsonObject
 import io.vertx.jdbcclient.JDBCPool
 import java.util.concurrent.atomic.AtomicReference
+import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType
 
 
 const val announceUrl = "/announce"
@@ -27,8 +29,7 @@ val objectMapper: ObjectMapper = ObjectMapper()
 
 fun hikariDataSource(): HikariDataSource {
     return Singleton.get("hikariDataSource") {
-
-        DbUtil.setShowSqlGlobal(true,true,true,Level.INFO)
+        DbUtil.setShowSqlGlobal(true, true, true, Level.INFO)
 
         val hikariConfig = HikariConfig()
         hikariConfig.jdbcUrl = setting.getStr("vxph.database.jdbc.url")
@@ -41,7 +42,13 @@ fun hikariDataSource(): HikariDataSource {
 }
 
 
-
+fun Map<String, Any>.toEntity(tableName: String): Entity {
+    val entity = Entity.create(tableName)
+    this.forEach { (t, u) ->
+        entity.set(t, u)
+    }
+    return entity
+}
 
 
 class Util {

@@ -1,8 +1,10 @@
-package com.github.blanexie.vxph.tracker
+package com.github.blanexie.vxph.tracker.entity
 
 import cn.hutool.core.bean.BeanUtil
 import cn.hutool.db.Db
 import cn.hutool.db.Entity
+import com.github.blanexie.vxph.tracker.hikariDataSource
+import com.github.blanexie.vxph.tracker.toEntity
 import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
 
@@ -12,7 +14,7 @@ class PeerEntity() {
     lateinit var peerId: String
     lateinit var infoHash: String
     lateinit var remoteAddress: String
-    var port: Int = 0
+    var port: Int? = null
     var downloaded: Long = 0
     var left: Long = 0
     var uploaded: Long = 0
@@ -22,18 +24,9 @@ class PeerEntity() {
     var status: Int = 0
 
     constructor(
-        passkey: String,
-        peerId: String,
-        infoHash: String,
-        remoteAddress: String,
-        port: Int,
-        downloaded: Long,
-        left: Long,
-        uploaded: Long,
-        event: String?,
-        createTime: LocalDateTime,
-        updateTime: LocalDateTime,
-        status: Int,
+        passkey: String, peerId: String, infoHash: String, remoteAddress: String,
+        port: Int?, downloaded: Long, left: Long, uploaded: Long, event: String?,
+        createTime: LocalDateTime, updateTime: LocalDateTime, status: Int,
     ) : this() {
         this.passkey = passkey
         this.peerId = peerId
@@ -51,13 +44,10 @@ class PeerEntity() {
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
-    fun insertOrUpdate() {
-        val entity = Entity.create("peer")
-        BeanUtil.beanToMap(this).map {
-            entity.set(it.key, it.value)
-        }
-        val insertOrUpdate = Db.use(hikariDataSource())
-            .insertOrUpdate(entity, "passkey", "peerId", "infoHash")
+    fun upsert() {
+        val entity = BeanUtil.beanToMap(this).toEntity("peer")
+        Db.use(hikariDataSource())
+            .upsert(entity, "passkey", "peerId", "infoHash")
     }
 
 
@@ -69,6 +59,5 @@ class PeerEntity() {
                 .find(entity, PeerEntity::class.java)
         }
     }
-
 
 }

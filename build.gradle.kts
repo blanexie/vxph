@@ -56,6 +56,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
     implementation("com.dampcake:bencode:1.4.1")
 
+    implementation("com.aliyun:alidns20150109:3.0.1")
+
     testImplementation("io.vertx:vertx-junit5")
     testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
 }
