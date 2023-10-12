@@ -30,7 +30,7 @@ class RouterLoadFactory(val pathPackage: String) {
             } else {
                 router.route(HttpMethod.valueOf(reqMethod), it.path)
             }
-            routerR.handler { r ->
+            routerR.blockingHandler { r ->
                 log.info("load router path:{} {}  class:{}    method:{}", it.reqMethod, it.path, it.clazz, it.method)
                 val newInstance = ReflectUtil.newInstance(it.clazz)
                 val response: HttpServerResponse = ReflectUtil.invoke(newInstance, it.method, r.request())

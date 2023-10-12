@@ -1,5 +1,3 @@
-
-
 package com.github.blanexie.vxph.dht
 
 import cn.hutool.core.util.RandomUtil
@@ -10,6 +8,7 @@ import com.github.blanexie.vxph.dht.message.RequestFactory
 import com.github.blanexie.vxph.dht.message.ResponseFactory
 import io.netty.channel.socket.DatagramPacket
 import io.netty.util.NetUtil
+import io.vertx.core.buffer.Buffer
 import java.net.InetSocketAddress
 import java.nio.ByteBuffer
 
@@ -28,6 +27,11 @@ const val bucketSize = 8
 //dht.transmissionbt.com:6881
 //dht.aelitis.com
 val initNodeInetSocketAddress = InetSocketAddress("192.168.1.6", 16881)
+
+
+fun Bencode.encodeToBuffer(map: Map<*, *>): Buffer {
+    return Buffer.buffer(this.encode(map))
+}
 
 fun Map<String, Any>.readString(key: String): String {
     val any = this[key] as ByteBuffer

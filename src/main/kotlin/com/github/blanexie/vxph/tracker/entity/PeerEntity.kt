@@ -53,10 +53,8 @@ class PeerEntity() {
 
     companion object {
         fun findByInfoHash(infoHash: String): List<PeerEntity> {
-            val entity = Entity.create("peer")
-            entity.set("infoHash", infoHash)
-            return Db.use(hikariDataSource())
-                .find(entity, PeerEntity::class.java)
+            val entity = Entity.create("peer").set("infoHash", infoHash)
+            return Db.use(hikariDataSource()).find(entity, PeerEntity::class.java)
         }
     }
 

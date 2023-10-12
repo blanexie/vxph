@@ -22,7 +22,7 @@ const val announceUrl = "/announce"
 //加载配置文件
 
 val setting: Setting = SettingUtil.get("vxph.properties")
-val dialect = Sqlite3Dialect()
+val peerExpireMinutes = 15
 
 val objectMapper: ObjectMapper = ObjectMapper()
 
@@ -37,6 +37,7 @@ fun hikariDataSource(): HikariDataSource {
         hikariConfig.password = setting.getStr("vxph.database.jdbc.password")
         hikariConfig.maximumPoolSize = setting.getInt("vxph.database.jdbc.maxPoolSize", 8)
         hikariConfig.driverClassName = setting.getStr("vxph.database.jdbc.driverClassName")
+
         HikariDataSource(hikariConfig)
     }
 }

@@ -20,7 +20,7 @@ class UserTorrentEntity() {
     lateinit var updateTime: LocalDateTime
     var status: Int = 0
 
-    fun insertOrUpdate() {
+    fun upsert() {
         val entity = BeanUtil.beanToMap(this).toEntity("user_torrent")
         Db.use(hikariDataSource())
             .upsert(entity, "passkey", "infoHash")
