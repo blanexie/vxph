@@ -1,4 +1,4 @@
-package com.github.blanexie.vxph.tracker
+package com.github.blanexie.vxph
 
 import com.github.blanexie.vxph.tracker.http.RouterLoadFactory
 import com.github.blanexie.vxph.utils.setting
@@ -7,15 +7,15 @@ import io.vertx.ext.web.Router
 import io.vertx.kotlin.coroutines.CoroutineVerticle
 import org.slf4j.LoggerFactory
 
-class HttpServerVerticle(val port: Int) : CoroutineVerticle() {
+class HttpServerVerticle : CoroutineVerticle() {
 
     private val log = LoggerFactory.getLogger(this::class.java)
-    private val actionPackage = setting.getStr("vxph.http.action.package")
-
+    private val port = setting.getInt("vxph.http.server.port", 8061)
     override suspend fun start() {
+
         val httpServer = vertx.createHttpServer()
         val router = Router.router(vertx)
-        val routerLoadFactory = RouterLoadFactory(actionPackage)
+        val routerLoadFactory = RouterLoadFactory(this::class.java.packageName)
         routerLoadFactory.loadPathRouter(router)
         httpServer.requestHandler(router).listen(port)
         log.info("开始http服务， 端口：{}", port)
@@ -25,7 +25,7 @@ class HttpServerVerticle(val port: Int) : CoroutineVerticle() {
 
 
 fun main() {
-    val httpServerVerticle = HttpServerVerticle(8086)
+    val httpServerVerticle = HttpServerVerticle()
     val vertx = Vertx.vertx()
     vertx.deployVerticle(httpServerVerticle)
 }
