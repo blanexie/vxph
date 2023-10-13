@@ -1,8 +1,7 @@
 package com.github.blanexie.vxph.tracker
 
-import com.github.blanexie.vxph.tracker.action.AnnounceAction
-import com.github.blanexie.vxph.tracker.http.Path
 import com.github.blanexie.vxph.tracker.http.RouterLoadFactory
+import com.github.blanexie.vxph.utils.setting
 import io.vertx.core.Vertx
 import io.vertx.ext.web.Router
 import io.vertx.kotlin.coroutines.CoroutineVerticle
