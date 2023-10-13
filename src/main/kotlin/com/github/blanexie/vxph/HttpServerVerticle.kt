@@ -11,8 +11,8 @@ class HttpServerVerticle : CoroutineVerticle() {
 
     private val log = LoggerFactory.getLogger(this::class.java)
     private val port = setting.getInt("vxph.http.server.port", 8061)
-    override suspend fun start() {
 
+    override suspend fun start() {
         val httpServer = vertx.createHttpServer()
         val router = Router.router(vertx)
         val routerLoadFactory = RouterLoadFactory(this::class.java.packageName)

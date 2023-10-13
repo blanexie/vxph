@@ -10,7 +10,7 @@ import com.aliyun.sdk.service.alidns20150109.models.UpdateDomainRecordRequest
 import darabonba.core.client.ClientOverrideConfiguration
 import org.slf4j.LoggerFactory
 
-class AliDnsService(val accessKeyId: String, val accessKeySecret: String) {
+class AliDNSService(val accessKeyId: String, val accessKeySecret: String) {
 
     private val client: AsyncClient
     private val log = LoggerFactory.getLogger(this::class.java)

@@ -1,5 +1,6 @@
 package com.github.blanexie.vxph.tracker.http
 
+import cn.hutool.core.lang.Singleton
 import cn.hutool.core.util.ClassUtil
 import cn.hutool.core.util.ReferenceUtil
 import cn.hutool.core.util.ReflectUtil
@@ -32,7 +33,7 @@ class RouterLoadFactory(val pathPackage: String) {
             }
             routerR.blockingHandler { r ->
                 log.info("load router path:{} {}  class:{}    method:{}", it.reqMethod, it.path, it.clazz, it.method)
-                val newInstance = ReflectUtil.newInstance(it.clazz)
+                val newInstance = Singleton.get(it.clazz)
                 val response: HttpServerResponse = ReflectUtil.invoke(newInstance, it.method, r.request())
             }
         }

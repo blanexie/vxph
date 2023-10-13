@@ -5,9 +5,12 @@ import io.vertx.kotlin.coroutines.CoroutineVerticle
 
 class DDNSVerticle : CoroutineVerticle() {
 
-    val aliDnsService = AliDnsService(accessKey, accessKeySecret)
-    override suspend fun start() {
+    val aliDnsService = AliDNSService(accessKey, accessKeySecret)
 
+    override suspend fun start() {
+        vertx.setPeriodic(15){
+
+        }
 
     }
 
