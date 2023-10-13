@@ -11,9 +11,7 @@ class UserTorrentEntity() {
 
     lateinit var passKey: String
     lateinit var infoHash: String
-
     var userId: Long = 0
-
     var peerId: String? = null
 
     lateinit var createTime: LocalDateTime
@@ -21,7 +19,7 @@ class UserTorrentEntity() {
     var status: Int = 0
 
     fun upsert() {
-        val entity = BeanUtil.beanToMap(this).toEntity("user_torrent")
+        val entity = BeanUtil.beanToMap(this).toEntity("UserTorrent")
         Db.use(hikariDataSource())
             .upsert(entity, "passkey", "infoHash")
     }
@@ -30,9 +28,9 @@ class UserTorrentEntity() {
     fun updatePeerId(peerId: String?) {
         this.peerId = peerId
         this.updateTime = LocalDateTime.now()
-        val setEntity = Entity.create("user_torrent").set("peerId", this.peerId)
+        val setEntity = Entity.create("UserTorrent").set("peerId", this.peerId)
             .set("updateTime", updateTime)
-        val whereEntity = Entity.create("user_torrent").set("passKey", this.passKey)
+        val whereEntity = Entity.create("UserTorrent").set("passKey", this.passKey)
             .set("infoHash", infoHash)
         Db.use(hikariDataSource()).update(setEntity, whereEntity)
     }
@@ -40,7 +38,7 @@ class UserTorrentEntity() {
 
     companion object {
         fun findByPasskey(passKey: String, infoHash: String): UserTorrentEntity? {
-            val entity = Entity.create("user_torrent").set("passkey", passKey)
+            val entity = Entity.create("UserTorrent").set("passkey", passKey)
                 .set("infoHash", infoHash)
             val list = Db.use(hikariDataSource())
                 .find(entity, UserTorrentEntity::class.java)

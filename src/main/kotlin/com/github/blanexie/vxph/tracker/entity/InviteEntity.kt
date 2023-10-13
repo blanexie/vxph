@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 class InviteEntity {
 
     var id: Long? = null
-    var inviteId: Long? = null        // 被邀请者
+    var sender: Long? = null         // 发邀请者
     lateinit var code: String         // 邀请码
     lateinit var email: String        // 接受邀请的邮箱
     lateinit var expire: LocalDateTime // 过期时间

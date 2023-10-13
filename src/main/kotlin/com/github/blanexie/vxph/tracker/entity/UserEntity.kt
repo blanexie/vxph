@@ -10,7 +10,6 @@ class UserEntity {
     lateinit var password: String
     var sex: Int = 0
     var inviteId: Long = 0
-    var level: Int = 0
     lateinit var createTime: LocalDateTime
     lateinit var updateTime: LocalDateTime
     var status: Int = 0

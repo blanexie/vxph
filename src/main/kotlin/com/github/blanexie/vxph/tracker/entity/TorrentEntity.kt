@@ -24,8 +24,6 @@ class TorrentEntity {
 
     var singleFile: Int = 1         //1 单文件。 2 多文件
 
-    lateinit var nodes: String      //hex编码
-
     lateinit var createTime: LocalDateTime
     lateinit var updateTime: LocalDateTime
     var status: Int = 0

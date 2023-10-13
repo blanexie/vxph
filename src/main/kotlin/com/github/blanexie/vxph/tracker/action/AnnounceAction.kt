@@ -3,11 +3,11 @@ package com.github.blanexie.vxph.tracker.action
 import com.github.blanexie.vxph.dht.bencode
 import com.github.blanexie.vxph.dht.encodeToBuffer
 import com.github.blanexie.vxph.dht.nodeRefreshTime
+import com.github.blanexie.vxph.tracker.*
 import com.github.blanexie.vxph.tracker.http.Path
 import com.github.blanexie.vxph.tracker.entity.PeerEntity
 import com.github.blanexie.vxph.tracker.entity.UserTorrentEntity
-import com.github.blanexie.vxph.tracker.objectMapper
-import com.github.blanexie.vxph.tracker.peerExpireMinutes
+import io.vertx.core.buffer.Buffer
 import io.vertx.core.http.HttpServerRequest
 import io.vertx.core.http.HttpServerResponse
 import java.time.Duration
@@ -29,7 +29,7 @@ class AnnounceAction() {
         //校验passkey存在否，
         if (userTorrentEntity == null) {
             val mapOf = mapOf("failure reason" to "not found user or torrent")
-            response.write(bencode.encodeToBuffer(mapOf))
+            response.send(bencode.encodeToBuffer(mapOf))
             return response
         }
         //校验 peerId是否正确， 如果换客户端，需要用户主动到网站去申报， 并且清除之前的数据， 原则上是不允许换客户端的
@@ -40,27 +40,12 @@ class AnnounceAction() {
             response.write(bencode.encodeToBuffer(mapOf))
             return response
         }
-
         //保存更新上报的数据
         peerEntity.upsert()
         val peerEntities = PeerEntity.findByInfoHash(peerEntity.infoHash)
-
-        val now = LocalDateTime.now()
-        val peers = peerEntities.sortedBy(PeerEntity::left)
-            .filter { Duration.between(it.updateTime, now).toMinutes() < peerExpireMinutes }
-            .stream().limit(75)
-
         val compact = request.getParam("compact", "1")
-        if (compact == "1") {
-            peers.map {
-                val peerId = it.peerId
-                it.remoteAddress
-                peerId
-            }
-        }
-
-
-        response.end(objectMapper.writeValueAsString(peerEntities))
+        val respByteArray = AnnounceResponse.build(peerEntities).toBencodeByte(compact.toInt())
+        response.write(respByteArray)
         return response
     }
 
@@ -74,9 +59,15 @@ class AnnounceAction() {
         val downloaded = request.getParam("downloaded")
         val left = request.getParam("left")
         val uploaded = request.getParam("uploaded")
-        val event = request.getParam("event")
+        val event = if (request.getParam("event") == null) {
+            EVENT_EMPTY
+        } else {
+            request.getParam("event")
+        }
+        val ipAddrStr = objectMapper.writeValueAsString(remoteAddress.toIpAddrMap())
+
         return PeerEntity(
-            passkey, peerId, infoHash, remoteAddress.toString(), port.toInt(), downloaded.toLong(),
+            passkey, peerId, infoHash, ipAddrStr, port.toInt(), downloaded.toLong(),
             left.toLong(), uploaded.toLong(), event, LocalDateTime.now(), LocalDateTime.now(), 0
         )
     }

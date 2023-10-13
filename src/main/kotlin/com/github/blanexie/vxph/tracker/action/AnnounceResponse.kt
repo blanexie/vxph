@@ -1,9 +1,12 @@
 package com.github.blanexie.vxph.tracker.action
 
-import cn.hutool.core.util.StrUtil
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.github.blanexie.vxph.dht.bencode
+import com.github.blanexie.vxph.tracker.*
 import com.github.blanexie.vxph.tracker.entity.PeerEntity
-import com.github.blanexie.vxph.tracker.objectMapper
+import io.vertx.core.buffer.Buffer
+import java.nio.ByteBuffer
+import java.time.Duration
+import java.time.LocalDateTime
 
 
 /**
@@ -26,28 +29,75 @@ class AnnounceResponse(
     val peers: List<PeerIpAddr>,
     val peers6: List<PeerIpAddr>
 ) {
-    companion object {
 
-        fun build(peerEntities: List<PeerEntity>) {
+    fun toBencodeByte(compact: Int = 1): Buffer {
+        if (compact == 1) {
+            val peersByteArray = ByteBuffer.allocate(peers.size * 6)
+            peers.forEach {
+                peersByteArray.put(it.ip).put((it.port and 0xFF).toByte())
+                    .put((it.port ushr 8 and 0xFF).toByte())
+            }
+            val peers6ByteArray = ByteBuffer.allocate(peers.size * 18)
+            peers6.forEach {
+                peers6ByteArray.put(it.ip).put((it.port and 0xFF).toByte())
+                    .put((it.port ushr 8 and 0xFF).toByte())
+            }
+            val map = mapOf(
+                "interval" to interval, "complete" to complete, "min_interval" to minInterval,
+                "in_complete" to inComplete, "peers" to peersByteArray.array(), "peers6" to peers6ByteArray.array()
+            )
+            return Buffer.buffer(bencode.encode(map))
+        } else {
+            val map = mapOf(
+                "interval" to interval, "complete" to complete, "min_interval" to minInterval,
+                "in_complete" to inComplete, "peers" to this.peers, "peers6" to this.peers6
+            )
+            return Buffer.buffer(bencode.encode(map))
+        }
+    }
+
+    companion object {
+        //构建返回对象
+        fun build(peerList: List<PeerEntity>): AnnounceResponse {
+            val now = LocalDateTime.now()
+            val peerEntities = peerList.sortedBy(PeerEntity::left)
+                .filter { Duration.between(it.updateTime, now).toMinutes() < peerExpireMinutes }
+                .filter { it.event == EVENT_START || it.event == EVENT_COMPLETE || it.event == EVENT_EMPTY }
+                .stream().limit(75).toList()
+
             val peers = arrayListOf<PeerIpAddr>()
             val peers6 = arrayListOf<PeerIpAddr>()
+            var complete = 0
+            var inComplete = 0
             peerEntities.forEach {
+                if (it.left == 0L) {
+                    complete++
+                } else {
+                    inComplete++
+                }
                 val socketAddress = objectMapper.readValue(it.remoteAddress, Map::class.java)
                 val ipv4 = socketAddress["ipv4"]
                 val ipv6 = socketAddress["ipv6"]
                 val port = socketAddress["port"]
-                ipv4?.let {
-
+                ipv4?.let { ip ->
+                    peers.add(PeerIpAddr(it.peerId, ip as ByteArray, port as Int))
                 }
-
-
+                ipv6?.let { ip ->
+                    peers6.add(PeerIpAddr(it.peerId, ip as ByteArray, port as Int))
+                }
             }
 
-
+            return AnnounceResponse(
+                peerAnnounceIntervalMinutes,
+                peerAnnounceIntervalMinutes,
+                complete,
+                inComplete,
+                peers,
+                peers6
+            )
         }
-
     }
 
 }
 
-class PeerIpAddr(val peerId: String, val ipv4: ByteArray, val port: Short)
+class PeerIpAddr(val peerId: String, val ip: ByteArray, val port: Int)

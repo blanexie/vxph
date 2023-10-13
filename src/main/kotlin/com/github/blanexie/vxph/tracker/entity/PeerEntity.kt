@@ -18,14 +18,14 @@ class PeerEntity() {
     var downloaded: Long = 0
     var left: Long = 0
     var uploaded: Long = 0
-    var event: String? = null
+    lateinit  var event: String
     lateinit var createTime: LocalDateTime
     lateinit var updateTime: LocalDateTime
     var status: Int = 0
 
     constructor(
         passkey: String, peerId: String, infoHash: String, remoteAddress: String,
-        port: Int?, downloaded: Long, left: Long, uploaded: Long, event: String?,
+        port: Int?, downloaded: Long, left: Long, uploaded: Long, event: String ,
         createTime: LocalDateTime, updateTime: LocalDateTime, status: Int,
     ) : this() {
         this.passkey = passkey
@@ -36,16 +36,14 @@ class PeerEntity() {
         this.downloaded = downloaded
         this.left = left
         this.uploaded = uploaded
-        this.event = event
+        this.event = event                      //该参数的值可以是 started, completed, stopped, empty 其中的一个
         this.createTime = createTime
         this.updateTime = updateTime
         this.status = status
     }
 
-    private val log = LoggerFactory.getLogger(this::class.java)
-
     fun upsert() {
-        val entity = BeanUtil.beanToMap(this).toEntity("peer")
+        val entity = BeanUtil.beanToMap(this).toEntity("Peer")
         Db.use(hikariDataSource())
             .upsert(entity, "passkey", "peerId", "infoHash")
     }
@@ -53,7 +51,7 @@ class PeerEntity() {
 
     companion object {
         fun findByInfoHash(infoHash: String): List<PeerEntity> {
-            val entity = Entity.create("peer").set("infoHash", infoHash)
+            val entity = Entity.create("Peer").set("infoHash", infoHash)
             return Db.use(hikariDataSource()).find(entity, PeerEntity::class.java)
         }
     }

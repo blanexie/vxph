@@ -34,7 +34,6 @@ class RouterLoadFactory(val pathPackage: String) {
                 log.info("load router path:{} {}  class:{}    method:{}", it.reqMethod, it.path, it.clazz, it.method)
                 val newInstance = ReflectUtil.newInstance(it.clazz)
                 val response: HttpServerResponse = ReflectUtil.invoke(newInstance, it.method, r.request())
-                response.end()
             }
         }
 
@@ -54,7 +53,7 @@ class RouterLoadFactory(val pathPackage: String) {
                 it.methods.filter { m -> m.getAnnotation(Path::class.java) != null }
                     .forEach { m ->
                         val annotation = m.getAnnotation(Path::class.java)
-                        var path = "$prefix/${annotation.value}".replace("//", "/").trim()
+                        var path = "$prefix${annotation.value}".replace("//", "/").trim()
                         if (path.endsWith("/")) {
                             path = path.removeSuffix("/")
                         }
