@@ -12,6 +12,8 @@ import com.zaxxer.hikari.HikariDataSource
 //加载配置文件
 val setting: Setting = SettingUtil.get("vxph.properties")
 
+val port = setting.getInt("vxph.http.server.port", 8061)
+
 fun hikariDataSource(): HikariDataSource {
     return Singleton.get("hikariDataSource") {
         DbUtil.setShowSqlGlobal(true, true, true, Level.INFO)

@@ -172,3 +172,31 @@ create index if not exists Torrent_createTime_index
     on Torrent (createTime);
 
 ------------------------------------------------------------
+
+create table IF NOT EXISTS DomainRecord
+(
+    recordId   TEXT              not null
+        constraint DomainRecord_pk primary key,
+    type       TEXT              not null,
+    rr         TEXT              not null,
+    `value`    TEXT              not null,
+    domainName TEXT              not null,
+    ttl        INTEGER           not null,
+    remark     TEXT,
+
+    createTime TEXT              not null,
+    updateTime TEXT              not null,
+    status     INTEGER default 1 not null
+);
+
+
+create index if not exists DomainRecord_domainName_index
+    on DomainRecord (domainName);
+
+create index if not exists DomainRecord_updateTime_index
+    on DomainRecord (updateTime);
+
+create index if not exists DomainRecord_createTime_index
+    on DomainRecord (createTime);
+
+------------------------------------------------------------

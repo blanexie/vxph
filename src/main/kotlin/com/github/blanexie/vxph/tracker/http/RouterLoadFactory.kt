@@ -32,9 +32,19 @@ class RouterLoadFactory(val pathPackage: String) {
                 router.route(HttpMethod.valueOf(reqMethod), it.path)
             }
             routerR.blockingHandler { r ->
-                log.info("load router path:{} {}  class:{}    method:{}", it.reqMethod, it.path, it.clazz, it.method)
-                val newInstance = Singleton.get(it.clazz)
-                val response: HttpServerResponse = ReflectUtil.invoke(newInstance, it.method, r.request())
+                try {
+                    log.info(
+                        "load router path:{} {}  class:{}   method:{}", it.reqMethod, it.path, it.clazz, it.method
+                    )
+                    val newInstance = Singleton.get(it.clazz)
+                    val response: HttpServerResponse = ReflectUtil.invoke(newInstance, it.method, r.request())
+                } catch (e: Throwable) {
+                    log.error("path: {} request error", it.path, e)
+                    r.response().statusCode = 500
+                    r.response().putHeader("content-type", "text/plain; charset=utf-8 ")
+                    r.response().send(e.message)
+                }
+
             }
         }
 
@@ -46,21 +56,19 @@ class RouterLoadFactory(val pathPackage: String) {
      */
     private fun findPathClass(): List<ClassAndMethod> {
         val ret = arrayListOf<ClassAndMethod>()
-        ClassUtil.scanPackage(pathPackage)
-            .filter {
-                it.getAnnotation(Path::class.java) != null
-            }.forEach {
-                val prefix = it.getAnnotation(Path::class.java).value
-                it.methods.filter { m -> m.getAnnotation(Path::class.java) != null }
-                    .forEach { m ->
-                        val annotation = m.getAnnotation(Path::class.java)
-                        var path = "$prefix${annotation.value}".replace("//", "/").trim()
-                        if (path.endsWith("/")) {
-                            path = path.removeSuffix("/")
-                        }
-                        ret.add(ClassAndMethod(it, m, path, annotation.method))
-                    }
+        ClassUtil.scanPackage(pathPackage).filter {
+            it.getAnnotation(Path::class.java) != null
+        }.forEach {
+            val prefix = it.getAnnotation(Path::class.java).value
+            it.methods.filter { m -> m.getAnnotation(Path::class.java) != null }.forEach { m ->
+                val annotation = m.getAnnotation(Path::class.java)
+                var path = "$prefix${annotation.value}".replace("//", "/").trim()
+                if (path.endsWith("/")) {
+                    path = path.removeSuffix("/")
+                }
+                ret.add(ClassAndMethod(it, m, path, annotation.method))
             }
+        }
         return ret
     }
 

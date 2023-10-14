@@ -3,8 +3,8 @@ package com.github.blanexie.vxph.tracker.entity
 import cn.hutool.core.bean.BeanUtil
 import cn.hutool.db.Db
 import cn.hutool.db.Entity
-import com.github.blanexie.vxph.tracker.hikariDataSource
 import com.github.blanexie.vxph.tracker.toEntity
+import com.github.blanexie.vxph.utils.hikariDataSource
 import java.time.LocalDateTime
 
 class UserTorrentEntity() {

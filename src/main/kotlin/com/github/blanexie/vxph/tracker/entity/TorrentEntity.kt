@@ -2,10 +2,9 @@ package com.github.blanexie.vxph.tracker.entity
 
 import cn.hutool.core.bean.BeanUtil
 import cn.hutool.db.DbUtil
-import com.github.blanexie.vxph.tracker.hikariDataSource
 import com.github.blanexie.vxph.tracker.toEntity
+import com.github.blanexie.vxph.utils.hikariDataSource
 import java.time.LocalDateTime
-import kotlin.properties.Delegates
 
 class TorrentEntity {
 

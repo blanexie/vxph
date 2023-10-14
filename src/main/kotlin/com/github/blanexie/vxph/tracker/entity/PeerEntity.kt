@@ -3,9 +3,8 @@ package com.github.blanexie.vxph.tracker.entity
 import cn.hutool.core.bean.BeanUtil
 import cn.hutool.db.Db
 import cn.hutool.db.Entity
-import com.github.blanexie.vxph.tracker.hikariDataSource
 import com.github.blanexie.vxph.tracker.toEntity
-import org.slf4j.LoggerFactory
+import com.github.blanexie.vxph.utils.hikariDataSource
 import java.time.LocalDateTime
 
 
@@ -18,14 +17,14 @@ class PeerEntity() {
     var downloaded: Long = 0
     var left: Long = 0
     var uploaded: Long = 0
-    lateinit  var event: String
+    lateinit var event: String
     lateinit var createTime: LocalDateTime
     lateinit var updateTime: LocalDateTime
     var status: Int = 0
 
     constructor(
         passkey: String, peerId: String, infoHash: String, remoteAddress: String,
-        port: Int?, downloaded: Long, left: Long, uploaded: Long, event: String ,
+        port: Int?, downloaded: Long, left: Long, uploaded: Long, event: String,
         createTime: LocalDateTime, updateTime: LocalDateTime, status: Int,
     ) : this() {
         this.passkey = passkey
