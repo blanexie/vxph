@@ -1,5 +1,5 @@
 # 使用官方的Java和Gradle镜像作为基础镜像
-FROM gradle:7.6.3-jdk17-alpine AS build
+FROM gradle:7.6.3-jdk17 AS build
 
 # 设置工作目录
 WORKDIR /app
@@ -14,7 +14,7 @@ COPY db /app/db
 RUN gradle build --no-daemon
 
 # 创建一个新的镜像，基于构建镜像
-FROM openjdk:17-ea-slim
+FROM amazoncorretto:17-alpine
 
 # 设置工作目录
 WORKDIR /app
