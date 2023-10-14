@@ -4,9 +4,6 @@ FROM gradle:7.6.3-jdk17-alpine AS build
 # 设置工作目录
 WORKDIR /app
 
-# 在容器内创建一个卷 /.gradle   避免每次都下载jar， 加快编译速度
-VOLUME /app/.gradle
-
 # 复制 Gradle 构建脚本和相关文件到容器中
 COPY build.gradle.kts /app/build.gradle.kts
 COPY settings.gradle.kts /app/settings.gradle.kts
