@@ -13,6 +13,7 @@ class HttpServerVerticle : CoroutineVerticle() {
     private val log = LoggerFactory.getLogger(this::class.java)
 
     override suspend fun start() {
+        vertx.deployVerticle(DDNSVerticle())
         val httpServer = vertx.createHttpServer()
         val router = Router.router(vertx)
         val routerLoadFactory = RouterLoadFactory(this::class.java.packageName)
@@ -27,5 +28,4 @@ class HttpServerVerticle : CoroutineVerticle() {
 fun main() {
     val vertx = Vertx.vertx()
     vertx.deployVerticle(HttpServerVerticle())
-    vertx.deployVerticle(DDNSVerticle())
 }

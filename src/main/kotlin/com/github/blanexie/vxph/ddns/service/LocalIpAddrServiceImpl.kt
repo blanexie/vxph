@@ -11,12 +11,16 @@ class LocalIpAddrServiceImpl : IpAddrService {
     private val log = LoggerFactory.getLogger(this::class.java)
     override fun ipv4(): String {
         val result = HttpUtil.createGet("https://ipv4.ddnspod.com").execute()
-        return result.body()
+        val body = result.body()
+        log.info("获取到本机的ipv4地址为：{}", body)
+        return body
     }
 
     override fun ipv6(): String {
         val result = HttpUtil.createGet("https://ipv4.ddnspod.com").execute()
-        return result.body()
+        val body = result.body()
+        log.info("获取到本机的ipv6地址为：{}", body)
+        return body
     }
 }
 

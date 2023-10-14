@@ -6,7 +6,7 @@ val kotlinVersion = "1.7.21"
 val vertxVersion = "4.4.5"
 val junitJupiterVersion = "5.9.1"
 
-val mainVerticleName = "com.github.blanexie.vxph.MainVerticle"
+val mainVerticleName = "com.github.blanexie.vxph.HttpServerVerticle"
 val launcherClassName = "io.vertx.core.Launcher"
 
 val watchForChange = "src/**/*"
