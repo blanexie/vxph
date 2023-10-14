@@ -14,7 +14,7 @@ COPY db /app/db
 RUN gradle build --no-daemon
 
 # 创建一个新的镜像，基于构建镜像
-FROM amazoncorretto:17-alpine
+FROM openjdk:17-ea-slim
 
 # 设置工作目录
 WORKDIR /app
