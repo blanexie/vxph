@@ -18,4 +18,4 @@ WORKDIR /app
 #EXPOSE 8016
 
 # 启动应用程序
-CMD [ "gradle", "runShadow"]
+CMD [ "gradle", "clean","build"]
