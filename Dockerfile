@@ -1,5 +1,5 @@
 # 创建一个新的镜像，基于构建镜像
-FROM gradle:7.6.3-jdk17
+FROM gradle:7.3.2-jdk17
 
 # 配置环境变量
 ENV PORT=8016
