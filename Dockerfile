@@ -1,5 +1,5 @@
 # 创建一个新的镜像，基于构建镜像
-FROM amazoncorretto:17-alpine
+FROM gradle:7.6.3-jdk17
 
 # 配置环境变量
 ENV PORT=8016
@@ -18,4 +18,4 @@ WORKDIR /app
 #EXPOSE 8016
 
 # 启动应用程序
-CMD [ "sh", "./gradlew"]
+CMD [ "gradle", "runShadow"]
