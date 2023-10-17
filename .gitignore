@@ -1,6 +1,8 @@
 ### Vert.x ###
 .vertx/
 
+logs/
+
 ### Eclipse ###
 
 .metadata
