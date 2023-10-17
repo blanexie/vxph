@@ -5,8 +5,11 @@ FROM gradle:7.6.3-jdk17
 ENV PORT=8016
 ENV appJarName = "vxph-1.0.0-SNAPSHOT-fat.jar"
 
-# 挂载
-VOLUME /app
+COPY build.gradle.kts /app/build.gradle.kts
+COPY settings.gradle.kts /app/settings.gradle.kts
+COPY src /app/src
+COPY db /app/db
+
 
 # 设置工作目录
 WORKDIR /app
