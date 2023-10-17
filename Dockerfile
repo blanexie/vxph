@@ -15,7 +15,7 @@ COPY db /app/db
 WORKDIR /app
 
 # 使用 Gradle 构建项目
-RUN gradle clean build
+RUN gradle clean build --no-daemon
 
 # 复制构建好的应用程序到新的镜像中
 #COPY --from=build /app/build/libs/$appJarName  /app/build/libs/$appJarName
