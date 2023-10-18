@@ -21,11 +21,11 @@ git  pull
 
 gradleBuildImage="gradle-build:1.0"
 ## 判断gradle编译镜像是否存在， 不存在重新构建
-if docker images -q "$gradleBuildImage" >/dev/null 2>&1; then
-    echo "gradle 编译镜像已经存在$gradleBuildImage"
-else
+if docker images -q "$gradleBuildImage" ; then
     echo "gradle 构建编译镜像$gradleBuildImage"
     docker build -t $gradleBuildImage -f docker/Dockerfile .
+else
+    echo "gradle 编译镜像已经存在$gradleBuildImage"
 fi
 
 gradleBuild="gradle-build"
