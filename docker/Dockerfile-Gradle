@@ -1,0 +1,10 @@
+# 创建一个新的镜像，基于构建镜像
+FROM gradle:7.6.3-jdk17
+
+VOLUME /app
+
+RUN mkdir /app
+
+WORKDIR  /app
+
+CMD ["gradle" ,"clean","build"]

@@ -23,9 +23,3 @@ class HttpServerVerticle : CoroutineVerticle() {
     }
 
 }
-
-
-fun main() {
-    val vertx = Vertx.vertx()
-    vertx.deployVerticle(HttpServerVerticle())
-}
