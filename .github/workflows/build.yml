@@ -13,12 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Gradle
-        uses: actions/setup-gradle@v1
-        with:
-          gradle_version: 7.6.3 # 设置Gradle版本
       - name: Build with Gradle
-        run: gradle build --stacktrace
+        run: ./gradlew clean build -s
       - name: Set up Docker
         uses: docker/setup@v1
       - name: Docker Login Aliyun
