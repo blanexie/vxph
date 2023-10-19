@@ -36,6 +36,8 @@ jobs:
           registry: registry.cn-hangzhou.aliyuncs.com
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
+        run: |
+          echo "$(ls)"
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
@@ -44,7 +46,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: blane/vxph:${{github.sha}}
-
+        run: |
+          echo "$(ls)"
 
 
 
