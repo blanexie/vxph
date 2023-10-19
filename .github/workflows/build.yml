@@ -43,7 +43,7 @@ jobs:
           file: docker/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: blane/vxph:{{github.ref}}
+          tags: blane/vxph:${{github.ref}}
 
 
 
