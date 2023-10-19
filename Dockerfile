@@ -18,7 +18,7 @@ WORKDIR /app
 # 配置环境变量
 ENV appJarName=vxph-1.0.0-SNAPSHOT-fat.jar
 # 复制构建好的应用程序到新的镜像中
-ADD --from=build /app/build/distributions//$appJarName  /app/$appJarName
+COPY --from=build /app/build/distributions//$appJarName  /app/$appJarName
 
 RUN tar -xvf $appJarName
 
