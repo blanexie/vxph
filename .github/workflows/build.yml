@@ -1,6 +1,4 @@
-
 name: Koltin CI with Gradle and Docker
-
 
 on:
   push:
@@ -26,7 +24,9 @@ jobs:
         with:
           gradle-version: 7.6.3
       - run: gradle clean build -s
-
+      - name: Get the jar
+        run: |
+          find . -name "*.SNAPSHOT.tar" -print0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -36,8 +36,6 @@ jobs:
           registry: registry.cn-hangzhou.aliyuncs.com
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
-        run: |
-          echo "$(ls)"
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
@@ -46,8 +44,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: blane/vxph:${{github.sha}}
-        run: |
-          echo "$(ls)"
+
 
 
 
