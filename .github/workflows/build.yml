@@ -26,9 +26,9 @@ jobs:
       - run: gradle clean build -s
       - name: Get the jar
         run: |
-           echo "$(pwd)"
-           echo "$(ls)"
-           echo "$(find . -name "*.SNAPSHOT.tar" -print0)"
+          echo "$(pwd)"
+          echo "$(ls ./build)"
+          echo "$(ls ./build/distributions)"
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
