@@ -50,12 +50,3 @@ jobs:
 
 
 
-#      - name: Set up Docker
-#        uses: docker/setup@v1
-#      - name: Docker Login Aliyun
-#        run: docker login --username ${{ secrets.ACR_USERNAME }} --password ${{ secrets.ACR_PASSWORD }} registry.cn-hangzhou.aliyuncs.com
-#      - name: Build Docker Image
-#        run: docker build --file docker/Dockerfile -t registry.cn-hangzhou.aliyuncs.com/blane/vxph:{{github.ref}} .
-#      - name: Docker Push Image
-#        run: docker push registry.cn-hangzhou.aliyuncs.com/blane/vxph:{{github.ref}}
-#
