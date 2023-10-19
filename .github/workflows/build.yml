@@ -28,7 +28,7 @@ jobs:
           context: .
           file: Dockerfile
           platforms: linux/amd64,linux/arm64
-          tags: blane/vxph:${{github.sha}}
+          tags: ${{ secrets.ACR_REGISTRY }}/blane/vxph:${{github.sha}}
       - run: docker push ${{ secrets.ACR_REGISTRY }}/blane/vxph:${{github.sha}}
 
 
