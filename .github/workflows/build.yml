@@ -34,8 +34,6 @@ jobs:
           registry: ${{ secrets.ACR_REGISTRY }} #registry.cn-hangzhou.aliyuncs.com
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
-      - name: Gradle Clean Build
-        run: ./gradlew build --no-daemon
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
