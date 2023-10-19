@@ -19,26 +19,26 @@ cd ..
 ## 拉取最新的代码
 git  pull
 
-gradleBuildImage="gradle-build:1.0"
+echo "开始构建gradle的镜像，后面使用此镜像来编译项目"
 ## 判断gradle编译镜像是否存在， 不存在重新构建
-if docker images -q "$gradleBuildImage" >/dev/null 2>&1; then
-    echo "gradle 编译镜像已经存在$gradleBuildImage"
+if docker images -q  gradle-image ; then
+    echo "gradle-image 镜像不存在，开始重新构建"
+    docker build -t gradle-image -f docker/Dockerfile-Gradle .
 else
-    echo "gradle 构建编译镜像$gradleBuildImage"
-    docker build -t $gradleBuildImage -f docker/Dockerfile .
+    echo "gradle-image已经存在直接下一步"
 fi
 
-gradleBuild="gradle-build"
+echo "开始使用gradle-image镜像来编译项目"
 ## 判断编译容器是否已经存在， 存在则restart下， 不存在则run下
-if docker ps -a | grep -q "$gradleBuild"; then
-    echo "容器已存在，restart下"
-    docker restart $gradleBuild
+if docker ps -a | grep -q "gradle-run"; then
+    echo "之前已经启动过容器， 现在重新启动下，由于目录是映射的，所以没有 问题"
+    docker restart gradle-run
 else
-    echo "容器不存在， run一下"
-    docker run -it -v /gradle:/home/gradle/.gradle -v "$(pwd)":/app --name $gradleBuild $gradleBuild
+    echo "之前没启动过容器，现在重新开始run , 配置映射目录"
+    docker run -it -v /gradle:/home/gradle/.gradle -v "$(pwd)":/app --name gradle-run gradle-image
 fi
 
-echo "开够构建项目运行镜像"
+echo "项目已经编译打包成jar包了， 现在开始构建运行镜像"
 ## 获取最新提交的git hash
 version=$(git rev-parse HEAD)
 
