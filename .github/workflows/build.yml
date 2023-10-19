@@ -35,9 +35,7 @@ jobs:
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
       - name: Get the jar
-        run: |
-          echo "$(pwd)"
-          echo "$(ls ./build/distributions)"
+        run: cp ./build/distributions/*.tar $(DOCKER_BUILD_CONTEXT_DIR)/build/
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
