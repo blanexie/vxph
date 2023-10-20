@@ -18,7 +18,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
       - run: |
           docker login -u ${{secrets.ACR_USERNAME}} -p ${{secrets.ACR_PASSWORD}} registry.cn-hangzhou.aliyuncs.com
-          docker run -v $(pwd):/app -it registry.cn-hangzhou.aliyuncs.com/blane/gradle:7-6-3
+          docker run -v $(pwd):/app registry.cn-hangzhou.aliyuncs.com/blane/gradle:7-6-3
           docker build -t registry.cn-hangzhou.aliyuncs.com/blane/vxph:${{github.sha}} .
           docker push registry.cn-hangzhou.aliyuncs.com/blane/vxph:${{github.sha}}
 
