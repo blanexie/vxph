@@ -14,13 +14,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Docker Buildx
+
+      - uses: gradle/gradle-build-action@v2
+        id: setup-gradle
+        with:
+          gradle-version: 7.6.3
+      - name: Gradle Clean Build
+        run: gradle clean build -s
+
+      - name: Docker Login Build Push
         uses: docker/setup-buildx-action@v3
       - run: |
           docker login -u ${{secrets.ACR_USERNAME}} -p ${{secrets.ACR_PASSWORD}} registry.cn-hangzhou.aliyuncs.com
-          docker run -v $(pwd):/app registry.cn-hangzhou.aliyuncs.com/blane/gradle:7-6-3
-          pwd 
           docker build -t registry.cn-hangzhou.aliyuncs.com/blane/vxph:${{github.sha}} .
           docker push registry.cn-hangzhou.aliyuncs.com/blane/vxph:${{github.sha}}
-
-
