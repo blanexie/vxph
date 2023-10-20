@@ -16,6 +16,12 @@ jobs:
       - name: Git Pull Current Branch
         uses: actions/checkout@v4
 
+      - name: Set JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
       - name: Set up Gradle
         uses: gradle/gradle-build-action@v2
         id: setup-gradle
