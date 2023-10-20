@@ -5,7 +5,7 @@ WORKDIR /app
 VOLUME /app
 
 
-CMD[ "gradle", "clean", "build"]
+CMD ["gradle", "clean", "build"]
 
 
 # 创建一个新的镜像，基于构建镜像
