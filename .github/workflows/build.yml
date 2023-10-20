@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest/arm64
     steps:
       - name: Git Pull Current Branch
         uses: actions/checkout@v4
