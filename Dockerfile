@@ -5,7 +5,7 @@ WORKDIR /app
 # 配置环境变量
 ENV appJarName=vxph-shadow-1.0.0-SNAPSHOT.tar
 # 复制构建好的应用程序到新的镜像中
-ADD ../../build/distributions/$appJarName /app
+ADD build/distributions/$appJarName /app
 # COPY --from=build /app/build/distributions/$appJarName /app/$appJarName
 
 #RUN tar -xvf $appJarName
