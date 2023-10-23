@@ -13,7 +13,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Git Pull Current Branch
+      - name: Git Checkout Branch
         uses: actions/checkout@v4
 
       - name: Set JDK 17
@@ -29,13 +29,13 @@ jobs:
       - name: Gradle Clean Build
         run: gradle clean build -s
 
-      - name: Set up Docker buildx
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.0.0
-      - name: Docker Login
+      - name: Docker Login Aliyun Registry
         run: docker login -u ${{secrets.ACR_USERNAME}} -p ${{secrets.ACR_PASSWORD}} registry.cn-hangzhou.aliyuncs.com
       - name: Docker Buildx
         run: docker buildx build --platform=linux/arm64 -t registry.cn-hangzhou.aliyuncs.com/blane/vxph:${{github.sha}} --load  .
-      - name: Docker Push
+      - name: Docker Push Aliyun Registry
         run: docker push registry.cn-hangzhou.aliyuncs.com/blane/vxph:${{github.sha}}
 
 

@@ -69,14 +69,6 @@ class AliyunDnsService {
         return responseFuture.get().body
     }
 
-    fun deleteSubDomainRecords(
-        domainName: String, rr: String, type: String,
-        consumer: BiConsumer<DeleteSubDomainRecordsResponseBody, Throwable>
-    ): DeleteSubDomainRecordsResponseBody {
-        val request = DeleteSubDomainRecordsRequest.builder().domainName(domainName).rr(rr).type(type).build()
-        val responseFuture = client.deleteSubDomainRecords(request)
-        return responseFuture.get().body
-    }
 
     fun updateDomainRecord(
         recordId: String, rr: String, type: String, value: String, ttl: Int,

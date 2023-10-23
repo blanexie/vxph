@@ -1,4 +1,4 @@
-package com.github.blanexie.vxph.tracker.http
+package com.github.blanexie.vxph.core
 
 annotation class Path(
     val value: String,

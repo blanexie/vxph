@@ -1,28 +1,22 @@
 package com.github.blanexie.vxph.ddns.controller
 
 import cn.hutool.core.lang.Singleton
-import com.aliyun.sdk.service.alidns20150109.models.DescribeDomainRecordsResponseBody
-import com.github.blanexie.vxph.ddns.Handler
 import com.github.blanexie.vxph.ddns.entity.DomainRecordEntity
 import com.github.blanexie.vxph.ddns.service.AliyunDnsService
-import com.github.blanexie.vxph.ddns.service.IpAddrService
-import com.github.blanexie.vxph.ddns.service.LocalIpAddrServiceImpl
-import com.github.blanexie.vxph.tracker.http.Path
-import com.github.blanexie.vxph.utils.objectMapper
-import io.vertx.core.Promise
-import io.vertx.core.buffer.Buffer
+import com.github.blanexie.vxph.ddns.service.WebIpAddrServiceImpl
+import com.github.blanexie.vxph.core.Path
+import com.github.blanexie.vxph.core.objectMapper
 import io.vertx.core.http.HttpServerRequest
 import io.vertx.core.http.HttpServerResponse
 import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
-import java.util.concurrent.CountDownLatch
 
 @Path("/ddns")
 class DdnsAction {
 
     private val log = LoggerFactory.getLogger(this::class.java)
     val aliyunDnsService = Singleton.get(AliyunDnsService::class.java)
-    val ipAddrService = Singleton.get(LocalIpAddrServiceImpl::class.java)
+    val ipAddrService = Singleton.get(WebIpAddrServiceImpl::class.java)
 
     /**
      * 查询域名的所有云解析记录
