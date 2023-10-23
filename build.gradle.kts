@@ -32,6 +32,11 @@ application {
 }
 
 dependencies {
+    // https://mvnrepository.com/artifact/xerces/xercesImpl
+    implementation("xerces:xercesImpl:2.12.2")
+
+    implementation("ch.qos.logback:logback-classic:1.4.11")
+
     implementation(platform("io.vertx:vertx-stack-depchain:$vertxVersion"))
     implementation("io.vertx:vertx-web-client")
     implementation("io.vertx:vertx-jdbc-client")
@@ -42,7 +47,7 @@ dependencies {
     implementation("io.vertx:vertx-lang-kotlin")
     implementation(kotlin("stdlib-jdk8"))
 
-    implementation("ch.qos.logback:logback-classic:1.4.11")
+
 
     implementation("cn.hutool:hutool-all:5.8.21")
 

@@ -39,14 +39,13 @@ fun hikariDataSource(): HikariDataSource? {
 
 val annotationSet = hashSetOf<Class<*>>()
 fun loadAnnotationClass(packageName: String, vertx: Vertx) {
-    val verticleClasses =
-        ClassUtil.scanPackageByAnnotation(packageName, Verticle::class.java)
-    verticleClasses.forEach {
-        vertx.deployVerticle(it.name)
-    }
     val pathClasses =
         ClassUtil.scanPackageByAnnotation(packageName, Path::class.java)
     annotationSet.addAll(pathClasses)
+    val verticleClasses = ClassUtil.scanPackageByAnnotation(packageName, Verticle::class.java)
+    verticleClasses.forEach {
+        vertx.deployVerticle(it.name)
+    }
 }
 
 
