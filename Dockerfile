@@ -4,6 +4,7 @@ FROM openjdk:17-ea-slim-buster
 WORKDIR /app
 # 配置环境变量
 ENV appJarName=vxph-shadow-1.0.0-SNAPSHOT.tar
+
 # 复制构建好的应用程序到新的镜像中
 ADD build/distributions/$appJarName /app
 # COPY --from=build /app/build/distributions/$appJarName /app/$appJarName
@@ -14,4 +15,4 @@ ADD build/distributions/$appJarName /app
 EXPOSE 8016
 
 # 启动应用程序
-CMD ["sh",  "/app/vxph-shadow-1.0.0-SNAPSHOT/bin/vxph" ]
+CMD ["sh",  "/app/vxph-shadow-1.0.0-SNAPSHOT/bin/vxph"  ]

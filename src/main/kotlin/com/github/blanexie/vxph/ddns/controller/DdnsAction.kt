@@ -111,7 +111,7 @@ class DdnsAction {
         } else {
             aliyunDnsService.updateDomainRecord(
                 it.recordId!!, it.rr!!, it.type!!, it.value!!, it.ttl!!
-            ) { t, u ->
+            ) { _, _ ->
                 it.value = ip
                 it.updateTime = LocalDateTime.now()
                 it.upsert()
