@@ -1,6 +1,6 @@
 package com.github.blanexie.vxph.ddns
 
-import com.github.blanexie.vxph.utils.setting
+import com.github.blanexie.vxph.core.setting
 
 
 val accessKey: String = setting.getStr("vxph.ddns.aliyun.accessKey")

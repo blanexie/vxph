@@ -1,8 +1,7 @@
-package com.github.blanexie.vxph.tracker.http
+package com.github.blanexie.vxph.core
 
 import cn.hutool.core.lang.Singleton
 import cn.hutool.core.util.ClassUtil
-import cn.hutool.core.util.ReferenceUtil
 import cn.hutool.core.util.ReflectUtil
 import cn.hutool.core.util.StrUtil
 import io.vertx.core.http.HttpMethod
@@ -15,9 +14,10 @@ import java.lang.reflect.Method
  * 路由加载
  */
 
-class RouterLoadFactory(val pathPackage: String) {
+class PathRouterProcess {
 
     private val log = LoggerFactory.getLogger(this::class.java)
+
 
     /**
      * 组装路由
@@ -56,9 +56,7 @@ class RouterLoadFactory(val pathPackage: String) {
      */
     private fun findPathClass(): List<ClassAndMethod> {
         val ret = arrayListOf<ClassAndMethod>()
-        ClassUtil.scanPackage(pathPackage).filter {
-            it.getAnnotation(Path::class.java) != null
-        }.forEach {
+        annotationSet.forEach {
             val prefix = it.getAnnotation(Path::class.java).value
             it.methods.filter { m -> m.getAnnotation(Path::class.java) != null }.forEach { m ->
                 val annotation = m.getAnnotation(Path::class.java)
