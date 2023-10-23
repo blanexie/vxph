@@ -35,6 +35,4 @@ jobs:
       - name: Docker Login
         run: docker login -u ${{secrets.ACR_USERNAME}} -p ${{secrets.ACR_PASSWORD}} registry.cn-hangzhou.aliyuncs.com
       - name: Docker Buildx
-        run: docker buildx build --platform=linux/arm64 -t registry.cn-hangzhou.aliyuncs.com/blane/vxph:${{github.sha}} .
-      - name: Docker Push
-        run: docker images
+        run: docker buildx build --platform=linux/arm64 -t vxph:${{github.sha}} --push registry.cn-hangzhou.aliyuncs.com/blane .
