@@ -12,9 +12,24 @@ import com.zaxxer.hikari.HikariDataSource
 import io.vertx.core.Vertx
 
 //加载配置文件
-val setting: Setting = SettingUtil.get("vxph.properties")
+val setting: Setting
+    get() {
+        val property = System.getProperty("properties.path")
+        return SettingUtil.get(property ?: "vxph.properties")
+    }
+
 
 val port = setting.getInt("vxph.http.server.port", 8061)!!
+
+val sqlitePath: String
+    get() {
+        val property = System.getProperty("sqlite.path")
+        return if (property == null) {
+            setting.getStr("vxph.database.jdbc.url")
+        } else {
+            "jdbc:sqlite:$property"
+        }
+    }
 
 val objectMapper: ObjectMapper = ObjectMapper()
 
@@ -24,7 +39,8 @@ fun hikariDataSource(): HikariDataSource? {
         Singleton.get("hikariDataSource") {
             DbUtil.setShowSqlGlobal(true, true, true, Level.INFO)
             val hikariConfig = HikariConfig()
-            hikariConfig.jdbcUrl = setting.getStr("vxph.database.jdbc.url")
+            hikariConfig.jdbcUrl = sqlitePath
+            hikariConfig.schema = "main"
             hikariConfig.username = setting.getStr("vxph.database.jdbc.user")
             hikariConfig.password = setting.getStr("vxph.database.jdbc.password")
             hikariConfig.maximumPoolSize = setting.getInt("vxph.database.jdbc.maxPoolSize", 8)

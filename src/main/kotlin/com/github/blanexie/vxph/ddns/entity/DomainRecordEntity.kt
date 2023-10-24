@@ -89,8 +89,8 @@ class DomainRecordEntity {
     companion object {
 
         fun findAll(): List<DomainRecordEntity> {
-            return Db.use(hikariDataSource())
-                .findAll(Entity.create("DomainRecord"), DomainRecordEntity::class.java)
+            val table = Entity.create("DomainRecord")
+            return Db.use(hikariDataSource()).findAll(table, DomainRecordEntity::class.java)
         }
 
     }

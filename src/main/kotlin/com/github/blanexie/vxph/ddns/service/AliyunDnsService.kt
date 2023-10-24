@@ -71,18 +71,13 @@ class AliyunDnsService {
 
 
     fun updateDomainRecord(
-        recordId: String, rr: String, type: String, value: String, ttl: Int,
-        consumer: BiConsumer<UpdateDomainRecordResponseBody, Throwable>
-    ) {
+        recordId: String, rr: String, type: String, value: String, ttl: Int
+    ):UpdateDomainRecordResponseBody {
         val request = UpdateDomainRecordRequest.builder().recordId(recordId)
             .TTL(ttl.toLong())
             .rr(rr).type(type).value(value).build()
         val responseFuture = client.updateDomainRecord(request)
-        responseFuture.handleAsync { t, u ->
-            val body = t.body
-            log.info("updateDomainRecord  response:{}", body)
-            consumer.accept(body, u)
-        }
+        return responseFuture.get().body
     }
 
 }

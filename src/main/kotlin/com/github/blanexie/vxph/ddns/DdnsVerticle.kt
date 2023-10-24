@@ -13,7 +13,7 @@ class DDNSVerticle : CoroutineVerticle() {
 
     override suspend fun start() {
         vertx.setPeriodic(scheduleMinutes * 60 * 1000) {
-            ddnsAction.scheduleUpdateIpRecord()
+            ddnsAction.schedule()
         }
     }
 

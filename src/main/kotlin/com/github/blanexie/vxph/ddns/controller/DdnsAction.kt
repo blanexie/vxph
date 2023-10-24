@@ -1,6 +1,8 @@
 package com.github.blanexie.vxph.ddns.controller
 
+import cn.hutool.core.io.resource.ClassPathResource
 import cn.hutool.core.lang.Singleton
+import cn.hutool.core.util.ClassUtil
 import com.github.blanexie.vxph.ddns.entity.DomainRecordEntity
 import com.github.blanexie.vxph.ddns.service.AliyunDnsService
 import com.github.blanexie.vxph.ddns.service.WebIpAddrServiceImpl
@@ -27,6 +29,17 @@ class DdnsAction {
         val response = request.response()
         val recordsResponseBody = aliyunDnsService.describeDomainRecords(domainName)
         response.send(objectMapper.writeValueAsString(recordsResponseBody))
+        return response
+    }
+
+    /**
+     * 查询域名的所有云解析记录
+     */
+    @Path("/test")
+    fun test(request: HttpServerRequest): HttpServerResponse {
+        val response = request.response()
+        val classPath = System.getProperty("java.class.path")
+        response.send(classPath ?: "xx1xxx")
         return response
     }
 
@@ -92,7 +105,15 @@ class DdnsAction {
 
 
     @Path("/schedule")
-    fun scheduleUpdateIpRecord() {
+    fun scheduleUpdateIpRecord(request: HttpServerRequest): HttpServerResponse {
+        this.schedule()
+        val response = request.response()
+        response.send("设置完成")
+        return response
+    }
+
+
+    fun schedule() {
         //查出数据库记录
         val findAll = DomainRecordEntity.findAll()
         findAll.forEach {
@@ -109,13 +130,10 @@ class DdnsAction {
         if (ip == it.value) {
             log.info("地址未变，不更新DNS解析。 {}", objectMapper.writeValueAsString(it))
         } else {
-            aliyunDnsService.updateDomainRecord(
-                it.recordId!!, it.rr!!, it.type!!, it.value!!, it.ttl!!
-            ) { _, _ ->
-                it.value = ip
-                it.updateTime = LocalDateTime.now()
-                it.upsert()
-            }
+            aliyunDnsService.updateDomainRecord(it.recordId!!, it.rr!!, it.type!!, ip, it.ttl!!)
+            it.value = ip
+            it.updateTime = LocalDateTime.now()
+            it.upsert()
         }
     }
 

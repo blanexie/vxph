@@ -1,5 +1,6 @@
 package com.github.blanexie.vxph
 
+import cn.hutool.core.io.resource.ClassPathResource
 import com.github.blanexie.vxph.core.loadAnnotationClass
 import io.vertx.core.Vertx
 import io.vertx.kotlin.coroutines.CoroutineVerticle
