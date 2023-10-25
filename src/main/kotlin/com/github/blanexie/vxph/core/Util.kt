@@ -1,6 +1,8 @@
 package com.github.blanexie.vxph.core
 
+import cn.hutool.core.io.FileUtil
 import cn.hutool.core.lang.Singleton
+import cn.hutool.core.util.CharsetUtil
 import cn.hutool.core.util.ClassUtil
 import cn.hutool.db.DbUtil
 import cn.hutool.log.level.Level
@@ -10,12 +12,20 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.vertx.core.Vertx
+import java.io.File
 
 //加载配置文件
 val setting: Setting
     get() {
         val property = System.getProperty("properties.path")
         return SettingUtil.get(property ?: "vxph.properties")
+    }
+
+val sqliteDDL: String
+    get() {
+        val property = System.getProperty("vxph.database.sqlite.ddl")
+        return property ?: setting.getStr("vxph.database.sqlite.ddl")
+
     }
 
 
@@ -55,13 +65,23 @@ fun hikariDataSource(): HikariDataSource? {
 
 val annotationSet = hashSetOf<Class<*>>()
 fun loadAnnotationClass(packageName: String, vertx: Vertx) {
-    val pathClasses =
-        ClassUtil.scanPackageByAnnotation(packageName, Path::class.java)
+    val pathClasses = ClassUtil.scanPackageByAnnotation(packageName, Path::class.java)
     annotationSet.addAll(pathClasses)
     val verticleClasses = ClassUtil.scanPackageByAnnotation(packageName, Verticle::class.java)
     verticleClasses.forEach {
         vertx.deployVerticle(it.name)
     }
+
+    initDDLSQL()
 }
 
+
+fun initDDLSQL() {
+    //初始化数据库
+    val ddlSql = FileUtil.readString(File(sqliteDDL), CharsetUtil.CHARSET_UTF_8)
+    val sqls = ddlSql.split(";")
+    for (sql in sqls) {
+        DbUtil.use(hikariDataSource()).execute(sql)
+    }
+}
 
