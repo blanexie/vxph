@@ -4,6 +4,7 @@ import cn.hutool.core.io.FileUtil
 import cn.hutool.core.lang.Singleton
 import cn.hutool.core.util.CharsetUtil
 import cn.hutool.core.util.ClassUtil
+import cn.hutool.core.util.StrUtil
 import cn.hutool.db.DbUtil
 import cn.hutool.log.level.Level
 import cn.hutool.setting.Setting
@@ -78,7 +79,10 @@ fun initDDLSQL() {
     val ddlSql = FileUtil.readString(File(sqliteDDL), CharsetUtil.CHARSET_UTF_8)
     val sqls = ddlSql.split(";")
     for (sql in sqls) {
-        DbUtil.use(hikariDataSource()).execute(sql)
+        val trim = StrUtil.trim(sql)
+        if (StrUtil.isNotBlank(trim)) {
+            DbUtil.use(hikariDataSource()).execute(trim)
+        }
     }
 }
 

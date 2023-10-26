@@ -198,5 +198,3 @@ create index if not exists DomainRecord_updateTime_index
 
 create index if not exists DomainRecord_createTime_index
     on DomainRecord (createTime);
-
-------------------------------------------------------------
