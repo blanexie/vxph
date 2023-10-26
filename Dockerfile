@@ -15,4 +15,4 @@ COPY build/libs/$appJarName /app/$appJarName
 EXPOSE 8016
 
 # 启动应用程序
-CMD ["java",  "-jar" , "$VM_ARG" , "$appJarName"]
+CMD ["java",  "-jar" , "$VM_ARG   $appJarName" ]
