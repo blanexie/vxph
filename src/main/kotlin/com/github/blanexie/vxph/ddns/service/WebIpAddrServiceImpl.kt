@@ -22,3 +22,10 @@ class WebIpAddrServiceImpl : IpAddrService {
     }
 }
 
+
+fun main(){
+    var webIpAddrServiceImpl = WebIpAddrServiceImpl()
+    var ipv6 = webIpAddrServiceImpl.ipv6()
+    println(ipv6)
+}
+

@@ -92,6 +92,11 @@ class DomainRecordEntity {
             val table = Entity.create("DomainRecord")
             return Db.use(hikariDataSource()).findAll(table, DomainRecordEntity::class.java)
         }
+        fun findByDomain(domain: String): List<DomainRecordEntity> {
+            val table = Entity.create("DomainRecord")
+                .set("domainName", domain)
+            return Db.use(hikariDataSource()).findAll(table, DomainRecordEntity::class.java)
+        }
 
     }
 

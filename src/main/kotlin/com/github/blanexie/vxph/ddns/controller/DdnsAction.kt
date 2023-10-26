@@ -27,19 +27,11 @@ class DdnsAction {
     fun findDomainRecords(request: HttpServerRequest): HttpServerResponse {
         val domainName = request.getParam("domainName")
         val response = request.response()
+        val dbDomainRecords = DomainRecordEntity.findByDomain(domainName)
         val recordsResponseBody = aliyunDnsService.describeDomainRecords(domainName)
-        response.send(objectMapper.writeValueAsString(recordsResponseBody))
-        return response
-    }
-
-    /**
-     * 查询域名的所有云解析记录
-     */
-    @Path("/test")
-    fun test(request: HttpServerRequest): HttpServerResponse {
-        val response = request.response()
-        val classPath = System.getProperty("java.class.path")
-        response.send(classPath ?: "xx1xxx")
+        val valueAsString =
+            objectMapper.writeValueAsString(mapOf("dbDomainRecords" to dbDomainRecords, "aliyunDomainRecords" to recordsResponseBody))
+        response.send(valueAsString)
         return response
     }
 
