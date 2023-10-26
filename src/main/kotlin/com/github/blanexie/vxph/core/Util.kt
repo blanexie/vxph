@@ -21,16 +21,6 @@ val setting: Setting
         return SettingUtil.get(property ?: "vxph.properties")
     }
 
-val sqliteDDL: String
-    get() {
-        val property = System.getProperty("vxph.database.sqlite.ddl")
-        return property ?: setting.getStr("vxph.database.sqlite.ddl")
-
-    }
-
-
-val port = setting.getInt("vxph.http.server.port", 8061)!!
-
 val sqlitePath: String
     get() {
         val property = System.getProperty("sqlite.path")
@@ -41,6 +31,15 @@ val sqlitePath: String
         }
     }
 
+val sqliteDDL: String
+    get() {
+        val property = System.getProperty("vxph.database.sqlite.ddl")
+        return property ?: setting.getStr("vxph.database.sqlite.ddl")
+
+    }
+
+val port = setting.getInt("vxph.http.server.port", 8061)!!
+
 val objectMapper: ObjectMapper = ObjectMapper()
 
 fun hikariDataSource(): HikariDataSource? {
@@ -50,7 +49,6 @@ fun hikariDataSource(): HikariDataSource? {
             DbUtil.setShowSqlGlobal(true, true, true, Level.INFO)
             val hikariConfig = HikariConfig()
             hikariConfig.jdbcUrl = sqlitePath
-            hikariConfig.schema = "main"
             hikariConfig.username = setting.getStr("vxph.database.jdbc.user")
             hikariConfig.password = setting.getStr("vxph.database.jdbc.password")
             hikariConfig.maximumPoolSize = setting.getInt("vxph.database.jdbc.maxPoolSize", 8)
@@ -62,8 +60,8 @@ fun hikariDataSource(): HikariDataSource? {
     }
 }
 
-
 val annotationSet = hashSetOf<Class<*>>()
+
 fun loadAnnotationClass(packageName: String, vertx: Vertx) {
     val pathClasses = ClassUtil.scanPackageByAnnotation(packageName, Path::class.java)
     annotationSet.addAll(pathClasses)
@@ -71,7 +69,6 @@ fun loadAnnotationClass(packageName: String, vertx: Vertx) {
     verticleClasses.forEach {
         vertx.deployVerticle(it.name)
     }
-
     initDDLSQL()
 }
 

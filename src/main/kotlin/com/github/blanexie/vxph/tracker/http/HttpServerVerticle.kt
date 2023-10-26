@@ -26,7 +26,7 @@ class HttpServerVerticle : CoroutineVerticle() {
     /**
      * 组装路由
      */
-    private suspend fun loadPathRouter(router: Router) {
+    private  fun loadPathRouter(router: Router) {
         val classAndMethods = findPathClass()
         classAndMethods.forEach {
             log.info("load router path:{} {}  class:{}   method:{}", it.reqMethod, it.path, it.clazz, it.method)
