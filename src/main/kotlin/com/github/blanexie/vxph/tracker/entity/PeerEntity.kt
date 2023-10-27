@@ -1,10 +1,10 @@
 package com.github.blanexie.vxph.tracker.entity
 
 import cn.hutool.core.bean.BeanUtil
-import cn.hutool.db.Db
+import cn.hutool.db.DbUtil
 import cn.hutool.db.Entity
+import com.github.blanexie.vxph.core.sqlite.hikariDb
 import com.github.blanexie.vxph.tracker.toEntity
-import com.github.blanexie.vxph.core.hikariDataSource
 import java.time.LocalDateTime
 
 
@@ -43,15 +43,14 @@ class PeerEntity() {
 
     fun upsert() {
         val entity = BeanUtil.beanToMap(this).toEntity("Peer")
-        Db.use(hikariDataSource())
-            .upsert(entity, "passkey", "peerId", "infoHash")
+        hikariDb().upsert(entity, "passkey", "peerId", "infoHash")
     }
 
 
     companion object {
         fun findByInfoHash(infoHash: String): List<PeerEntity> {
             val entity = Entity.create("Peer").set("infoHash", infoHash)
-            return Db.use(hikariDataSource()).find(entity, PeerEntity::class.java)
+            return hikariDb().find(entity, PeerEntity::class.java)
         }
     }
 

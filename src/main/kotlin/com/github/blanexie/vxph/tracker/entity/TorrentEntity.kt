@@ -2,8 +2,8 @@ package com.github.blanexie.vxph.tracker.entity
 
 import cn.hutool.core.bean.BeanUtil
 import cn.hutool.db.DbUtil
+import com.github.blanexie.vxph.core.sqlite.hikariDb
 import com.github.blanexie.vxph.tracker.toEntity
-import com.github.blanexie.vxph.core.hikariDataSource
 import java.time.LocalDateTime
 
 class TorrentEntity {
@@ -29,7 +29,7 @@ class TorrentEntity {
 
     fun upsert() {
         val entity = BeanUtil.beanToMap(this).toEntity("torrent")
-        DbUtil.use(hikariDataSource()).upsert(entity, "infoHash")
+        hikariDb().upsert(entity, "infoHash")
     }
 
 

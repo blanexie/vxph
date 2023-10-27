@@ -1,88 +1,61 @@
 package com.github.blanexie.vxph.core
 
-import cn.hutool.core.io.FileUtil
-import cn.hutool.core.lang.Singleton
-import cn.hutool.core.util.CharsetUtil
+import cn.hutool.core.convert.Convert
 import cn.hutool.core.util.ClassUtil
-import cn.hutool.core.util.StrUtil
-import cn.hutool.db.DbUtil
-import cn.hutool.log.level.Level
 import cn.hutool.setting.Setting
 import cn.hutool.setting.SettingUtil
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.zaxxer.hikari.HikariConfig
-import com.zaxxer.hikari.HikariDataSource
+import com.fasterxml.jackson.databind.module.SimpleModule
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer
+import com.github.blanexie.vxph.core.event.Event
+import com.github.blanexie.vxph.core.event.VerticleLoadCompleteEventType
+import io.vertx.core.Future
 import io.vertx.core.Vertx
-import java.io.File
+import java.time.LocalDateTime
+import java.util.concurrent.ConcurrentHashMap
+
 
 //加载配置文件
-val setting: Setting
+val setting: Setting = SettingUtil.get(System.getProperty("properties.path") ?: "vxph.properties")
+val contextMap = ConcurrentHashMap<String, Any>()
+val objectMapper: ObjectMapper
     get() {
-        val property = System.getProperty("properties.path")
-        return SettingUtil.get(property ?: "vxph.properties")
-    }
-
-val sqlitePath: String
-    get() {
-        val property = System.getProperty("sqlite.path")
-        return if (property == null) {
-            setting.getStr("vxph.database.jdbc.url")
-        } else {
-            "jdbc:sqlite:$property"
+        val s = contextMap.computeIfAbsent("objectMapper") {
+            val objectMapper = ObjectMapper()
+            val module = SimpleModule()
+            module.addSerializer(LocalDateTime::class.java, LocalDateTimeSerializer.INSTANCE)
+            objectMapper
         }
+        return s as ObjectMapper
     }
 
-val sqliteDDL: String
-    get() {
-        val property = System.getProperty("vxph.database.sqlite.ddl")
-        return property ?: setting.getStr("vxph.database.sqlite.ddl")
 
-    }
+fun loadAnnotationClass(packageName: String, vertxV: Vertx) {
 
-val port = setting.getInt("vxph.http.server.port", 8061)!!
+    val vertx = contextMap.computeIfAbsent("vertx") {
+        vertxV
+    } as Vertx
 
-val objectMapper: ObjectMapper = ObjectMapper()
-
-fun hikariDataSource(): HikariDataSource? {
-    val enable = setting.getBool("vxph.database.sqlite.enable", false)
-    return if (enable) {
-        Singleton.get("hikariDataSource") {
-            DbUtil.setShowSqlGlobal(true, true, true, Level.INFO)
-            val hikariConfig = HikariConfig()
-            hikariConfig.jdbcUrl = sqlitePath
-            hikariConfig.username = setting.getStr("vxph.database.jdbc.user")
-            hikariConfig.password = setting.getStr("vxph.database.jdbc.password")
-            hikariConfig.maximumPoolSize = setting.getInt("vxph.database.jdbc.maxPoolSize", 8)
-            hikariConfig.driverClassName = setting.getStr("vxph.database.jdbc.driverClassName")
-            HikariDataSource(hikariConfig)
-        }
-    } else {
-        null
-    }
-}
-
-val annotationSet = hashSetOf<Class<*>>()
-
-fun loadAnnotationClass(packageName: String, vertx: Vertx) {
-    val pathClasses = ClassUtil.scanPackageByAnnotation(packageName, Path::class.java)
-    annotationSet.addAll(pathClasses)
     val verticleClasses = ClassUtil.scanPackageByAnnotation(packageName, Verticle::class.java)
-    verticleClasses.forEach {
+    val futures = verticleClasses.map {
         vertx.deployVerticle(it.name)
-    }
-    initDDLSQL()
-}
+    }.toList()
 
-
-fun initDDLSQL() {
-    //初始化数据库
-    val ddlSql = FileUtil.readString(File(sqliteDDL), CharsetUtil.CHARSET_UTF_8)
-    val sqls = ddlSql.split(";")
-    for (sql in sqls) {
-        val trim = StrUtil.trim(sql)
-        if (StrUtil.isNotBlank(trim)) {
-            DbUtil.use(hikariDataSource()).execute(trim)
-        }
+    Future.all(futures).onSuccess {
+        Event(VerticleLoadCompleteEventType, packageName).publish(vertx)
     }
 }
 
+inline fun <reified T> getProperty(key: String, defaultValue: T): T {
+    val property = System.getProperty(key) ?: setting[key]
+    return Convert.convert(T::class.java, property ?: defaultValue)
+}
+
+inline fun <reified T> getProperty(key: String): T? {
+    val property = System.getProperty(key) ?: setting[key]
+    return Convert.convert(T::class.java, property)
+}
+
+inline fun <reified T> ConcurrentHashMap<String, Any>.getVal(key: String): T? {
+    return this[key] as T
+}

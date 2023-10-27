@@ -1,10 +1,10 @@
 package com.github.blanexie.vxph.ddns.entity
 
 import cn.hutool.core.bean.BeanUtil
-import cn.hutool.db.Db
+import cn.hutool.db.DbUtil
 import cn.hutool.db.Entity
+import com.github.blanexie.vxph.core.sqlite.hikariDb
 import com.github.blanexie.vxph.tracker.toEntity
-import com.github.blanexie.vxph.core.hikariDataSource
 import java.time.LocalDateTime
 
 
@@ -83,21 +83,20 @@ class DomainRecordEntity {
 
     fun upsert() {
         val entity = BeanUtil.beanToMap(this).toEntity("DomainRecord")
-        Db.use(hikariDataSource()).upsert(entity, "recordId")
+        hikariDb().upsert(entity, "recordId")
     }
 
     companion object {
-
         fun findAll(): List<DomainRecordEntity> {
             val table = Entity.create("DomainRecord")
-            return Db.use(hikariDataSource()).findAll(table, DomainRecordEntity::class.java)
+            return hikariDb().findAll(table, DomainRecordEntity::class.java)
         }
+
         fun findByDomain(domain: String): List<DomainRecordEntity> {
             val table = Entity.create("DomainRecord")
                 .set("domainName", domain)
-            return Db.use(hikariDataSource()).findAll(table, DomainRecordEntity::class.java)
+            return hikariDb().findAll(table, DomainRecordEntity::class.java)
         }
-
     }
 
 

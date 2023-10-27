@@ -4,15 +4,10 @@ import com.aliyun.auth.credentials.Credential
 import com.aliyun.auth.credentials.provider.StaticCredentialProvider
 import com.aliyun.sdk.service.alidns20150109.AsyncClient
 import com.aliyun.sdk.service.alidns20150109.models.*
-import com.github.blanexie.vxph.ddns.Handler
 import com.github.blanexie.vxph.ddns.accessKey
 import com.github.blanexie.vxph.ddns.accessKeySecret
 import darabonba.core.client.ClientOverrideConfiguration
-import io.vertx.core.Promise
 import org.slf4j.LoggerFactory
-import java.util.concurrent.CompletableFuture
-import java.util.function.BiConsumer
-import java.util.function.BiFunction
 
 
 class AliyunDnsService {
@@ -72,7 +67,7 @@ class AliyunDnsService {
 
     fun updateDomainRecord(
         recordId: String, rr: String, type: String, value: String, ttl: Int
-    ):UpdateDomainRecordResponseBody {
+    ): UpdateDomainRecordResponseBody {
         val request = UpdateDomainRecordRequest.builder().recordId(recordId)
             .TTL(ttl.toLong())
             .rr(rr).type(type).value(value).build()

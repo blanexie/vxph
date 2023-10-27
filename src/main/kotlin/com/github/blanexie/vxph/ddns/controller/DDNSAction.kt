@@ -1,12 +1,10 @@
 package com.github.blanexie.vxph.ddns.controller
 
-import cn.hutool.core.io.resource.ClassPathResource
 import cn.hutool.core.lang.Singleton
-import cn.hutool.core.util.ClassUtil
 import com.github.blanexie.vxph.ddns.entity.DomainRecordEntity
 import com.github.blanexie.vxph.ddns.service.AliyunDnsService
 import com.github.blanexie.vxph.ddns.service.WebIpAddrServiceImpl
-import com.github.blanexie.vxph.core.Path
+import com.github.blanexie.vxph.core.web.Path
 import com.github.blanexie.vxph.core.objectMapper
 import io.vertx.core.http.HttpServerRequest
 import io.vertx.core.http.HttpServerResponse
@@ -14,11 +12,28 @@ import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
 
 @Path("/ddns")
-class DdnsAction {
+class DDNSAction {
 
     private val log = LoggerFactory.getLogger(this::class.java)
     val aliyunDnsService = Singleton.get(AliyunDnsService::class.java)
     val ipAddrService = Singleton.get(WebIpAddrServiceImpl::class.java)
+
+
+    /**
+     * 查询域名的所有云解析记录
+     */
+    @Path("/findLocalIp")
+    fun  findLocalIp(request: HttpServerRequest): HttpServerResponse {
+        val response = request.response()
+        val ipv6 = ipAddrService.ipv6()
+        val ipv4 = ipAddrService.ipv4()
+        val valueAsString =
+            objectMapper.writeValueAsString(mapOf("ipv6" to ipv6, "ipv4" to ipv4))
+
+
+        response.send(valueAsString)
+        return response
+    }
 
     /**
      * 查询域名的所有云解析记录
