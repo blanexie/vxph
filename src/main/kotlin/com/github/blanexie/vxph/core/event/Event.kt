@@ -5,13 +5,18 @@ import com.github.blanexie.vxph.core.objectMapper
 import io.vertx.core.Vertx
 import io.vertx.core.eventbus.Message
 
+const val PathEventChannel = "vxph.core.event.channel"
 const val CoreEventChannel = "vxph.core.eventbus.channel"
 const val VerticleLoadCompleteEventType = "VerticleLoadComplete"
 
 /**
  * 所有已经加载完成的 verticle
  */
-data class Event(val type: String, val data: String? = null, val channel: String = CoreEventChannel) {
+data class Event(
+    val type: String,
+    val data: String? = null,
+    val channel: String = CoreEventChannel
+) {
 
     fun send(vertx: Vertx) {
         vertx.eventBus().send(channel, objectMapper.writeValueAsString(this))

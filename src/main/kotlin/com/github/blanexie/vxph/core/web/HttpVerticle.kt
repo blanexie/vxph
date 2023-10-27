@@ -2,9 +2,8 @@ package com.github.blanexie.vxph.core.web
 
 import cn.hutool.core.util.ClassUtil
 import com.github.blanexie.vxph.core.Verticle
-import com.github.blanexie.vxph.core.event.CoreEventChannel
-import com.github.blanexie.vxph.core.event.VerticleLoadCompleteEventType
-import com.github.blanexie.vxph.core.event.toEvent
+import com.github.blanexie.vxph.core.contextMap
+import com.github.blanexie.vxph.core.event.*
 import com.github.blanexie.vxph.core.getProperty
 import io.vertx.core.http.HttpMethod
 import io.vertx.ext.web.Router
@@ -20,28 +19,29 @@ class HttpVerticle : CoroutineVerticle() {
 
     override suspend fun start() {
         val eventBus = vertx.eventBus()
+        val router = Router.router(vertx)
         eventBus.consumer(CoreEventChannel) {
             val event = it.toEvent()
             log.info("receive Event,  {} {} {}", event.channel, event.type, event.data)
             if (event.type == VerticleLoadCompleteEventType) {
-                //运行初始化
-                val packagePath = event.data
                 val httpServer = vertx.createHttpServer()
-                val router = loadPathRouter(packagePath!!)
+                val packagePath = event.data
+                loadPathRouter(packagePath!!, router)
                 httpServer.requestHandler(router).listen(port)
                 log.info("开始http服务， 端口：{}", port)
             }
         }
+        log.info("HttpVerticle start fun end")
     }
 
     /**
      * 组装路由
      */
-    private fun loadPathRouter(packagePath: String): Router {
-        val router = Router.router(vertx)
+    private fun loadPathRouter(packagePath: String, router: Router) {
         val pathDefines = findPathClass(packagePath)
         pathDefines.forEach {
-            log.info("load router path:{} {}  class:{}   method:{}", it.reqMethod, it.path, it.clazz, it.method)
+            contextMap[it.clazz.name] = it.newInstance()
+            log.info("load router path:{} {} method:{}  class:{} ", it.reqMethod, it.path, it.method, it.clazz)
             router.route(HttpMethod.valueOf(it.reqMethod), it.path)
                 .blockingHandler { r ->
                     try {
@@ -52,9 +52,7 @@ class HttpVerticle : CoroutineVerticle() {
                     }
                 }
         }
-        return router
     }
-
 
     /**
      * 找到所有的配置类
@@ -78,6 +76,7 @@ class HttpVerticle : CoroutineVerticle() {
         }.toList()
         return pathDefines
     }
+
 }
 
 

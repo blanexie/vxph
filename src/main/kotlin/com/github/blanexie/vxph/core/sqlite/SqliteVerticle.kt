@@ -24,12 +24,13 @@ class SqliteVerticle : CoroutineVerticle() {
 
     override suspend fun start() {
         //加载数据库
-        log.info("SqliteVerticle deploy start")
+        log.info("SqliteVerticle deploy start ")
         val hikariDataSource = hikariDataSource()
         hikariDataSource?.let {
             contextMap.put("hikariDataSource", hikariDataSource)
         }
         initDDLSQL()
+        log.info("SqliteVerticle start fun end")
     }
 
     private fun hikariDataSource(): HikariDataSource? {

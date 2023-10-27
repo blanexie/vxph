@@ -15,21 +15,18 @@ import java.time.LocalDateTime
 class DDNSAction {
 
     private val log = LoggerFactory.getLogger(this::class.java)
-    val aliyunDnsService = Singleton.get(AliyunDnsService::class.java)
-    val ipAddrService = Singleton.get(WebIpAddrServiceImpl::class.java)
-
+    val aliyunDnsService = AliyunDnsService()
+    val ipAddrService = WebIpAddrServiceImpl()
 
     /**
      * 查询域名的所有云解析记录
      */
     @Path("/findLocalIp")
-    fun  findLocalIp(request: HttpServerRequest): HttpServerResponse {
+    fun findLocalIp(request: HttpServerRequest): HttpServerResponse {
         val response = request.response()
         val ipv6 = ipAddrService.ipv6()
         val ipv4 = ipAddrService.ipv4()
-        val valueAsString =
-            objectMapper.writeValueAsString(mapOf("ipv6" to ipv6, "ipv4" to ipv4))
-
+        val valueAsString = objectMapper.writeValueAsString(mapOf("ipv6" to ipv6, "ipv4" to ipv4))
 
         response.send(valueAsString)
         return response
