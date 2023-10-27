@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 class DDNSVerticle : CoroutineVerticle() {
 
     override suspend fun start() {
-        vertx.setPeriodic(scheduleMinutes * 1000L) {
+        vertx.setPeriodic(scheduleMinutes * 60 * 1000L) {
             val ddnsAction: DDNSAction? = contextMap.getVal(DDNSAction::class.java.name)
             ddnsAction?.schedule()
         }
