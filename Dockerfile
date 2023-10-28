@@ -5,14 +5,14 @@ WORKDIR /app
 VOLUME /app
 
 # 配置环境变量
-ENV appJarName=vxph-1.0.0-SNAPSHOT-fat.jar
-ENV VM_ARG = ""
+ENV appJarName = vxph-1.0.0-SNAPSHOT-fat.jar
+ENV java.net.preferIPv6Addresses  = true
 
 # 复制构建好的应用程序到新的镜像中
-COPY build/libs/$appJarName /app/$appJarName
+COPY build/libs/$appJarName /app/vxph-fat.jar
 
 # 暴露容器的端口
 EXPOSE 8016
 
 # 启动应用程序
-CMD ["java",  "-jar" , "$VM_ARG   $appJarName" ]
+CMD [ "java", "-jar", "vxph-fat.jar" ]

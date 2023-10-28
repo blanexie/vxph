@@ -17,19 +17,18 @@ import io.vertx.kotlin.coroutines.CoroutineVerticle
 import org.slf4j.LoggerFactory
 import java.io.File
 
-
 @Verticle
 class SqliteVerticle : CoroutineVerticle() {
     private val log = LoggerFactory.getLogger(this::class.java)
 
     override suspend fun start() {
         //加载数据库
-        log.info("SqliteVerticle deploy start ")
+        log.info("SqliteVerticle deploy start， {} ", vertx)
         val hikariDataSource = hikariDataSource()
         hikariDataSource?.let {
-            contextMap.put("hikariDataSource", hikariDataSource)
+            contextMap["hikariDataSource"] = hikariDataSource
+            initDDLSQL()
         }
-        initDDLSQL()
         log.info("SqliteVerticle start fun end")
     }
 

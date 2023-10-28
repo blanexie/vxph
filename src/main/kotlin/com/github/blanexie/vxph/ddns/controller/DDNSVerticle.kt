@@ -1,89 +1,82 @@
 package com.github.blanexie.vxph.ddns.controller
 
-import cn.hutool.core.lang.Singleton
+import com.github.blanexie.vxph.core.Verticle
+import com.github.blanexie.vxph.core.getProperty
 import com.github.blanexie.vxph.ddns.entity.DomainRecordEntity
 import com.github.blanexie.vxph.ddns.service.AliyunDnsService
 import com.github.blanexie.vxph.ddns.service.WebIpAddrServiceImpl
 import com.github.blanexie.vxph.core.web.Path
 import com.github.blanexie.vxph.core.objectMapper
+import com.github.blanexie.vxph.core.web.HttpVerticle
 import io.vertx.core.http.HttpServerRequest
-import io.vertx.core.http.HttpServerResponse
 import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
 
-@Path("/ddns")
-class DDNSAction {
+
+@Verticle
+class DDNSVerticle : HttpVerticle() {
 
     private val log = LoggerFactory.getLogger(this::class.java)
-    val aliyunDnsService = AliyunDnsService()
-    val ipAddrService = WebIpAddrServiceImpl()
-
-    /**
-     * 查询域名的所有云解析记录
-     */
-    @Path("/findLocalIp")
-    fun findLocalIp(request: HttpServerRequest): HttpServerResponse {
-        val response = request.response()
-        val ipv6 = ipAddrService.ipv6()
-        val ipv4 = ipAddrService.ipv4()
-        val valueAsString = objectMapper.writeValueAsString(mapOf("ipv6" to ipv6, "ipv4" to ipv4))
-
-        response.send(valueAsString)
-        return response
+    val aliyunDnsService: AliyunDnsService = AliyunDnsService()
+    val ipAddrService: WebIpAddrServiceImpl = WebIpAddrServiceImpl()
+    val expireMinutes: Int = getProperty("vxph.ddns.aliyun.scheduleMinutes", 15)
+    override suspend fun start() {
+        enablePathRouter()
+        vertx.setPeriodic(expireMinutes * 60 * 1000L) {
+            this.schedule()
+        }
     }
 
     /**
      * 查询域名的所有云解析记录
      */
-    @Path("/findDomainRecords")
-    fun findDomainRecords(request: HttpServerRequest): HttpServerResponse {
+    @Path("/ddns/findLocalIp")
+    fun findLocalIp(request: HttpServerRequest): Map<String, String> {
+        val ipv6 = ipAddrService.ipv6()
+        val ipv4 = ipAddrService.ipv4()
+        return mapOf("ipv6" to ipv6, "ipv4" to ipv4)
+    }
+
+    /**
+     * 查询域名的所有云解析记录
+     */
+    @Path("/ddns/findDomainRecords")
+    fun findDomainRecords(request: HttpServerRequest): Map<String, Any> {
         val domainName = request.getParam("domainName")
-        val response = request.response()
         val dbDomainRecords = DomainRecordEntity.findByDomain(domainName)
         val recordsResponseBody = aliyunDnsService.describeDomainRecords(domainName)
-        val valueAsString =
-            objectMapper.writeValueAsString(mapOf("dbDomainRecords" to dbDomainRecords, "aliyunDomainRecords" to recordsResponseBody))
-        response.send(valueAsString)
-        return response
+        return mapOf("dbDomainRecords" to dbDomainRecords, "aliyunDomainRecords" to recordsResponseBody)
     }
 
     /**
      * 添加云解析记录
      */
-    @Path("/addDomainRecord")
-    fun addDomainRecord(request: HttpServerRequest): HttpServerResponse {
+    @Path("/ddns/addDomainRecord")
+    fun addDomainRecord(request: HttpServerRequest): Any {
         val domainName = request.getParam("domainName")
         val rr = request.getParam("rr")
         val type = request.getParam("type")
         val value = request.getParam("value")
         val ttl = request.getParam("ttl")
-
-        val response = request.response()
         val responseBody = aliyunDnsService.addDomainRecord(domainName, rr, type, value, ttl.toInt())
-        response.send(objectMapper.writeValueAsString(responseBody))
-
-        return response
+        return responseBody
     }
 
     /**
      * 删除云解析记录
      */
-    @Path("/deleteDomainRecord")
-    fun deleteDomainRecord(request: HttpServerRequest): HttpServerResponse {
+    @Path("/ddns/deleteDomainRecord")
+    fun deleteDomainRecord(request: HttpServerRequest): Any {
         val recordId = request.getParam("recordId")
-
-        val response = request.response()
         val recordResponseBody = aliyunDnsService.deleteDomainRecord(recordId)
-        response.send(objectMapper.writeValueAsString(recordResponseBody))
-
-        return response
+        return recordResponseBody
     }
 
     /**
      * 添加云解析 定时任务
      */
-    @Path("/addScheduleDomainRecord")
-    fun addScheduleDomainRecord(request: HttpServerRequest): HttpServerResponse {
+    @Path("/ddns/addScheduleDomainRecord")
+    fun addScheduleDomainRecord(request: HttpServerRequest): Any {
         val domainName = request.getParam("domainName")
         val rr = request.getParam("rr")
         val type = request.getParam("type")
@@ -101,19 +94,14 @@ class DDNSAction {
         domainRecordEntity.createTime = LocalDateTime.now()
         domainRecordEntity.ttl = ttl.toInt()
         domainRecordEntity.upsert()
-
-        val response = request.response()
-        response.send("ok")
-        return response
+        return "ok"
     }
 
 
-    @Path("/schedule")
-    fun scheduleUpdateIpRecord(request: HttpServerRequest): HttpServerResponse {
+    @Path("/ddns/schedule")
+    fun scheduleUpdateIpRecord(request: HttpServerRequest): String {
         this.schedule()
-        val response = request.response()
-        response.send("设置完成")
-        return response
+        return "设置完成"
     }
 
 

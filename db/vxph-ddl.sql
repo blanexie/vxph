@@ -85,6 +85,67 @@ create index if not exists User_createTime_index
     on User (createTime);
 
 
+INSERT OR IGNORE INTO User(id, name, email, password, sex, inviteId, status, createTime, updateTime)
+VALUES (1, 'admin', 'admin@vxph.com', 'xLnnhrT1nld%', 1, 0, 0, '2023-10-31 00:00:00', '2023-10-31 00:00:00');
+
+------------------------------------------------------------
+
+
+create table IF NOT EXISTS Code
+(
+    code       TEXT              not null
+        constraint Code_pk primary key,
+    name       TEXT              not null,
+    content    TEXT              not null,
+
+    status     INTEGER default 0 not null,
+    createTime TEXT              not null,
+    updateTime TEXT              not null
+);
+
+create unique index if not exists Code_name_index
+    on Code (name);
+
+create index if not exists User_updateTime_index
+    on User (updateTime);
+
+create index if not exists User_createTime_index
+    on User (createTime);
+
+
+INSERT OR IGNORE INTO Code(code, name, content, status, createTime, updateTime)
+VALUES ('role_path_manage', '接口角色权限管理',  '[{"name":"匿名访问的接口","path":"/ddns/findLocalIp","role":"Anonymous"},{"name":"ddns管理相关接口","path":"/ddns/*","role":"superAdmin"}]',  0, '2023-10-31 00:00:00', '2023-10-31 00:00:00');
+
+------------------------------------------------------------
+create table IF NOT EXISTS Account
+(
+    id          INTEGER                  not null
+        constraint Invite_pk primary key autoincrement,
+    userId      INTEGER                  not null,
+    role        TEXT    default 'normal' not null,
+    downloaded  TEXT    default '0'      not null,
+    uploaded    TEXT    default '0'      not null,
+    integral    INTEGER default 0        not null,
+    level       INTEGER default 1        not null,
+    inviteCount INTEGER default 0        not null,
+
+    status      INTEGER default 0        not null,
+    createTime  TEXT                     not null,
+    updateTime  TEXT                     not null
+);
+
+create unique index if not exists Account_userId_index
+    on Account (userId);
+
+create index if not exists Account_updateTime_index
+    on Account (updateTime);
+
+create index if not exists Account_createTime_index
+    on Account (createTime);
+
+INSERT OR IGNORE INTO Account(id, userId, role, downloaded, uploaded, integral, level, inviteCount, status, createTime,
+                              updateTime)
+VALUES (1, 1, 'superAdmin', '0', '0', 1, 1, 1, 0, '2023-10-31 00:00:00', '2023-10-31 00:00:00');
 ------------------------------------------------------------
 
 
@@ -115,34 +176,6 @@ create index if not exists Invite_updateTime_index
 create index if not exists Invite_createTime_index
     on Invite (createTime);
 
-
-------------------------------------------------------------
-
-create table IF NOT EXISTS Account
-(
-    id          INTEGER                  not null
-        constraint Invite_pk primary key autoincrement,
-    userId      INTEGER                  not null,
-    role        TEXT    default 'normal' not null,
-    downloaded  TEXT    default '0'      not null,
-    uploaded    TEXT    default '0'      not null,
-    integral    INTEGER default 0        not null,
-    level       INTEGER default 1        not null,
-    inviteCount INTEGER default 0        not null,
-
-    status      INTEGER default 0        not null,
-    createTime  TEXT                     not null,
-    updateTime  TEXT                     not null
-);
-
-create unique index if not exists Account_userId_index
-    on Account (userId);
-
-create index if not exists Account_updateTime_index
-    on Account (updateTime);
-
-create index if not exists Account_createTime_index
-    on Account (createTime);
 
 ------------------------------------------------------------
 

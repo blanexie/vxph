@@ -4,8 +4,7 @@ import com.aliyun.auth.credentials.Credential
 import com.aliyun.auth.credentials.provider.StaticCredentialProvider
 import com.aliyun.sdk.service.alidns20150109.AsyncClient
 import com.aliyun.sdk.service.alidns20150109.models.*
-import com.github.blanexie.vxph.ddns.accessKey
-import com.github.blanexie.vxph.ddns.accessKeySecret
+import com.github.blanexie.vxph.core.getProperty
 import darabonba.core.client.ClientOverrideConfiguration
 import org.slf4j.LoggerFactory
 
@@ -14,6 +13,8 @@ class AliyunDnsService {
 
     private val client: AsyncClient
     private val log = LoggerFactory.getLogger(this::class.java)
+    val accessKey: String = getProperty("vxph.ddns.aliyun.accessKey")!!
+    val accessKeySecret: String = getProperty("vxph.ddns.aliyun.accessKeySecret")!!
 
     init {
         val provider = StaticCredentialProvider.create(

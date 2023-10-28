@@ -9,21 +9,9 @@ import java.lang.reflect.Method
 
 
 data class PathDefine(
-    val clazz: Class<*>,
     val method: Method,
     val path: String,
     val reqMethod: String
-) {
-     fun newInstance(): Any {
-        return contextMap.computeIfAbsent(clazz.name) {
-            ReflectUtil.newInstance(clazz)
-        }
-    }
-
-    fun invoke(request: HttpServerRequest): HttpServerResponse {
-        return ReflectUtil.invoke(newInstance(), method, request)
-    }
-
-}
+)
 
 

@@ -13,5 +13,9 @@ class MainVerticle : CoroutineVerticle() {
 
 fun main() {
     val vertx = Vertx.vertx()
-    vertx.deployVerticle(MainVerticle())
+    vertx.deployVerticle(MainVerticle()).onFailure {
+        it.printStackTrace()
+    }.onSuccess {
+
+    }
 }
