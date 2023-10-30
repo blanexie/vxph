@@ -20,6 +20,8 @@ class DDNSVerticle : HttpVerticle() {
     val aliyunDnsService: AliyunDnsService = AliyunDnsService()
     val ipAddrService: WebIpAddrServiceImpl = WebIpAddrServiceImpl()
     val expireMinutes: Int = getProperty("vxph.ddns.aliyun.scheduleMinutes", 15)
+
+    //设置定时任务
     override suspend fun start() {
         enablePathRouter()
         vertx.setPeriodic(expireMinutes * 60 * 1000L) {
@@ -121,6 +123,8 @@ class DDNSVerticle : HttpVerticle() {
     private fun updateIpRecord(it: DomainRecordEntity, ip: String) {
         if (ip == it.value) {
             log.info("地址未变，不更新DNS解析。 {}", objectMapper.writeValueAsString(it))
+            it.updateTime = LocalDateTime.now()
+            it.upsert()
         } else {
             aliyunDnsService.updateDomainRecord(it.recordId!!, it.rr!!, it.type!!, ip, it.ttl!!)
             it.value = ip
