@@ -20,7 +20,7 @@ class AnnounceAction() {
      * &port=6881&left=0&downloaded=100&uploaded=0&compact=1
      */
     @Path("/announce", method = "GET")
-    fun process(request: HttpServerRequest): HttpServerResponse {
+    fun process(request: HttpServerRequest) {
         val response = request.response()
         val peerEntity = getPeerFromRequest(request)
         //检查是否符合要求
@@ -29,23 +29,22 @@ class AnnounceAction() {
         if (userTorrentEntity == null) {
             val mapOf = mapOf("failure reason" to "not found user or torrent")
             response.send(bencode.encodeToBuffer(mapOf))
-            return response
+            return
         }
         //校验 peerId是否正确， 如果换客户端，需要用户主动到网站去申报， 并且清除之前的数据， 原则上是不允许换客户端的
         if (userTorrentEntity.peerId == null) {
             userTorrentEntity.updatePeerId(peerEntity.peerId)
         } else if (userTorrentEntity.peerId != peerEntity.peerId) {
             val mapOf = mapOf("failure reason" to "not allow change client")
-            response.write(bencode.encodeToBuffer(mapOf))
-            return response
+            response.send(bencode.encodeToBuffer(mapOf))
+            return
         }
         //保存更新上报的数据
         peerEntity.upsert()
         val peerEntities = PeerEntity.findByInfoHash(peerEntity.infoHash)
         val compact = request.getParam("compact", "1")
         val respByteArray = AnnounceResponse.build(peerEntities).toBencodeByte(compact.toInt())
-        response.write(respByteArray)
-        return response
+        response.send(respByteArray)
     }
 
 

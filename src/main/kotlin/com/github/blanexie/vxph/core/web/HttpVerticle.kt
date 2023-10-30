@@ -6,6 +6,7 @@ import io.vertx.core.http.HttpMethod
 import io.vertx.core.http.HttpServerRequest
 import io.vertx.core.http.HttpServerResponse
 import io.vertx.ext.web.Router
+import io.vertx.ext.web.handler.ErrorHandler
 import io.vertx.kotlin.coroutines.CoroutineVerticle
 import org.slf4j.LoggerFactory
 
@@ -33,6 +34,7 @@ abstract class HttpVerticle : CoroutineVerticle() {
                     }
                     val invoke: Any? = ReflectUtil.invoke<Any>(this, it.method, request)
                     invoke?.let { result ->
+                        response.putHeader("content-type","application/json; charset=UTF-8")
                         if (result is String) {
                             response.send(result)
                         } else {

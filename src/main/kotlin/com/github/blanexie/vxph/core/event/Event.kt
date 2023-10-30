@@ -5,7 +5,6 @@ import com.github.blanexie.vxph.core.objectMapper
 import io.vertx.core.Vertx
 import io.vertx.core.eventbus.Message
 
-const val PathEventChannel = "vxph.core.event.channel"
 const val CoreEventChannel = "vxph.core.eventbus.channel"
 const val VerticleLoadCompleteEventType = "VerticleLoadComplete"
 
@@ -27,6 +26,7 @@ data class Event(
     }
 
 }
+
 
 fun Message<String>.toEvent(): Event {
     val body = this.body()

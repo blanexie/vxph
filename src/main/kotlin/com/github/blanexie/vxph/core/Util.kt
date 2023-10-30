@@ -25,6 +25,7 @@ private val log = LoggerFactory.getLogger("Util")
 
 //加载配置文件
 val setting: Setting = SettingUtil.get(System.getProperty("properties.path") ?: "vxph.properties")
+val port = getProperty("vxph.http.server.port", 8016)
 val contextMap = ConcurrentHashMap<String, Any>()
 val objectMapper: ObjectMapper
     get() {
@@ -55,8 +56,6 @@ fun loadAnnotationClass(packageName: String, vertx: Vertx) {
         vertx.deployVerticle(it.name)
     }.toList()
 
-
-    val port = getProperty("vxph.http.server.port", 8016)
     Future.all(futures)
         .onFailure {
             log.error("verticle start error ", it)

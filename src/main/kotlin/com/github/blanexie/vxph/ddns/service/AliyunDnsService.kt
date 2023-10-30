@@ -33,45 +33,30 @@ class AliyunDnsService {
     }
 
 
-    fun describeDomainRecords(
-        domainName: String
-    ): DescribeDomainRecordsResponseBody {
-        val request = DescribeDomainRecordsRequest.builder().domainName(domainName)
-            .pageSize(500).build()
+    fun describeDomainRecords(domainName: String): DescribeDomainRecordsResponseBody {
+        val request = DescribeDomainRecordsRequest.builder().domainName(domainName).pageSize(500).build()
         val responseFuture = client.describeDomainRecords(request)
         return responseFuture.get().body
     }
 
-    fun addDomainRecord(
-        domainName: String,
-        rr: String,
-        type: String,
-        value: String,
-        ttl: Int
-    ): AddDomainRecordResponseBody {
-        val request = AddDomainRecordRequest.builder().domainName(domainName)
-            .TTL(ttl.toLong())
+    fun addDomainRecord(domainName: String, rr: String, type: String, value: String, ttl: Int): AddDomainRecordResponseBody {
+        val request = AddDomainRecordRequest.builder().domainName(domainName).TTL(ttl.toLong())
             .rr(rr).type(type).value(value).build()
         val responseFuture = client.addDomainRecord(request)
         return responseFuture.get().body
 
     }
 
-    fun deleteDomainRecord(
-        recordId: String
-    ): DeleteDomainRecordResponseBody {
+    fun deleteDomainRecord(recordId: String): DeleteDomainRecordResponseBody {
         val request = DeleteDomainRecordRequest.builder().recordId(recordId).build()
         val responseFuture = client.deleteDomainRecord(request)
         return responseFuture.get().body
     }
 
 
-    fun updateDomainRecord(
-        recordId: String, rr: String, type: String, value: String, ttl: Int
-    ): UpdateDomainRecordResponseBody {
-        val request = UpdateDomainRecordRequest.builder().recordId(recordId)
-            .TTL(ttl.toLong())
-            .rr(rr).type(type).value(value).build()
+    fun updateDomainRecord(recordId: String, rr: String, type: String, value: String, ttl: Int): UpdateDomainRecordResponseBody {
+        val request = UpdateDomainRecordRequest.builder().recordId(recordId).TTL(ttl.toLong()).rr(rr)
+            .type(type).value(value).build()
         val responseFuture = client.updateDomainRecord(request)
         return responseFuture.get().body
     }
