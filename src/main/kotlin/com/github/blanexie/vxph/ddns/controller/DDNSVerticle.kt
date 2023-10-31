@@ -1,5 +1,6 @@
 package com.github.blanexie.vxph.ddns.controller
 
+import com.github.blanexie.vxph.core.R
 import com.github.blanexie.vxph.core.Verticle
 import com.github.blanexie.vxph.core.getProperty
 import com.github.blanexie.vxph.ddns.entity.DomainRecordEntity
@@ -33,52 +34,52 @@ class DDNSVerticle : HttpVerticle() {
      * 查询域名的所有云解析记录
      */
     @Path("/ddns/findLocalIp")
-    fun findLocalIp(request: HttpServerRequest): Map<String, String> {
+    fun findLocalIp(request: HttpServerRequest): R {
         val ipv6 = ipAddrService.ipv6()
         val ipv4 = ipAddrService.ipv4()
-        return mapOf("ipv6" to ipv6, "ipv4" to ipv4)
+        return R.success(mapOf("ipv6" to ipv6, "ipv4" to ipv4))
     }
 
     /**
      * 查询域名的所有云解析记录
      */
     @Path("/ddns/findDomainRecords")
-    fun findDomainRecords(request: HttpServerRequest): Map<String, Any> {
+    fun findDomainRecords(request: HttpServerRequest): R {
         val domainName = request.getParam("domainName")
         val dbDomainRecords = DomainRecordEntity.findByDomain(domainName)
         val recordsResponseBody = aliyunDnsService.describeDomainRecords(domainName)
-        return mapOf("dbDomainRecords" to dbDomainRecords, "aliyunDomainRecords" to recordsResponseBody)
+        return R.success(mapOf("dbDomainRecords" to dbDomainRecords, "aliyunDomainRecords" to recordsResponseBody))
     }
 
     /**
      * 添加云解析记录
      */
     @Path("/ddns/addDomainRecord")
-    fun addDomainRecord(request: HttpServerRequest): Any {
+    fun addDomainRecord(request: HttpServerRequest): R {
         val domainName = request.getParam("domainName")
         val rr = request.getParam("rr")
         val type = request.getParam("type")
         val value = request.getParam("value")
         val ttl = request.getParam("ttl")
         val responseBody = aliyunDnsService.addDomainRecord(domainName, rr, type, value, ttl.toInt())
-        return responseBody
+        return R.success(responseBody)
     }
 
     /**
      * 删除云解析记录
      */
     @Path("/ddns/deleteDomainRecord")
-    fun deleteDomainRecord(request: HttpServerRequest): Any {
+    fun deleteDomainRecord(request: HttpServerRequest): R {
         val recordId = request.getParam("recordId")
         val recordResponseBody = aliyunDnsService.deleteDomainRecord(recordId)
-        return recordResponseBody
+        return R.success(recordResponseBody)
     }
 
     /**
      * 添加云解析 定时任务
      */
     @Path("/ddns/addScheduleDomainRecord")
-    fun addScheduleDomainRecord(request: HttpServerRequest): Any {
+    fun addScheduleDomainRecord(request: HttpServerRequest): R {
         val domainName = request.getParam("domainName")
         val rr = request.getParam("rr")
         val type = request.getParam("type")
@@ -96,14 +97,14 @@ class DDNSVerticle : HttpVerticle() {
         domainRecordEntity.createTime = LocalDateTime.now()
         domainRecordEntity.ttl = ttl.toInt()
         domainRecordEntity.upsert()
-        return "ok"
+        return R.success("ok")
     }
 
 
     @Path("/ddns/schedule")
-    fun scheduleUpdateIpRecord(request: HttpServerRequest): String {
+    fun scheduleUpdateIpRecord(request: HttpServerRequest): R {
         this.schedule()
-        return "设置完成"
+        return R.success()
     }
 
 

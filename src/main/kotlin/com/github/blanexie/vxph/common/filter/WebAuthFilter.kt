@@ -5,15 +5,14 @@ import cn.hutool.core.codec.Base64
 import cn.hutool.core.convert.Convert
 import cn.hutool.core.text.AntPathMatcher
 import cn.hutool.crypto.digest.DigestUtil
-import com.github.blanexie.vxph.common.entity.AccountEntity
-import com.github.blanexie.vxph.common.entity.CodeEntity
-import com.github.blanexie.vxph.common.entity.UserEntity
+import com.github.blanexie.vxph.user.entity.AccountEntity
+import com.github.blanexie.vxph.user.entity.CodeEntity
+import com.github.blanexie.vxph.user.entity.UserEntity
 import com.github.blanexie.vxph.core.getProperty
 import com.github.blanexie.vxph.core.objectMapper
 import com.github.blanexie.vxph.core.web.Filter
 import com.github.blanexie.vxph.core.web.HttpFilter
-import io.vertx.core.http.HttpServerRequest
-import io.vertx.core.http.HttpServerResponse
+import io.vertx.ext.web.RoutingContext
 import org.slf4j.LoggerFactory
 
 @Filter
@@ -29,8 +28,9 @@ class WebAuthFilter : HttpFilter {
     val RolePathCode = "role_path_manage";
     val anonymous = "Anonymous"
 
-    override fun before(request: HttpServerRequest): Boolean {
-        val header = request.getHeader("token") ?: anonymous
+    override fun before(ctx: RoutingContext): Boolean {
+        val request = ctx.request()
+        val header =request.getHeader("token") ?: anonymous
         val token = tokenCache.get("header_$header") {
             val anonymousToken = mapOf("userId" to 0, "time" to System.currentTimeMillis(), "sha256" to anonymous)
             if (header == anonymous) {
@@ -60,9 +60,13 @@ class WebAuthFilter : HttpFilter {
         }
 
         val sha256Hex = getUserSignature(userId, time)
-        return sha256 == sha256Hex
+        return if (sha256 == sha256Hex) {
+            ctx.put("loginUserId", userId)
+            true
+        } else {
+            false
+        }
     }
-
 
     private fun getUserSignature(userId: Long, time: Long): String {
         if (userId == 0L) {
@@ -122,10 +126,7 @@ class WebAuthFilter : HttpFilter {
     }
 
 
-    override fun exception(request: HttpServerRequest, response: HttpServerResponse, e: Throwable): Boolean {
+    override fun exception(ctx: RoutingContext, e: Throwable): Boolean {
         return true
     }
 }
-
-
-data class RolePath(val path: String, val role: String)

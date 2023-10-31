@@ -2,6 +2,7 @@ package com.github.blanexie.vxph.core.web
 
 import io.vertx.core.http.HttpServerRequest
 import io.vertx.core.http.HttpServerResponse
+import io.vertx.ext.web.RoutingContext
 
 interface HttpFilter {
 
@@ -9,8 +10,8 @@ interface HttpFilter {
         return 0
     }
 
-    fun before(request: HttpServerRequest): Boolean
+    fun before(ctx: RoutingContext): Boolean
 
-    fun exception(request: HttpServerRequest, response: HttpServerResponse, e: Throwable): Boolean
+    fun exception(ctx: RoutingContext, e: Throwable): Boolean
 
 }

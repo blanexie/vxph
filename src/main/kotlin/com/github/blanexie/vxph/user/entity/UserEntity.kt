@@ -1,8 +1,8 @@
-package com.github.blanexie.vxph.common.entity
+package com.github.blanexie.vxph.user.entity
 
 import cn.hutool.db.Entity
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.github.blanexie.vxph.core.sqlite.hikariDb
-import com.github.blanexie.vxph.ddns.entity.DomainRecordEntity
 import java.time.LocalDateTime
 
 class UserEntity {
@@ -10,6 +10,7 @@ class UserEntity {
     var id: Long? = null
     lateinit var name: String
     lateinit var email: String
+    @JsonIgnore
     lateinit var password: String
     var sex: Int = 0
     var inviteId: Long = 0

@@ -1,5 +1,6 @@
 package com.github.blanexie.vxph.tracker.action
 
+import com.github.blanexie.vxph.core.Verticle
 import com.github.blanexie.vxph.dht.bencode
 import com.github.blanexie.vxph.dht.encodeToBuffer
 import com.github.blanexie.vxph.tracker.EVENT_EMPTY
@@ -8,12 +9,12 @@ import com.github.blanexie.vxph.tracker.entity.UserTorrentEntity
 import com.github.blanexie.vxph.core.web.Path
 import com.github.blanexie.vxph.tracker.toIpAddrMap
 import com.github.blanexie.vxph.core.objectMapper
+import com.github.blanexie.vxph.core.web.HttpVerticle
 import io.vertx.core.http.HttpServerRequest
-import io.vertx.core.http.HttpServerResponse
 import java.time.LocalDateTime
 
-@Path("/")
-class AnnounceAction() {
+@Verticle
+class AnnounceVerticle:HttpVerticle() {
 
     /**
      * GET /announce?peer_id=aaaaaaaaaaaaaaaaaaaa&info_hash=aaaaaaaaaaaaaaaaaaaa

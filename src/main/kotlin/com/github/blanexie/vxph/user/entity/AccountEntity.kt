@@ -1,4 +1,4 @@
-package com.github.blanexie.vxph.common.entity
+package com.github.blanexie.vxph.user.entity
 
 import cn.hutool.db.Entity
 import com.github.blanexie.vxph.core.sqlite.hikariDb

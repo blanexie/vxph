@@ -98,3 +98,31 @@ fun RoutingContext.respFail(code: Int, e: Throwable) {
     response.putHeader("content-type", "text/plain; charset=utf-8 ")
     response.send(e.message)
 }
+
+class R (
+    val code: Int,
+    val error: String,
+    val data: HashMap<String, Any>
+) {
+
+    fun add(key: String, v: Any): R  {
+        this.data[key] = v
+        return this
+    }
+
+    companion object {
+        fun success(data: HashMap<String, Any>): R {
+            return R(code = 200, error = "", data = data)
+        }
+
+        fun success(): R {
+            return R(code = 200, error = "", data = hashMapOf())
+        }
+
+        fun fail(code: Int, error: String): R {
+            return R(code = code, error = error, data = hashMapOf())
+        }
+    }
+}
+
+

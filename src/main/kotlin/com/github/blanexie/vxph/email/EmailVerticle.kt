@@ -48,8 +48,8 @@ class EmailVerticle : CoroutineVerticle() {
                 .onSuccess {
                     log.info("send email success, mail message:{}", emailEvent)
                 }
-                .onFailure {
-                    log.error("send mail fail, mail message:{}", emailEvent, it)
+                .onFailure { r ->
+                    log.error("send mail fail, mail message:{}", emailEvent, r)
                 }
         }
     }

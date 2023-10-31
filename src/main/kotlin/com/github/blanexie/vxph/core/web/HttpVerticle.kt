@@ -6,6 +6,7 @@ import io.vertx.core.http.HttpMethod
 import io.vertx.core.http.HttpServerRequest
 import io.vertx.core.http.HttpServerResponse
 import io.vertx.ext.web.Router
+import io.vertx.ext.web.RoutingContext
 import io.vertx.ext.web.handler.ErrorHandler
 import io.vertx.kotlin.coroutines.CoroutineVerticle
 import org.slf4j.LoggerFactory
@@ -18,7 +19,6 @@ abstract class HttpVerticle : CoroutineVerticle() {
         enablePathRouter()
     }
 
-
     protected fun enablePathRouter() {
         val pathDefines = findPathClass()
         pathDefines.forEach {
@@ -28,7 +28,7 @@ abstract class HttpVerticle : CoroutineVerticle() {
                 val request = r.request()
                 val response = r.response()
                 try {
-                    if (!invokeFilterBefore(request)) {
+                    if (!invokeFilterBefore(r)) {
                         r.respFail(403, Error("filter before invoke fun return false"))
                         return@blockingHandler
                     }
@@ -42,27 +42,27 @@ abstract class HttpVerticle : CoroutineVerticle() {
                         }
                     }
                 } catch (e: Throwable) {
-                    invokeFilterException(request, response, e)
+                    invokeFilterException(r, e)
                     log.error("处理{}路径请求异常", it.path, e)
                 }
             }
         }
     }
 
-    private fun invokeFilterException(request: HttpServerRequest, response: HttpServerResponse, e: Throwable): Boolean {
+    private fun invokeFilterException(ctx: RoutingContext, e: Throwable): Boolean {
         val httpFilters: List<HttpFilter>? = contextMap.getVal("httpFilters")
         httpFilters?.forEach { filter ->
-            if (!filter.exception(request, response, e)) {
+            if (!filter.exception(ctx, e)) {
                 return false
             }
         }
         return true
     }
 
-    private fun invokeFilterBefore(request: HttpServerRequest): Boolean {
+    private fun invokeFilterBefore(ctx: RoutingContext): Boolean {
         val httpFilters: List<HttpFilter>? = contextMap.getVal("httpFilters")
         httpFilters?.forEach { filter ->
-            if (!filter.before(request)) {
+            if (!filter.before(ctx)) {
                 return false
             }
         }
