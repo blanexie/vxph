@@ -37,7 +37,7 @@ class DDNSVerticle : HttpVerticle() {
     fun findLocalIp(request: HttpServerRequest): R {
         val ipv6 = ipAddrService.ipv6()
         val ipv4 = ipAddrService.ipv4()
-        return R.success(mapOf("ipv6" to ipv6, "ipv4" to ipv4))
+        return R.success().add("ipv4", ipv4).add("ipv6", ipv6)
     }
 
     /**
@@ -48,7 +48,8 @@ class DDNSVerticle : HttpVerticle() {
         val domainName = request.getParam("domainName")
         val dbDomainRecords = DomainRecordEntity.findByDomain(domainName)
         val recordsResponseBody = aliyunDnsService.describeDomainRecords(domainName)
-        return R.success(mapOf("dbDomainRecords" to dbDomainRecords, "aliyunDomainRecords" to recordsResponseBody))
+        return R.success().add("dbDomainRecords", dbDomainRecords)
+            .add("aliyunDomainRecords", recordsResponseBody)
     }
 
     /**
@@ -62,7 +63,7 @@ class DDNSVerticle : HttpVerticle() {
         val value = request.getParam("value")
         val ttl = request.getParam("ttl")
         val responseBody = aliyunDnsService.addDomainRecord(domainName, rr, type, value, ttl.toInt())
-        return R.success(responseBody)
+        return R.success().add("responseBody",responseBody)
     }
 
     /**
@@ -72,7 +73,7 @@ class DDNSVerticle : HttpVerticle() {
     fun deleteDomainRecord(request: HttpServerRequest): R {
         val recordId = request.getParam("recordId")
         val recordResponseBody = aliyunDnsService.deleteDomainRecord(recordId)
-        return R.success(recordResponseBody)
+        return R.success().add("responseBody",recordResponseBody)
     }
 
     /**

@@ -24,5 +24,11 @@ class UserEntity {
             val userEntity = hikariDb().find(table, UserEntity::class.java)
             return userEntity.firstOrNull()
         }
+
+        fun findByName(name: String): UserEntity? {
+            val table = Entity.create("User").set("name", name)
+            val userEntity = hikariDb().find(table, UserEntity::class.java)
+            return userEntity.firstOrNull()
+        }
     }
 }

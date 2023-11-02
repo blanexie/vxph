@@ -13,7 +13,6 @@ private const val emailEventChannel = "emailEventChannel"
 /**
  * 不支持附件
  */
-@Verticle
 class EmailVerticle : CoroutineVerticle() {
 
     private val log = LoggerFactory.getLogger(this::class.java)

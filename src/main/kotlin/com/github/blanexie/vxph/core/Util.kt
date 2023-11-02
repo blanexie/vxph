@@ -2,7 +2,6 @@ package com.github.blanexie.vxph.core
 
 import cn.hutool.core.convert.Convert
 import cn.hutool.core.util.ClassUtil
-import cn.hutool.core.util.ReflectUtil
 import cn.hutool.setting.Setting
 import cn.hutool.setting.SettingUtil
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -99,28 +98,29 @@ fun RoutingContext.respFail(code: Int, e: Throwable) {
     response.send(e.message)
 }
 
-class R (
+class R(
     val code: Int,
     val error: String,
-    val data: HashMap<String, Any>
+    val body: HashMap<String, Any>
 ) {
 
-    fun add(key: String, v: Any): R  {
-        this.data[key] = v
+    fun add(key: String, v: Any): R {
+        this.body[key] = v
         return this
     }
 
     companion object {
-        fun success(data: HashMap<String, Any>): R {
-            return R(code = 200, error = "", data = data)
+        fun success(data: Any): R {
+            val r = R(code = 200, error = "", body = hashMapOf())
+            return r.add("data", data)
         }
 
         fun success(): R {
-            return R(code = 200, error = "", data = hashMapOf())
+            return R(code = 200, error = "", body = hashMapOf())
         }
 
         fun fail(code: Int, error: String): R {
-            return R(code = code, error = error, data = hashMapOf())
+            return R(code = code, error = error, body = hashMapOf())
         }
     }
 }

@@ -30,19 +30,17 @@ class WebAuthFilter : HttpFilter {
 
     override fun before(ctx: RoutingContext): Boolean {
         val request = ctx.request()
-        val header =request.getHeader("token") ?: anonymous
+        val header = request.getHeader("token") ?: anonymous
         val token = tokenCache.get("header_$header") {
-            val anonymousToken = mapOf("userId" to 0, "time" to System.currentTimeMillis(), "sha256" to anonymous)
-            if (header == anonymous) {
-                anonymousToken
-            } else {
+            if (header != anonymous) {
                 try {
                     val decode = Base64.decodeStr(header)
-                    objectMapper.readValue(decode, Map::class.java)
+                    return@get objectMapper.readValue(decode, Map::class.java)
                 } catch (e: Throwable) {
-                    anonymousToken
+                    log.warn("token 解密失败：{} ", e.message)
                 }
             }
+            return@get mapOf("userId" to 0, "time" to System.currentTimeMillis(), "sha256" to anonymous)
         } as Map<*, *>
 
         val userId = Convert.toLong(token["userId"])
@@ -74,7 +72,7 @@ class WebAuthFilter : HttpFilter {
         }
         val user = UserEntity.findById(userId) ?: return anonymous
         //验证签名
-        val signature = "${user.id}${user.password}$time"
+        val signature = "${user.id}&${user.password}&$time"
         val sha256Hex = tokenCache.get("signature_$signature") {
             DigestUtil.sha256Hex(signature)
         }
