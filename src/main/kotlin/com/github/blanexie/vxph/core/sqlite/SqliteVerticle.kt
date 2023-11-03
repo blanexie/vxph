@@ -5,6 +5,7 @@ import cn.hutool.core.util.CharsetUtil
 import cn.hutool.core.util.StrUtil
 import cn.hutool.db.Db
 import cn.hutool.db.DbUtil
+import cn.hutool.db.Entity
 import cn.hutool.db.dialect.impl.Sqlite3Dialect
 import cn.hutool.log.level.Level
 import com.github.blanexie.vxph.core.Verticle
@@ -16,6 +17,8 @@ import com.zaxxer.hikari.HikariDataSource
 import io.vertx.kotlin.coroutines.CoroutineVerticle
 import org.slf4j.LoggerFactory
 import java.io.File
+import kotlin.reflect.KClass
+import kotlin.reflect.KMutableProperty
 
 @Verticle
 class SqliteVerticle : CoroutineVerticle() {
@@ -35,7 +38,7 @@ class SqliteVerticle : CoroutineVerticle() {
     private fun hikariDataSource(): HikariDataSource? {
         val enable: Boolean = getProperty("vxph.database.sqlite.enable", false)
         return if (enable) {
-            DbUtil.setShowSqlGlobal(true, true, true, Level.INFO)
+            DbUtil.setShowSqlGlobal(true, true, true, Level.DEBUG)
             val hikariConfig = HikariConfig()
             hikariConfig.jdbcUrl = getProperty("vxph.database.jdbc.url")
             hikariConfig.username = getProperty("vxph.database.jdbc.user")
@@ -73,3 +76,18 @@ fun hikariDb(): Db {
     val hikariDataSource: HikariDataSource = contextMap.getVal("hikariDataSource")!!
     return DbUtil.use(hikariDataSource, Sqlite3Dialect())
 }
+
+fun buildEntity(kc: KClass<*>): Entity {
+    val replace = kc.simpleName!!.replace("Entity", "")
+    return Entity.create(replace)
+}
+
+fun Entity.set(function: KMutableProperty<*>, obj: Any): Entity {
+    return this.set(function.name, obj)
+}
+
+inline fun <reified T> Entity.find(): List<T> {
+    return hikariDb().find(this, T::class.java)
+}
+
+

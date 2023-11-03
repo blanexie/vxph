@@ -1,7 +1,10 @@
 package com.github.blanexie.vxph.user.entity
 
 import cn.hutool.db.Entity
+import com.github.blanexie.vxph.core.sqlite.buildEntity
+import com.github.blanexie.vxph.core.sqlite.find
 import com.github.blanexie.vxph.core.sqlite.hikariDb
+import com.github.blanexie.vxph.core.sqlite.set
 import java.time.LocalDateTime
 
 
@@ -27,14 +30,15 @@ class AccountEntity {
 
     companion object {
         fun findById(id: Long): AccountEntity? {
-            val table = Entity.create("Account").set("id", id)
-            val accountEntities = hikariDb().find(table, AccountEntity::class.java)
+            val accountEntities: List<AccountEntity> = buildEntity(AccountEntity::class)
+                .set(AccountEntity::id, id).find()
             return accountEntities.firstOrNull()
         }
 
         fun findByUserId(userId: Long): AccountEntity? {
-            val table = Entity.create("Account").set("userId", userId)
-            val accountEntities = hikariDb().find(table, AccountEntity::class.java)
+            val accountEntities: List<AccountEntity> = buildEntity(AccountEntity::class)
+                .set(AccountEntity::userId, userId)
+                .find()
             return accountEntities.firstOrNull()
         }
     }

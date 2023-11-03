@@ -5,28 +5,28 @@ import cn.hutool.core.codec.Base64
 import cn.hutool.core.convert.Convert
 import cn.hutool.core.text.AntPathMatcher
 import cn.hutool.crypto.digest.DigestUtil
-import com.github.blanexie.vxph.user.entity.AccountEntity
-import com.github.blanexie.vxph.user.entity.CodeEntity
-import com.github.blanexie.vxph.user.entity.UserEntity
 import com.github.blanexie.vxph.core.getProperty
 import com.github.blanexie.vxph.core.objectMapper
 import com.github.blanexie.vxph.core.web.Filter
 import com.github.blanexie.vxph.core.web.HttpFilter
+import com.github.blanexie.vxph.user.entity.AccountEntity
+import com.github.blanexie.vxph.user.entity.CodeEntity
+import com.github.blanexie.vxph.user.entity.UserEntity
 import io.vertx.ext.web.RoutingContext
 import org.slf4j.LoggerFactory
 
 @Filter
 class WebAuthFilter : HttpFilter {
 
-    val log = LoggerFactory.getLogger(this::class.java)
-    val expireMinutes: Int = getProperty("vxph.http.token.expireMinutes", 15)
+    private val log = LoggerFactory.getLogger(this::class.java)
+    private val expireMinutes: Int = getProperty("vxph.http.token.expireMinutes", 15)
 
-    val tokenCache = CacheUtil.newLRUCache<String, Any>(1000, expireMinutes * 60 * 1000L)
-    val rolePathCache = CacheUtil.newLRUCache<String, Map<String, List<String>>>(1000, expireMinutes * 60 * 1000L)
+    private val tokenCache = CacheUtil.newLRUCache<String, Any>(1000, expireMinutes * 60 * 1000L)
+    private val rolePathCache = CacheUtil.newLRUCache<String, Map<String, List<String>>>(1000, expireMinutes * 60 * 1000L)
 
-    val antPathMatcher = AntPathMatcher()
-    val RolePathCode = "role_path_manage";
-    val anonymous = "Anonymous"
+    private val antPathMatcher = AntPathMatcher()
+    private val RolePathCode = "role_path_manage"
+    private val anonymous = "Anonymous"
 
     override fun before(ctx: RoutingContext): Boolean {
         val request = ctx.request()
