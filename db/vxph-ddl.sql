@@ -151,10 +151,9 @@ VALUES (1, 1, 'superAdmin', '0', '0', 1, 1, 1, 0, '2023-10-31 00:00:00', '2023-1
 
 create table IF NOT EXISTS Invite
 (
-    id         INTEGER           not null
-        constraint Invite_pk primary key autoincrement,
-    sender     INTEGER           not null,
-    code       TEXT              not null,
+    code       TEXT              not null
+        constraint Invite_pk primary key ,
+    sender     INTEGER           not null  ,
     email      TEXT              not null,
     expire     TEXT              not null,
     acceptTime TEXT,

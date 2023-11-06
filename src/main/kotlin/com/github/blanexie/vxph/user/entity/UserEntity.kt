@@ -2,7 +2,10 @@ package com.github.blanexie.vxph.user.entity
 
 import cn.hutool.db.Entity
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.github.blanexie.vxph.core.sqlite.buildEntity
+import com.github.blanexie.vxph.core.sqlite.find
 import com.github.blanexie.vxph.core.sqlite.hikariDb
+import com.github.blanexie.vxph.core.sqlite.setField
 import java.time.LocalDateTime
 
 class UserEntity {
@@ -10,6 +13,7 @@ class UserEntity {
     var id: Long? = null
     lateinit var name: String
     lateinit var email: String
+
     @JsonIgnore
     lateinit var password: String
     var sex: Int = 0
@@ -22,6 +26,12 @@ class UserEntity {
         fun findById(id: Long): UserEntity? {
             val table = Entity.create("User").set("id", id)
             val userEntity = hikariDb().find(table, UserEntity::class.java)
+            return userEntity.firstOrNull()
+        }
+
+        fun findByEmail(email: String): UserEntity? {
+            val userEntity: List<UserEntity> = buildEntity(UserEntity::class).setField(UserEntity::email, email)
+                .find()
             return userEntity.firstOrNull()
         }
 

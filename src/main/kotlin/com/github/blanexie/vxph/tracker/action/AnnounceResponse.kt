@@ -31,7 +31,7 @@ class AnnounceResponse(
     val peers6: List<PeerIpAddr>
 ) {
 
-    fun toBencodeByte(compact: Int = 1): Buffer {
+    fun toByteBuffer(compact: Int = 1): Buffer {
         if (compact == 1) {
             val peersByteArray = ByteBuffer.allocate(peers.size * 6)
             peers.forEach {

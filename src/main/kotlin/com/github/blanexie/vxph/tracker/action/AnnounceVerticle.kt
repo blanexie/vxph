@@ -44,7 +44,7 @@ class AnnounceVerticle:HttpVerticle() {
         peerEntity.upsert()
         val peerEntities = PeerEntity.findByInfoHash(peerEntity.infoHash)
         val compact = request.getParam("compact", "1")
-        val respByteArray = AnnounceResponse.build(peerEntities).toBencodeByte(compact.toInt())
+        val respByteArray = AnnounceResponse.build(peerEntities).toByteBuffer(compact.toInt())
         response.send(respByteArray)
     }
 

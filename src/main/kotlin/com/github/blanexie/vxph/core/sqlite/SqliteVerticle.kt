@@ -82,7 +82,7 @@ fun buildEntity(kc: KClass<*>): Entity {
     return Entity.create(replace)
 }
 
-fun Entity.set(function: KMutableProperty<*>, obj: Any): Entity {
+fun Entity.setField(function: KMutableProperty<*>, obj: Any): Entity {
     return this.set(function.name, obj)
 }
 

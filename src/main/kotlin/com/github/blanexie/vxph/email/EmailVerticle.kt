@@ -1,6 +1,7 @@
 package com.github.blanexie.vxph.email
 
 import com.github.blanexie.vxph.core.Verticle
+import com.github.blanexie.vxph.core.contextMap
 import com.github.blanexie.vxph.core.getProperty
 import io.vertx.ext.mail.MailClient
 import io.vertx.ext.mail.MailConfig
@@ -30,6 +31,7 @@ class EmailVerticle : CoroutineVerticle() {
         config.setUsername(username)
         config.setPassword(password)
         mailClient = MailClient.createShared(vertx, config, "163.email")
+        contextMap["mailClient"] = mailClient
     }
 
     override suspend fun start() {

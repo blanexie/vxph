@@ -23,7 +23,7 @@ abstract class HttpVerticle : CoroutineVerticle() {
             log.info("load router path:{} {} method:{}   ", it.reqMethod, it.path, it.method.name)
             val router: Router = contextMap.getIfAbsent("router") { Router.router(vertx) }
             router.route(HttpMethod.valueOf(it.reqMethod), it.path)
-                .handler(
+                .blockingHandler(
                     CorsHandler.create().addRelativeOrigin(".*")
                         .allowedMethod(HttpMethod.POST)
                         .allowedMethod(HttpMethod.GET)

@@ -1,9 +1,9 @@
 package com.github.blanexie.vxph.common.filter
 
 import cn.hutool.cache.CacheUtil
-import cn.hutool.core.codec.Base64
 import cn.hutool.core.convert.Convert
 import cn.hutool.core.text.AntPathMatcher
+import cn.hutool.core.util.StrUtil
 import cn.hutool.crypto.digest.DigestUtil
 import com.github.blanexie.vxph.core.getProperty
 import com.github.blanexie.vxph.core.objectMapper
@@ -25,27 +25,21 @@ class WebAuthFilter : HttpFilter {
     private val rolePathCache = CacheUtil.newLRUCache<String, Map<String, List<String>>>(1000, expireMinutes * 60 * 1000L)
 
     private val antPathMatcher = AntPathMatcher()
-    private val RolePathCode = "role_path_manage"
+    private val rolePathCode = "role_path_manage"
     private val anonymous = "Anonymous"
 
     override fun before(ctx: RoutingContext): Boolean {
         val request = ctx.request()
-        val header = request.getHeader("token") ?: anonymous
-        val token = tokenCache.get("header_$header") {
-            if (header != anonymous) {
-                try {
-                    val decode = Base64.decodeStr(header)
-                    return@get objectMapper.readValue(decode, Map::class.java)
-                } catch (e: Throwable) {
-                    log.warn("token 解密失败：{} ", e.message)
-                }
-            }
-            return@get mapOf("userId" to 0, "time" to System.currentTimeMillis(), "sha256" to anonymous)
-        } as Map<*, *>
+        var sha256 = request.getHeader("token")
 
-        val userId = Convert.toLong(token["userId"])
-        val time = Convert.toLong(token["time"])
-        val sha256 = Convert.toStr(token["sha256"])
+        var userId = Convert.toLong(request.getHeader("userId"))
+        var time = Convert.toLong(request.getHeader("time"))
+
+        if (userId == null || userId <= 0) {
+            userId = 0L
+            time = System.currentTimeMillis()
+            sha256 = anonymous
+        }
 
         if (System.currentTimeMillis() - time > expireMinutes * 90 * 1000L) {
             //过期token， 返回错误
@@ -59,7 +53,9 @@ class WebAuthFilter : HttpFilter {
 
         val sha256Hex = getUserSignature(userId, time)
         return if (sha256 == sha256Hex) {
-            ctx.put("loginUserId", userId)
+            request.headers().add("userId", Convert.toStr(userId))
+            request.headers().add("time", Convert.toStr(time))
+            request.headers().add("token", Convert.toStr(sha256))
             true
         } else {
             false
@@ -70,13 +66,13 @@ class WebAuthFilter : HttpFilter {
         if (userId == 0L) {
             return anonymous
         }
-        val user = UserEntity.findById(userId) ?: return anonymous
-        //验证签名
-        val signature = "${user.id}&${user.password}&$time"
-        val sha256Hex = tokenCache.get("signature_$signature") {
+        val sha256Hex = tokenCache.get("${userId}_$time") {
+            val user = UserEntity.findById(userId) ?: return@get anonymous
+            //验证签名
+            val signature = "${user.id}&${user.password}&$time"
             DigestUtil.sha256Hex(signature)
         }
-        log.info("signature:{}  sha256Hex:{}", signature, sha256Hex)
+        log.info("userId:{}  time:{} sha256Hex:{}", userId, time, sha256Hex)
         return sha256Hex as String
     }
 
@@ -93,8 +89,8 @@ class WebAuthFilter : HttpFilter {
     }
 
     private fun checkRolePath(path: String, role: String): Boolean {
-        val rolePathsMap = rolePathCache.get(RolePathCode) {
-            val findByCode = CodeEntity.findByCode(RolePathCode) ?: return@get mapOf()
+        val rolePathsMap = rolePathCache.get(rolePathCode) {
+            val findByCode = CodeEntity.findByCode(rolePathCode) ?: return@get mapOf()
             val content = findByCode.content
             val readValue = objectMapper.readValue(content, List::class.java)
             val map = hashMapOf<String, ArrayList<String>>()
