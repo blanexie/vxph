@@ -1,6 +1,5 @@
 package com.github.blanexie.vxph.ddns.controller
 
-import com.github.blanexie.vxph.core.R
 import com.github.blanexie.vxph.core.Verticle
 import com.github.blanexie.vxph.core.getProperty
 import com.github.blanexie.vxph.ddns.entity.DomainRecordEntity
@@ -9,6 +8,7 @@ import com.github.blanexie.vxph.ddns.service.WebIpAddrServiceImpl
 import com.github.blanexie.vxph.core.web.Path
 import com.github.blanexie.vxph.core.objectMapper
 import com.github.blanexie.vxph.core.web.HttpVerticle
+import com.github.blanexie.vxph.core.web.R
 import io.vertx.core.http.HttpServerRequest
 import org.slf4j.LoggerFactory
 import java.time.LocalDateTime

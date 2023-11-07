@@ -43,6 +43,11 @@ class InviteEntity {
                 .setField(InviteEntity::code, code).find()
             return entity.firstOrNull()
         }
+        fun findByEmail(email: String): List<InviteEntity> {
+            val entity: List<InviteEntity> = buildEntity(InviteEntity::class)
+                .setField(InviteEntity::email, email).find()
+            return entity
+        }
     }
 
 }

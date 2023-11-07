@@ -63,6 +63,7 @@ dependencies {
 
 val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions.jvmTarget = "17"
+compileKotlin.kotlinOptions.freeCompilerArgs = listOf("-Xjsr305=strict")
 
 tasks.withType<ShadowJar> {
     archiveClassifier.set("fat")

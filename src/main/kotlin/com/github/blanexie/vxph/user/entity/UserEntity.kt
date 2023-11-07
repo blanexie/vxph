@@ -1,11 +1,13 @@
 package com.github.blanexie.vxph.user.entity
 
+import cn.hutool.core.bean.BeanUtil
 import cn.hutool.db.Entity
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.github.blanexie.vxph.core.sqlite.buildEntity
 import com.github.blanexie.vxph.core.sqlite.find
 import com.github.blanexie.vxph.core.sqlite.hikariDb
 import com.github.blanexie.vxph.core.sqlite.setField
+import com.github.blanexie.vxph.tracker.toEntity
 import java.time.LocalDateTime
 
 class UserEntity {
@@ -21,6 +23,12 @@ class UserEntity {
     lateinit var createTime: LocalDateTime
     lateinit var updateTime: LocalDateTime
     var status: Int = 0
+
+
+    fun upsert() {
+        val entity = BeanUtil.beanToMap(this).toEntity("User")
+        hikariDb().upsert(entity, "id")
+    }
 
     companion object {
         fun findById(id: Long): UserEntity? {
