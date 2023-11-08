@@ -109,6 +109,7 @@ class UserVerticle : HttpVerticle() {
         //发送邮件
         val mailClient = contextMap["mailClient"] as MailClient
         val format = StrUtil.format(inviteMsgTemplate, user.name, code)
+        log.info("send email , receive:{}  content:{}",email, format)
         val result = awaitResult<MailResult> {
             EmailEvent(
                 "registerEmailCode", "admin@vxph.com", ListUtil.toList(email), ListUtil.empty(),
