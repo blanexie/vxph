@@ -66,6 +66,7 @@ class UserVerticle : HttpVerticle() {
             R.success().add("userInfo", userEntity)
                 .add("account", accountEntity!!)
                 .add("token", result)
+                .add("time", time)
         } else {
             R.fail(WebCode.User_Name_Password_Error)
         }

@@ -21,7 +21,7 @@ class WebIpAddrServiceImpl : IpAddrService {
     private val httpClient = HttpClient.newBuilder().build()
 
     override fun ipv4(): String {
-        val httpRequest = HttpRequest.newBuilder(URLUtil.toURI("https://ipv4.ddnspod.com")).build()
+        val httpRequest = HttpRequest.newBuilder(URLUtil.toURI("https://4.ipw.cn")).build()
         val response = httpClient.send(httpRequest, java.net.http.HttpResponse.BodyHandlers.ofString())
         val body = response.body()
         log.info("获取到本机的ipv4地址为：{}", body)
@@ -29,11 +29,15 @@ class WebIpAddrServiceImpl : IpAddrService {
     }
 
     override fun ipv6(): String {
-        val httpRequest = HttpRequest.newBuilder(URLUtil.toURI("https://ipv6.ddnspod.com")).build()
-        val response = httpClient.send(httpRequest, java.net.http.HttpResponse.BodyHandlers.ofString())
-        val body = response.body()
-        log.info("获取到本机的ipv6地址为：{}", body)
-        return body
+        try {
+            val httpRequest = HttpRequest.newBuilder(URLUtil.toURI("https://6.ipw.cn")).build()
+            val response = httpClient.send(httpRequest, java.net.http.HttpResponse.BodyHandlers.ofString())
+            val body = response.body()
+            log.info("获取到本机的ipv6地址为：{}", body)
+            return body
+        } catch (e: Throwable) {
+            return ""
+        }
     }
 }
 

@@ -25,6 +25,9 @@ abstract class HttpVerticle : CoroutineVerticle() {
             router.route(HttpMethod.valueOf(it.reqMethod), it.path)
                 .blockingHandler(
                     CorsHandler.create().addRelativeOrigin(".*")
+                        .allowedHeader("userId")
+                        .allowedHeader("token")
+                        .allowedHeader("time")
                         .allowedMethod(HttpMethod.POST)
                         .allowedMethod(HttpMethod.GET)
                 )

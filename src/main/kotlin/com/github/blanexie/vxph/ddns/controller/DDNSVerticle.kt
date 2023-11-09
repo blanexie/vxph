@@ -45,11 +45,8 @@ class DDNSVerticle : HttpVerticle() {
      */
     @Path("/ddns/findDomainRecords")
     fun findDomainRecords(request: HttpServerRequest): R {
-        val domainName = request.getParam("domainName")
-        val dbDomainRecords = DomainRecordEntity.findByDomain(domainName)
-        val recordsResponseBody = aliyunDnsService.describeDomainRecords(domainName)
+        val dbDomainRecords = DomainRecordEntity.findAll()
         return R.success().add("dbDomainRecords", dbDomainRecords)
-            .add("aliyunDomainRecords", recordsResponseBody)
     }
 
     /**
