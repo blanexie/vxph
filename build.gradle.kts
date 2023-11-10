@@ -1,91 +1,57 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val kotlinVersion = "1.7.21"
-val vertxVersion = "4.4.5"
-val junitJupiterVersion = "5.9.1"
-
-val mainVerticleName = "com.github.blanexie.vxph.MainVerticle"
-val launcherClassName = "io.vertx.core.Launcher"
-
-val watchForChange = "src/**/*"
-val doOnChange = "${projectDir}/gradlew classes"
-
-
-group = "com.github.blanexie"
-version = "1.0.0-SNAPSHOT"
-
 plugins {
-    kotlin("jvm") version "1.7.21"
-    application
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("org.springframework.boot") version "3.1.5"
+    id("io.spring.dependency-management") version "1.1.3"
+    kotlin("jvm") version "1.8.22"
+    kotlin("plugin.spring") version "1.8.22"
+    kotlin("plugin.jpa") version "1.8.22"
+}
+
+group = "com.github.blanexie.vxph"
+version = "0.0.1-SNAPSHOT"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+}
+
+configurations {
+    compileOnly {
+        extendsFrom(configurations.annotationProcessor.get())
+    }
 }
 
 repositories {
-    mavenLocal()
     mavenCentral()
 }
 
-application {
-    mainClass.set(launcherClassName)
-}
-
 dependencies {
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.3")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.15.3")
-
-    implementation(platform("io.vertx:vertx-stack-depchain:$vertxVersion"))
-    implementation("io.vertx:vertx-web-client")
-    implementation("io.vertx:vertx-jdbc-client")
-    implementation("io.vertx:vertx-sql-client-templates:4.4.0")
-    implementation("io.vertx:vertx-web")
-    implementation("io.vertx:vertx-lang-kotlin-coroutines")
-    implementation("io.vertx:vertx-mail-client")
-    implementation("io.vertx:vertx-lang-kotlin")
-    implementation(kotlin("stdlib-jdk8"))
-
     implementation("xerces:xercesImpl:2.12.2")
-    implementation("ch.qos.logback:logback-classic:1.4.11")
-    implementation("cn.hutool:hutool-all:5.8.21")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
 
-    implementation("com.zaxxer:HikariCP:5.0.1")
     implementation("org.xerial:sqlite-jdbc:3.43.0.0")
+    implementation("org.hibernate.orm:hibernate-community-dialects:6.3.1.Final")
+    implementation("cn.dev33:sa-token-spring-boot-starter:1.37.0")
+    implementation("cn.hutool:hutool-all:5.8.22")
+    implementation("com.aliyun:alidns20150109:3.0.8"){
+        exclude("pull-parser","pull-parser")
+    }
 
-    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
-    implementation("com.dampcake:bencode:1.4.1")
-
-    implementation("com.aliyun:alibabacloud-alidns20150109:3.0.10")
-
-    testImplementation("io.vertx:vertx-junit5")
-    testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
-val compileKotlin: KotlinCompile by tasks
-compileKotlin.kotlinOptions.jvmTarget = "17"
-compileKotlin.kotlinOptions.freeCompilerArgs = listOf("-Xjsr305=strict")
-
-tasks.withType<ShadowJar> {
-    archiveClassifier.set("fat")
-    manifest {
-        attributes(mapOf("Main-Verticle" to mainVerticleName))
+tasks.withType<KotlinCompile> {
+    kotlinOptions {
+        freeCompilerArgs += "-Xjsr305=strict"
+        jvmTarget = "17"
     }
-    mergeServiceFiles()
 }
 
 tasks.withType<Test> {
     useJUnitPlatform()
-    testLogging {
-        events = setOf(PASSED, SKIPPED, FAILED)
-    }
-}
-
-tasks.withType<JavaExec> {
-    args = listOf(
-        "run",
-        mainVerticleName,
-        "--redeploy=$watchForChange",
-        "--launcher-class=$launcherClassName",
-        "--on-redeploy=$doOnChange"
-    )
 }
