@@ -1,6 +1,6 @@
-package com.github.blanexie.vxph.common
+package com.github.blanexie.vxph.common.exception
 
-import cn.dev33.satoken.util.SaResult
+import com.github.blanexie.vxph.common.Result
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -12,15 +12,15 @@ class GlobalExceptionHandler {
     private val log = LoggerFactory.getLogger(this::class.java)
 
     @ExceptionHandler(VxphException::class)
-    fun handleVxphException(e: VxphException): SaResult {
+    fun handleVxphException(e: VxphException): Result {
         log.error("全局异常拦截了", e)
-        return SaResult.get(e.sysCode.code, e.message!!, null)
+        return Result.fail(e.sysCode, e.message!!)
     }
 
     @ExceptionHandler(Exception::class)
-    fun handleGeneralException(e: Exception): SaResult {
+    fun handleGeneralException(e: Exception): Result {
         log.error("全局异常拦截了", e)
-        return SaResult.error().fail(SysCode.ServerError)
+        return Result.fail(SysCode.ServerError)
     }
 
 }

@@ -1,39 +1,41 @@
 package com.github.blanexie.vxph.user.controller
 
 import cn.dev33.satoken.stp.StpUtil
-import cn.dev33.satoken.util.SaResult
-import com.github.blanexie.vxph.common.SysCode
-import com.github.blanexie.vxph.common.fail
+import cn.hutool.captcha.CaptchaUtil
+import com.github.blanexie.vxph.common.Result
+import com.github.blanexie.vxph.common.exception.SysCode
+import com.github.blanexie.vxph.common.timeCaptchaCache
+import com.github.blanexie.vxph.user.dto.LoginReq
 import com.github.blanexie.vxph.user.service.UserService
 import jakarta.annotation.Resource
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 
 @RestController
 @RequestMapping("/api/user")
 class UserController(@Resource val userService: UserService) {
 
-    @GetMapping("/login")
-    fun login(@RequestParam name: String, @RequestParam pwdSha256: String, @RequestParam time: Long): SaResult {
-        if (userService.login(name, pwdSha256, time)) {
-            return SaResult.ok()
+    @PostMapping("/login")
+    fun login(
+        @RequestBody loginReq: LoginReq
+    ): Result {
+        val user = userService.login(loginReq.username, loginReq.password, loginReq.time)
+        if (user != null) {
+            StpUtil.login(user.id)
+            return Result.ok(StpUtil.getTokenInfo())
         }
-        return SaResult.error().fail(SysCode.LongNameAndPwdError)
+        return Result.fail(SysCode.LongNameAndPwdError)
     }
 
     @RequestMapping("tokenInfo")
-    fun tokenInfo(): SaResult {
-        return SaResult.data(StpUtil.getTokenInfo())
+    fun tokenInfo(): Result {
+        return Result.ok(StpUtil.getTokenInfo())
     }
 
     @RequestMapping("logout")
-    fun logout(): SaResult {
+    fun logout(): Result {
         StpUtil.logout()
-        return SaResult.ok()
+        return Result.ok()
     }
-
 
 }

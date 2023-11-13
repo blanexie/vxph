@@ -12,6 +12,7 @@ data class Code(
     var name: String,
     @Column(unique = true, nullable = false)
     var code: String,
+
     @Column(nullable = false)
     var value: String,
     @Column(nullable = false)

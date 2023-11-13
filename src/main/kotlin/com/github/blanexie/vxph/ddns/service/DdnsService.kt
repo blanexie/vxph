@@ -2,8 +2,8 @@ package com.github.blanexie.vxph.ddns.service
 
 import com.aliyun.alidns20150109.Client
 import com.aliyun.alidns20150109.models.*
-import com.github.blanexie.vxph.common.SysCode
-import com.github.blanexie.vxph.common.VxphException
+import com.github.blanexie.vxph.common.exception.SysCode
+import com.github.blanexie.vxph.common.exception.VxphException
 import com.github.blanexie.vxph.ddns.entity.DomainRecord
 import com.github.blanexie.vxph.ddns.repositroy.DomainRecordRepository
 import com.github.blanexie.vxph.ddns.util.httpClient
@@ -27,7 +27,7 @@ class DdnsService(
      */
     @Scheduled(fixedDelay = 10 * 60 * 1000)
     fun schedule() {
-        log.info("定时解析判断开始")
+        log.info("定时解析任务开始")
         val findLocalIp = findLocalIp()
         val ipv4 = findLocalIp["ipv4"]
         val ipv6 = findLocalIp["ipv6"]
@@ -43,6 +43,7 @@ class DdnsService(
                 this.updateRecord(it)
             }
         }
+        log.info("定时解析任务结束")
     }
 
 
@@ -50,14 +51,12 @@ class DdnsService(
         if (domainRecord.recordId != null) {
             throw VxphException(SysCode.RecordIdExist)
         }
-
         val addDomainRecordRequest = AddDomainRecordRequest()
         addDomainRecordRequest.ttl = domainRecord.ttl.toLong()
         addDomainRecordRequest.rr = domainRecord.rr
         addDomainRecordRequest.type = domainRecord.type
         addDomainRecordRequest.value = domainRecord.value
         addDomainRecordRequest.domainName = domainRecord.domainName
-
         val addDomainRecord = client.addDomainRecord(addDomainRecordRequest)
         if (addDomainRecord.statusCode != 200) {
             throw VxphException(SysCode.AliyunClientError)

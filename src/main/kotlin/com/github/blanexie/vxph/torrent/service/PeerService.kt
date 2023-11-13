@@ -1,7 +1,7 @@
 package com.github.blanexie.vxph.torrent.service
 
-import com.github.blanexie.vxph.common.SysCode
-import com.github.blanexie.vxph.common.VxphException
+import com.github.blanexie.vxph.common.exception.SysCode
+import com.github.blanexie.vxph.common.exception.VxphException
 import com.github.blanexie.vxph.torrent.Event_Completed
 import com.github.blanexie.vxph.torrent.Event_Start
 import com.github.blanexie.vxph.torrent.dto.AnnounceResp
@@ -18,12 +18,9 @@ class PeerService(val peerRepository: PeerRepository) {
         uploaded: Long, compact: Int, event: String, remoteAddr: String, remotePort: Int
     ): AnnounceResp? {
         val peer = peerRepository.findByPassKey(passKey)
-        if (peer == null) {
-            //无效的peer
-            return AnnounceResp(10, "There is no peer. Please download the torrent first.", emptyList(), emptyList())
-        }
+            ?: return AnnounceResp(10, "There is no peer. Please download the torrent first.", emptyList(), emptyList())
+
         if (peer.infoHash != infoHash) {
-            //无效的torrent
             return AnnounceResp(10, "The torrent does not exist. Please confirm.", emptyList(), emptyList())
         }
         if (peer.peerId != null && peer.peerId != peerId) {
