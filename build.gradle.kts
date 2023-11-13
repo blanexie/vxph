@@ -39,7 +39,7 @@ dependencies {
     implementation("com.aliyun:alidns20150109:3.0.8"){
         exclude("pull-parser","pull-parser")
     }
-
+    implementation("com.dampcake:bencode:1.4.1")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
