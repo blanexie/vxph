@@ -2,6 +2,7 @@ package com.github.blanexie.vxph.torrent.controller
 
 import cn.hutool.core.util.HexUtil
 import com.github.blanexie.vxph.torrent.Event_Start
+import com.github.blanexie.vxph.torrent.dto.AnnounceReq
 import com.github.blanexie.vxph.torrent.service.PeerService
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -59,37 +60,33 @@ class PeerController(val peerService: PeerService) {
     @RequestMapping("/announce")
     fun announce(
         @RequestParam(name = "peer_id") peerId: String,
-        @RequestParam(name = "info_hash") infoHash: ByteArray,
+        @RequestParam(name = "info_hash") infoHash: String,
         @RequestParam(name = "passkey") passKey: String,
         @RequestParam port: Int?,
         @RequestParam left: Long,
         @RequestParam downloaded: Long,
         @RequestParam uploaded: Long,
-        @RequestParam compact: Int,
+        @RequestParam(defaultValue = "1") compact: Int,
         @RequestParam(defaultValue = Event_Start) event: String,
-        @RequestParam(required = false) ipv6: List<String>?,
         request: HttpServletRequest,
         response: HttpServletResponse
     ) {
-
-        val infoHashHexStr = HexUtil.encodeHexStr(infoHash)
+        val infoHashHexStr = HexUtil.encodeHexStr(infoHash.toByteArray(Charsets.US_ASCII))
         val remoteAddr = request.remoteAddr
-        val remotePort = request.remotePort
-        var announceResp = peerService.processAnnounceReq(
-            peerId, infoHashHexStr, passKey, left, downloaded, uploaded, compact, event,
-            remoteAddr, remotePort
+        val remotePort = request.remotePort.toShort()
+        //build 请求对象，屏蔽请求层的信息
+        val announceReq = AnnounceReq(
+            peerId, infoHashHexStr, passKey, left, downloaded, uploaded, compact, event, remoteAddr, remotePort
         )
-        if (announceResp != null) {
-            response.outputStream.write(announceResp.toBytes())
-            response.flushBuffer()
-            return
-        }
+        //处理请求
+        val announceResp = peerService.processAnnounce(announceReq)
 
-        announceResp = peerService.findActivePeers(infoHashHexStr)
-        response.outputStream.write(announceResp.toBytes())
+        //返回响应
+        response.outputStream.write(announceResp.toBytes(compact))
         response.flushBuffer()
         return
     }
+
 
 
 }

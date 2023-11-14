@@ -1,50 +1,60 @@
 package com.github.blanexie.vxph.torrent.service
 
-import com.github.blanexie.vxph.common.exception.SysCode
-import com.github.blanexie.vxph.common.exception.VxphException
-import com.github.blanexie.vxph.torrent.Event_Completed
-import com.github.blanexie.vxph.torrent.Event_Start
+import com.github.blanexie.vxph.torrent.*
+import com.github.blanexie.vxph.torrent.dto.AnnounceReq
 import com.github.blanexie.vxph.torrent.dto.AnnounceResp
 import com.github.blanexie.vxph.torrent.dto.PeerResp
+import com.github.blanexie.vxph.torrent.entity.Peer
 import com.github.blanexie.vxph.torrent.repository.PeerRepository
 import org.springframework.stereotype.Service
+import java.time.Duration
 import java.time.LocalDateTime
 
 @Service
 class PeerService(val peerRepository: PeerRepository) {
 
-    fun processAnnounceReq(
-        peerId: String, infoHash: String, passKey: String, left: Long, downloaded: Long,
-        uploaded: Long, compact: Int, event: String, remoteAddr: String, remotePort: Int
-    ): AnnounceResp? {
-        val peer = peerRepository.findByPassKey(passKey)
-            ?: return AnnounceResp(10, "There is no peer. Please download the torrent first.", emptyList(), emptyList())
+    fun processAnnounce(announceReq: AnnounceReq): AnnounceResp {
+        val peer = peerRepository.findByPassKey(announceReq.passKey)
+        val resp = this.checkPeer(announceReq, peer)
+        if (resp != null) {
+            return resp
+        }
 
-        if (peer.infoHash != infoHash) {
-            return AnnounceResp(10, "The torrent does not exist. Please confirm.", emptyList(), emptyList())
-        }
-        if (peer.peerId != null && peer.peerId != peerId) {
-            return AnnounceResp(10, "Please log in to the website to confirm before changing the client.", emptyList(), emptyList())
-        }
-        peer.uploadTime = LocalDateTime.now()
-        peer.peerId = peerId
-        //判断是ipv4 还是ipv6
-        if (remoteAddr.contains(".")) {
-            peer.ipv4 = remoteAddr
-        } else if (remoteAddr.contains(":")) {
-            peer.ipv6 = remoteAddr
-        } else {
-            throw VxphException(SysCode.RemoteIpError)
-        }
-        peer.port = remotePort
-        peer.left = left
-        peer.downloaded = downloaded
-        peer.uploaded = uploaded
-        peer.event = event
+        peer!!
+
+        peer.refresh(announceReq)
         peerRepository.save(peer)
-        return null
+
+        return findActivePeers(announceReq.infoHash)
     }
 
+
+
+
+    /**
+     * 校验传入的参数是否有问题
+     */
+    private fun checkPeer(announceReq: AnnounceReq, peer: Peer?): AnnounceResp? {
+        if (peer == null) {
+            return AnnounceResp(
+                announceIntervalMinute,
+                "There is no peer. Please download the torrent first.", emptyList(), emptyList()
+            )
+        }
+        if (peer.infoHash != announceReq.infoHash) {
+            return AnnounceResp(
+                announceIntervalMinute,
+                "The torrent does not exist. Please confirm.", emptyList(), emptyList()
+            )
+        }
+        if (peer.peerId != null && peer.peerId != announceReq.peerId) {
+            return AnnounceResp(
+                announceIntervalMinute,
+                "Please log in to the website to confirm before changing the client.", emptyList(), emptyList()
+            )
+        }
+        return null
+    }
 
     /**
      * 返回存活的节点
@@ -53,15 +63,21 @@ class PeerService(val peerRepository: PeerRepository) {
         val peerList = peerRepository.findByInfoHashAndEventIn(infoHash, listOf(Event_Completed, Event_Start))
         val peers = arrayListOf<PeerResp>()
         val peers6 = arrayListOf<PeerResp>()
-        peerList.sortedBy { it.uploadTime }.subList(0, 100).forEach {
-            if (it.ipv4 != null) {
-                peers.add(PeerResp(it.peerId!!, it.ipv4!!, it.port!!))
+        val now = LocalDateTime.now()
+        peerList.filter { Duration.between(now, it.uploadTime).toMinutes() < peerActiveExpireMinute }
+            .sortedBy { it.uploadTime }.subList(0, 100)
+            .forEach {
+                it.toPeerResps().forEach { peerResp ->
+                    if (peerResp.type == IpType.IPV6) {
+                        peers6.add(peerResp)
+                    }
+                    if (peerResp.type == IpType.IPV4) {
+                        peers.add(peerResp)
+                    }
+                }
             }
-            if (it.ipv6 != null) {
-                peers6.add(PeerResp(it.peerId!!, it.ipv6!!, it.port!!))
-            }
-        }
-        return AnnounceResp(10, null, peers, peers6)
+        return AnnounceResp(announceIntervalMinute, null, peers, peers6)
     }
+
 
 }

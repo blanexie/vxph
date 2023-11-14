@@ -22,6 +22,13 @@ data class Torrent(
     var publisher: String,
     var singleFile: Boolean,
 
+    //complete – 目前做种人数
+    var complete: Int,
+    //incomplete – 目前正在下载人数
+    var incomplete: Int,
+    //downloaded – 曾经下载完成过的人数
+    var downloaded: Int,
+
     @OneToMany
     var peer: List<Peer>,
     @OneToOne

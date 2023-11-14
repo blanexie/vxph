@@ -5,4 +5,7 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.query.QueryByExampleExecutor
 
 interface TorrentRepository : CrudRepository<Torrent, Long>, QueryByExampleExecutor<Torrent> {
+
+    fun findAllByInfoHashIn(infoHash:List<String>):List<Torrent>
+
 }
