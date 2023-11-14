@@ -1,14 +1,10 @@
 package com.github.blanexie.vxph.torrent.controller
 
-import cn.hutool.core.net.URLDecoder
 import cn.hutool.core.util.HexUtil
-import cn.hutool.core.util.URLUtil
 import com.github.blanexie.vxph.torrent.Event_Start
 import com.github.blanexie.vxph.torrent.service.PeerService
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -76,7 +72,6 @@ class PeerController(val peerService: PeerService) {
         response: HttpServletResponse
     ) {
 
-
         val infoHashHexStr = HexUtil.encodeHexStr(infoHash)
         val remoteAddr = request.remoteAddr
         val remotePort = request.remotePort
@@ -85,13 +80,13 @@ class PeerController(val peerService: PeerService) {
             remoteAddr, remotePort
         )
         if (announceResp != null) {
-            response.outputStream.write(announceResp.toBencodeByte())
+            response.outputStream.write(announceResp.toBytes())
             response.flushBuffer()
             return
         }
 
         announceResp = peerService.findActivePeers(infoHashHexStr)
-        response.outputStream.write(announceResp.toBencodeByte())
+        response.outputStream.write(announceResp.toBytes())
         response.flushBuffer()
         return
     }

@@ -9,43 +9,44 @@ import com.github.blanexie.vxph.common.exception.VxphException
 import java.nio.ByteBuffer
 
 class AnnounceResp(
-    val interval: Int,
-    var failReason: String?,
-    val peers: List<PeerResp>,
-    val peers6: List<PeerResp>,
+    private val interval: Int,
+    private var failReason: String?,
+    private val peers: List<PeerResp>,
+    private val peers6: List<PeerResp>,
 ) {
 
-    fun toBencodeByte(compact: Int = 1): ByteArray {
-        val mapOf = hashMapOf<String, Any>("interval" to interval)
+    fun toBytes(compact: Int = 1): ByteArray {
+        val resultMap = hashMapOf<String, Any>()
         if (StrUtil.isEmpty(failReason)) {
+            resultMap["interval"] = interval
             if (compact == 1) {
                 if (peers.isNotEmpty()) {
-                    mapOf["peers"] = peers
+                    resultMap["peers"] = peers
                 }
                 if (peers6.isNotEmpty()) {
-                    mapOf["peers6"] = peers6
+                    resultMap["peers6"] = peers6
                 }
-                return bencode.encode(mapOf)
+                return bencode.encode(resultMap)
             } else {
                 if (peers.isNotEmpty()) {
                     val allocate = ByteBuffer.allocate(peers.size * 6)
                     peers.forEach {
                         allocate.put(it.toBytes())
                     }
-                    mapOf["peers"] = allocate.array()
+                    resultMap["peers"] = allocate.array()
                 }
                 if (peers6.isNotEmpty()) {
                     val allocate = ByteBuffer.allocate(peers.size * 18)
                     peers6.forEach {
                         allocate.put(it.toBytes())
                     }
-                    mapOf["peers6"] = allocate.array()
+                    resultMap["peers6"] = allocate.array()
                 }
-                return bencode.encode(mapOf)
+                return bencode.encode(resultMap)
             }
         } else {
-            mapOf["fail reason"] = failReason!!
-            return bencode.encode(mapOf)
+            resultMap["fail reason"] = failReason!!
+            return bencode.encode(resultMap)
         }
     }
 
