@@ -21,7 +21,7 @@ data class Peer(
     var peerId: String?,
     var ipv4: String?,
     var ipv6: String?,
-    var port: Short?,
+    var port: Int?,
     var downloaded: Long,
     var left: Long,
     var uploaded: Long,

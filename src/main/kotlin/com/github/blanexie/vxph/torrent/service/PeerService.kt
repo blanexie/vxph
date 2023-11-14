@@ -24,11 +24,8 @@ class PeerService(val peerRepository: PeerRepository) {
 
         peer.refresh(announceReq)
         peerRepository.save(peer)
-
         return findActivePeers(announceReq.infoHash)
     }
-
-
 
 
     /**
@@ -53,7 +50,10 @@ class PeerService(val peerRepository: PeerRepository) {
                 "Please log in to the website to confirm before changing the client.", emptyList(), emptyList()
             )
         }
-        return null
+        return AnnounceResp(
+            announceIntervalMinute,
+            "There is no peer. Please download the torrent first.", emptyList(), emptyList()
+        )
     }
 
     /**
@@ -64,8 +64,8 @@ class PeerService(val peerRepository: PeerRepository) {
         val peers = arrayListOf<PeerResp>()
         val peers6 = arrayListOf<PeerResp>()
         val now = LocalDateTime.now()
-        peerList.filter { Duration.between(now, it.uploadTime).toMinutes() < peerActiveExpireMinute }
-            .sortedBy { it.uploadTime }.subList(0, 100)
+        peerList.filter { Duration.between(now, it.uploadTime).toSeconds() < peerActiveExpireMinute }
+            .sortedBy { it.uploadTime }.stream().limit(100)
             .forEach {
                 it.toPeerResps().forEach { peerResp ->
                     if (peerResp.type == IpType.IPV6) {

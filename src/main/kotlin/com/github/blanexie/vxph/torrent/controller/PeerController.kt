@@ -1,11 +1,14 @@
 package com.github.blanexie.vxph.torrent.controller
 
 import cn.hutool.core.util.HexUtil
+import com.github.blanexie.vxph.common.web.InfoHashParam
 import com.github.blanexie.vxph.torrent.Event_Start
 import com.github.blanexie.vxph.torrent.dto.AnnounceReq
 import com.github.blanexie.vxph.torrent.service.PeerService
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class PeerController(val peerService: PeerService) {
 
+    val log = LoggerFactory.getLogger(this::class.java)
 
     /**
      * passkey=127ad347eb825b568c9a4f88e2b27eec
@@ -60,7 +64,7 @@ class PeerController(val peerService: PeerService) {
     @RequestMapping("/announce")
     fun announce(
         @RequestParam(name = "peer_id") peerId: String,
-        @RequestParam(name = "info_hash") infoHash: String,
+        @InfoHashParam(name = "info_hash") infoHash: String,
         @RequestParam(name = "passkey") passKey: String,
         @RequestParam port: Int?,
         @RequestParam left: Long,
@@ -71,12 +75,12 @@ class PeerController(val peerService: PeerService) {
         request: HttpServletRequest,
         response: HttpServletResponse
     ) {
-        val infoHashHexStr = HexUtil.encodeHexStr(infoHash.toByteArray(Charsets.US_ASCII))
+        log.info("receive announce， infoHash:{} ", infoHash)
         val remoteAddr = request.remoteAddr
-        val remotePort = request.remotePort.toShort()
+        val remotePort = request.remotePort
         //build 请求对象，屏蔽请求层的信息
         val announceReq = AnnounceReq(
-            peerId, infoHashHexStr, passKey, left, downloaded, uploaded, compact, event, remoteAddr, remotePort
+            peerId, infoHash, passKey, left, downloaded, uploaded, compact, event, remoteAddr, remotePort
         )
         //处理请求
         val announceResp = peerService.processAnnounce(announceReq)
@@ -86,7 +90,6 @@ class PeerController(val peerService: PeerService) {
         response.flushBuffer()
         return
     }
-
 
 
 }
