@@ -4,11 +4,11 @@ import cn.hutool.core.util.StrUtil
 import com.github.blanexie.vxph.common.bencode
 import java.nio.ByteBuffer
 
-class AnnounceResp(
-    private val interval: Int,
-    private var failReason: String?,
-    private val peers: List<PeerResp>,
-    private val peers6: List<PeerResp>,
+data class AnnounceResp(
+     val interval: Int,
+     var failReason: String?,
+     val peers: List<PeerResp>,
+     val peers6: List<PeerResp>,
 ) {
 
 
@@ -28,10 +28,10 @@ class AnnounceResp(
         if (compact == 0) {
             //非紧凑格式的，
             if (peers.isNotEmpty()) {
-                resultMap["peers"] = peers
+                resultMap["peers"] = peers.map { it.toMap() }.toList()
             }
             if (peers6.isNotEmpty()) {
-                resultMap["peers6"] = peers6
+                resultMap["peers6"] = peers6.map { it.toMap() }.toList()
             }
             return bencode.encode(resultMap)
         }

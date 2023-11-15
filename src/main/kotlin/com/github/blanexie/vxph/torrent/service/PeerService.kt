@@ -1,5 +1,6 @@
 package com.github.blanexie.vxph.torrent.service
 
+import cn.hutool.core.net.NetUtil
 import com.github.blanexie.vxph.torrent.*
 import com.github.blanexie.vxph.torrent.dto.AnnounceReq
 import com.github.blanexie.vxph.torrent.dto.AnnounceResp
@@ -12,6 +13,7 @@ import java.time.LocalDateTime
 
 @Service
 class PeerService(val peerRepository: PeerRepository) {
+
 
     fun processAnnounce(announceReq: AnnounceReq): AnnounceResp {
         val peer = peerRepository.findByPassKey(announceReq.passKey)
@@ -32,6 +34,25 @@ class PeerService(val peerRepository: PeerRepository) {
      * 校验传入的参数是否有问题
      */
     private fun checkPeer(announceReq: AnnounceReq, peer: Peer?): AnnounceResp? {
+        val remoteAddr = announceReq.remoteAddr
+        if (remoteAddr.contains(".") && NetUtil.isInnerIP(remoteAddr)) {
+            //内网ip地址和本地回环地址
+            return AnnounceResp(
+                announceIntervalMinute,
+                "The download client ip address is an intranet address and cannot be processed", emptyList(), emptyList()
+            )
+        }
+        if (remoteAddr.contains(":")) {
+            //判断是否是ipv6的本地回环地址
+//            val tr = remoteAddr.split(":").all { it == "0000" || it == "0" || it == "1" || it == "0001" }
+//            if (tr) {
+//                return AnnounceResp(
+//                    announceIntervalMinute,
+//                    "The download client ip address is an intranet address and cannot be processed", emptyList(), emptyList()
+//                )
+//            }
+        }
+
         if (peer == null) {
             return AnnounceResp(
                 announceIntervalMinute,
@@ -50,10 +71,7 @@ class PeerService(val peerRepository: PeerRepository) {
                 "Please log in to the website to confirm before changing the client.", emptyList(), emptyList()
             )
         }
-        return AnnounceResp(
-            announceIntervalMinute,
-            "There is no peer. Please download the torrent first.", emptyList(), emptyList()
-        )
+        return null
     }
 
     /**
@@ -64,7 +82,7 @@ class PeerService(val peerRepository: PeerRepository) {
         val peers = arrayListOf<PeerResp>()
         val peers6 = arrayListOf<PeerResp>()
         val now = LocalDateTime.now()
-        peerList.filter { Duration.between(now, it.uploadTime).toSeconds() < peerActiveExpireMinute }
+        peerList.filter { Duration.between(it.uploadTime, now).toSeconds() < peerActiveExpireMinute }
             .sortedBy { it.uploadTime }.stream().limit(100)
             .forEach {
                 it.toPeerResps().forEach { peerResp ->

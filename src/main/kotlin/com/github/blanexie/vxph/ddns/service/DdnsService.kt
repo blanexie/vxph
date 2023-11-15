@@ -27,7 +27,7 @@ class DdnsService(
      */
     @Scheduled(fixedDelay = 10 * 60 * 1000)
     fun schedule() {
-        log.info("定时解析任务开始")
+        log.info("定时DDNS解析任务开始")
         val findLocalIp = findLocalIp()
         val ipv4 = findLocalIp["ipv4"]
         val ipv6 = findLocalIp["ipv6"]
@@ -43,7 +43,7 @@ class DdnsService(
                 this.updateRecord(it)
             }
         }
-        log.info("定时解析任务结束")
+        log.info("定时DDNS解析任务结束")
     }
 
 

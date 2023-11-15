@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.query.Param
 import org.springframework.data.repository.query.QueryByExampleExecutor
+import java.time.LocalDateTime
 
 interface PeerRepository : CrudRepository<Peer, Long>, QueryByExampleExecutor<Peer> {
 
@@ -12,7 +13,12 @@ interface PeerRepository : CrudRepository<Peer, Long>, QueryByExampleExecutor<Pe
 
     fun findByInfoHashAndEventIn(infoHash: String, events: List<String>): List<Peer>
 
-    @Query(" from Peer p where p.left = 0 and p.infoHash in  ( :infoHash ) ")
-    fun findByInfoHashIn(@Param("infoHash") infoHash: List<String>):List<Peer>
+    fun findAllByInfoHash(infoHash: String): List<Peer>
+
+    @Query("select distinct p.infoHash from Peer p where  p.uploadTime > :startTime")
+    fun findInfoHashAfter(@Param("startTime") startTime: LocalDateTime): List<String>
+
+    @Query(" from Peer p where p.infoHash in ( :infoHash ) ")
+    fun findByInfoHashIn(@Param("infoHash") infoHash: List<String>): List<Peer>
 
 }

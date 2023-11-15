@@ -10,18 +10,22 @@ import com.github.blanexie.vxph.common.exception.VxphException
 import com.github.blanexie.vxph.torrent.IpType
 import java.nio.ByteBuffer
 
-class PeerResp(
+data class PeerResp(
     val peerId: String,
     val ip: String,
     val port: Int,
     val type: IpType,
 ) {
 
+    fun toMap(): Map<String, Any> {
+        return mapOf("peer id" to peerId, "port" to port, "ip" to ip)
+    }
+
     fun toBytes(): ByteArray {
-        if (ip.contains(".")) {
-            return toIpv4Bytes()
-        } else if (ip.contains(":")) {
-            return toIpv6Bytes()
+        return if (IpType.IPV4 == type) {
+            toIpv4Bytes()
+        } else if (IpType.IPV6 == type) {
+            toIpv6Bytes()
         } else {
             throw VxphException(SysCode.IpError)
         }

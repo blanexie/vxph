@@ -11,18 +11,4 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class TorrentController(val torrentService: TorrentService) {
 
-    /**
-     * 抓取
-     */
-    @RequestMapping("/scrape")
-    fun scrape(
-        @InfoHashParam("infoHash") infoHash: List<String>, request: HttpServletRequest,
-        response: HttpServletResponse
-    ) {
-        val scrapeResp = torrentService.processScrape(infoHash)
-        response.outputStream.write(scrapeResp.toBytes())
-        response.flushBuffer()
-        return
-    }
-
 }

@@ -12,12 +12,19 @@ import jakarta.persistence.*
 import java.time.LocalDateTime
 
 @Entity
+@Table(
+    indexes = [
+        Index(columnList = "info_hash,peer_id", unique = true)
+    ],
+)
 data class Peer(
     @Id
     var id: Long?,
+    @Column(name = "info_hash")
     var infoHash: String,
     @Column(unique = true)
     var passKey: String,
+    @Column(name = "peer_id")
     var peerId: String?,
     var ipv4: String?,
     var ipv6: String?,
@@ -30,7 +37,7 @@ data class Peer(
 
     @ManyToOne
     var torrent: Torrent,
-    @OneToOne
+    @ManyToOne
     var user: User
 
 ) : BaseEntity() {

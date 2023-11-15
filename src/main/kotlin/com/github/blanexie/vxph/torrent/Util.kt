@@ -1,13 +1,13 @@
 package com.github.blanexie.vxph.torrent
 
-import cn.hutool.core.util.HexUtil
-import cn.hutool.core.util.URLUtil
-
 
 const val announceIntervalMinute = 10 * 60
 const val peerActiveExpireMinute = announceIntervalMinute * 2
 
-//started, completed或stopped之一
+//started 种子开始下载
+//completed 种子下载完成，开始做种
+//stopped 种子停止下载 / 做种，不再活动
+//empty 和没有此字段的情况完全相同
 const val Event_Start = "started"
 const val Event_Completed = "completed"
 const val Event_Stopped = "stopped"
@@ -26,7 +26,7 @@ fun parseInfoHash(encoded: String): String {
             if (c == '%') {
                 r.append(encoded[i + 1])
                 r.append(encoded[i + 2])
-                i = i + 2
+                i += 2
             } else {
                 r.append(String.format("%02x", c.code))
             }
@@ -36,16 +36,4 @@ fun parseInfoHash(encoded: String): String {
     } catch (e: Exception) {
         throw IllegalArgumentException("Failed to decode info_hash: $encoded")
     }
-}
-
-
-fun main() {
-    //passkey=aaaaaaaaaaaaaaaaaa&info_hash=%d8%c0%da%8bc%14%ff%c5t%02%fcZ%013%a5%dc%a1%9d%b5%dd&peer_id=-qB4550-4t-~kDHM1tRg&port=16881&uploaded=167871&downloaded=0&left=0&corrupt=0&key=3AF74B03&numwant=200&compact=1&no_peer_id=1&supportcrypto=1&redundant=0
-    val infoHash = "%d8%c0%da%8bc%14%ff%c5t%02%fcZ%013%a5%dc%a1%9d%b5%dd"
-    val toByteArray = URLUtil.decode(infoHash).toByteArray(Charsets.US_ASCII)
-    val encodeHexStr = HexUtil.encodeHexStr(toByteArray)
-    println(encodeHexStr)
-
-    val parseInfoHash = parseInfoHash(infoHash)
-    println(parseInfoHash)
 }
