@@ -10,14 +10,14 @@ data class Post(
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Long?,
     var title: String,
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     var coverImg: FileResource?,
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     var owner: User,
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY)
     var imgs: List<FileResource>,
 
     var markdown: String, //描述， 长文本
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY)
     var torrent: List<Torrent>,
 ):BaseEntity()

@@ -28,10 +28,10 @@ data class Torrent(
     //downloaded – 曾经下载完成过的人数
     var downloaded: Int,
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY)
     var peer: List<Peer>,
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     var owner: User,
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     var post: Post,
 ) : BaseEntity()

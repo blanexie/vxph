@@ -6,7 +6,7 @@ import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing
 import org.springframework.scheduling.annotation.EnableScheduling
 
-@EnableScheduling
+//@EnableScheduling
 @EnableJpaAuditing
 @SpringBootApplication
 class VxphApplication {

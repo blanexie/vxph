@@ -1,5 +1,6 @@
 package com.github.blanexie.vxph.torrent.controller
 
+import cn.dev33.satoken.annotation.SaIgnore
 import cn.hutool.core.net.NetUtil
 import com.github.blanexie.vxph.common.objectMapper
 import com.github.blanexie.vxph.common.web.InfoHashParam
@@ -62,6 +63,7 @@ class TrackerController(val peerService: PeerService, val torrentService: Torren
      * remotePort: 54116
      * remoteAddr:127.0.0.1
      */
+    @SaIgnore
     @GetMapping("/announce")
     fun announce(
         @RequestParam(name = "peer_id") peerId: String,
@@ -81,9 +83,8 @@ class TrackerController(val peerService: PeerService, val torrentService: Torren
         val remoteAddr = request.remoteAddr
         val remotePort = request.remotePort
         //build 请求对象，屏蔽请求层的信息
-        val announceReq = AnnounceReq(
-            peerId, infoHash, passKey, left, downloaded, uploaded, compact, event, remoteAddr, remotePort
-        )
+        val announceReq =
+            AnnounceReq(peerId, infoHash, passKey, left, downloaded, uploaded, compact, event, remoteAddr, port?:remotePort)
         //处理请求
         val announceResp = peerService.processAnnounce(announceReq)
         log.info("announce， resp:{} ", objectMapper.writeValueAsString(announceResp))
@@ -97,6 +98,7 @@ class TrackerController(val peerService: PeerService, val torrentService: Torren
     /**
      * 抓取
      */
+    @SaIgnore
     @GetMapping("/scrape")
     fun scrape(
         @InfoHashParam("infoHash") infoHash: List<String>, request: HttpServletRequest,

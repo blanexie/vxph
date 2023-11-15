@@ -35,12 +35,12 @@ class PeerService(val peerRepository: PeerRepository) {
      */
     private fun checkPeer(announceReq: AnnounceReq, peer: Peer?): AnnounceResp? {
         val remoteAddr = announceReq.remoteAddr
-        if (remoteAddr.contains(".") && NetUtil.isInnerIP(remoteAddr)) {
-            //内网ip地址和本地回环地址
-            return AnnounceResp(
-                announceIntervalMinute,
-                "The download client ip address is an intranet address and cannot be processed", emptyList(), emptyList()
-            )
+        if (remoteAddr.contains(".") && remoteAddr == "127.0.0.1") {
+//            //内网ip地址和本地回环地址
+//            return AnnounceResp(
+//                announceIntervalMinute,
+//                "The download client ip address is an intranet address and cannot be processed", emptyList(), emptyList()
+//            )
         }
         if (remoteAddr.contains(":")) {
             //判断是否是ipv6的本地回环地址

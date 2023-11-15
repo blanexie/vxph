@@ -35,9 +35,9 @@ data class Peer(
     var event: String,
     var uploadTime: LocalDateTime,
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     var torrent: Torrent,
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     var user: User
 
 ) : BaseEntity() {
@@ -50,7 +50,9 @@ data class Peer(
         //判断是ipv4 还是ipv6
         if (announceReq.remoteAddr.contains(".")) {
             this.ipv4 = announceReq.remoteAddr
+            this.ipv6 = null
         } else if (announceReq.remoteAddr.contains(":")) {
+            this.ipv4 = null
             this.ipv6 = announceReq.remoteAddr
         } else {
             throw VxphException(SysCode.RemoteIpError)

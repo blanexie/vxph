@@ -2,7 +2,12 @@ package com.github.blanexie.vxph.torrent.dto
 
 import cn.hutool.core.util.StrUtil
 import com.github.blanexie.vxph.common.bencode
+import com.github.blanexie.vxph.common.objectMapper
+import org.slf4j.LoggerFactory
 import java.nio.ByteBuffer
+
+
+private val log=LoggerFactory.getLogger(AnnounceResp::class.java)
 
 data class AnnounceResp(
      val interval: Int,
@@ -20,6 +25,7 @@ data class AnnounceResp(
         if (StrUtil.isNotEmpty(failReason)) {
             //有异常， 返回错误信息
             resultMap["fail reason"] = failReason!!
+            log.info("becode result :{}" , objectMapper.writeValueAsString(resultMap))
             return bencode.encode(resultMap)
         }
         //请求间隔，单位是分钟
@@ -33,6 +39,7 @@ data class AnnounceResp(
             if (peers6.isNotEmpty()) {
                 resultMap["peers6"] = peers6.map { it.toMap() }.toList()
             }
+            log.info("becode result :{}" , objectMapper.writeValueAsString(resultMap))
             return bencode.encode(resultMap)
         }
 
@@ -51,6 +58,7 @@ data class AnnounceResp(
             }
             resultMap["peers6"] = allocate.array()
         }
+        log.info("becode result :{}" , objectMapper.writeValueAsString(resultMap))
         return bencode.encode(resultMap)
     }
 
