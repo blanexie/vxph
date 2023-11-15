@@ -1,6 +1,6 @@
 package com.github.blanexie.vxph.common.exception
 
-import com.github.blanexie.vxph.common.Result
+import com.github.blanexie.vxph.common.web.Result
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler

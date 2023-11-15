@@ -1,4 +1,4 @@
-package com.github.blanexie.vxph.common
+package com.github.blanexie.vxph.common.web
 
 import com.github.blanexie.vxph.common.exception.SysCode
 

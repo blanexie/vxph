@@ -13,6 +13,9 @@ const val Event_Completed = "completed"
 const val Event_Stopped = "stopped"
 const val Event_Empty = "empty"
 
+
+const val Announce_Url_Code ="Announce_Url_Code"
+
 enum class IpType {
     IPV4, IPV6
 }

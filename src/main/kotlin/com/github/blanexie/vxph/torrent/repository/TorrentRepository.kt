@@ -9,6 +9,9 @@ interface TorrentRepository : CrudRepository<Torrent, Long>, QueryByExampleExecu
 
     fun findAllByInfoHashIn(infoHash: List<String>): List<Torrent>
 
+    fun findByInfoHash(infoHash: String):Torrent?
+
+
     @Query("update Torrent  set incomplete=:incomplete , complete=:complete , downloaded=:downloaded where infoHash=:infoHash")
     fun updateData(
         incomplete: Int,

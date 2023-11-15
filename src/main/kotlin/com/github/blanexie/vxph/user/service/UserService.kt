@@ -15,4 +15,8 @@ class UserService(@Resource val userRepository: UserRepository) {
         }
         return null
     }
+
+    fun findById(userId: Long): User? {
+        return userRepository.findById(userId).orElse(null)
+    }
 }

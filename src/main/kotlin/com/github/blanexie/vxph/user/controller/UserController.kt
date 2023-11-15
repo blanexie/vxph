@@ -1,10 +1,8 @@
 package com.github.blanexie.vxph.user.controller
 
 import cn.dev33.satoken.stp.StpUtil
-import cn.hutool.captcha.CaptchaUtil
-import com.github.blanexie.vxph.common.Result
+import com.github.blanexie.vxph.common.web.Result
 import com.github.blanexie.vxph.common.exception.SysCode
-import com.github.blanexie.vxph.common.timeCaptchaCache
 import com.github.blanexie.vxph.user.dto.LoginReq
 import com.github.blanexie.vxph.user.service.UserService
 import jakarta.annotation.Resource
