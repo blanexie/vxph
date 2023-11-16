@@ -1,8 +1,7 @@
-package com.github.blanexie.vxph.common.satoken
+package com.github.blanexie.vxph.common.satoken.servlet
 
 import cn.dev33.satoken.context.model.SaResponse
 import cn.dev33.satoken.exception.SaTokenException
-import cn.dev33.satoken.servlet.error.SaServletErrorCode
 import jakarta.servlet.http.HttpServletResponse
 
 class SaResponseForServlet(val response: HttpServletResponse): SaResponse {

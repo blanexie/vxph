@@ -11,6 +11,9 @@ plugins {
 group = "com.github.blanexie.vxph"
 version = "0.0.1-SNAPSHOT"
 
+ val saTokenVersion="1.37.0"
+
+
 java {
     sourceCompatibility = JavaVersion.VERSION_17
 }
@@ -34,10 +37,14 @@ dependencies {
 
     implementation("org.xerial:sqlite-jdbc:3.43.0.0")
     implementation("org.hibernate.orm:hibernate-community-dialects:6.3.1.Final")
-    implementation("cn.dev33:sa-token-spring-boot-starter:1.37.0")
+   // implementation("cn.dev33:sa-token-spring-boot-starter:1.37.0")
+    implementation("cn.dev33:sa-token-spring-boot-autoconfig:${saTokenVersion}")
+    implementation("cn.dev33:sa-token-core:${saTokenVersion}")
+
+
     implementation("cn.hutool:hutool-all:5.8.22")
-    implementation("com.aliyun:alidns20150109:3.0.8"){
-        exclude("pull-parser","pull-parser")
+    implementation("com.aliyun:alidns20150109:3.0.8") {
+        exclude("pull-parser", "pull-parser")
     }
     implementation("com.dampcake:bencode:1.4.1")
     developmentOnly("org.springframework.boot:spring-boot-devtools")

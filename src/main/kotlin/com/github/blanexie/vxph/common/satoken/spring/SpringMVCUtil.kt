@@ -1,4 +1,4 @@
-package com.github.blanexie.vxph.common.satoken
+package com.github.blanexie.vxph.common.satoken.spring
 
 import cn.dev33.satoken.error.SaSpringBootErrorCode
 import cn.dev33.satoken.exception.NotWebContextException

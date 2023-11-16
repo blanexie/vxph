@@ -9,7 +9,7 @@ class FileResourceService(
     private val fileResourceRepository: FileResourceRepository
 ) {
 
-    fun findByHashs(hashs: List<String>):List<FileResource> {
+    fun findAllByHashIn(hashs: List<String>):List<FileResource> {
         return fileResourceRepository.findAllByHashIn(hashs)
     }
 

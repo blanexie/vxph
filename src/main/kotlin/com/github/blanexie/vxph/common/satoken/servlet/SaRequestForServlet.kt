@@ -1,10 +1,9 @@
-package com.github.blanexie.vxph.common.satoken
+package com.github.blanexie.vxph.common.satoken.servlet
 
 import cn.dev33.satoken.SaManager
 import cn.dev33.satoken.application.ApplicationInfo
 import cn.dev33.satoken.context.model.SaRequest
 import cn.dev33.satoken.exception.SaTokenException
-import cn.dev33.satoken.servlet.error.SaServletErrorCode
 import cn.dev33.satoken.util.SaFoxUtil
 import jakarta.servlet.ServletException
 import jakarta.servlet.http.Cookie

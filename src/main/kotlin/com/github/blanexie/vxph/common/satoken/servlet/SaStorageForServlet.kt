@@ -1,4 +1,4 @@
-package com.github.blanexie.vxph.common.satoken
+package com.github.blanexie.vxph.common.satoken.servlet
 
 import cn.dev33.satoken.context.model.SaStorage
 import jakarta.servlet.http.HttpServletRequest

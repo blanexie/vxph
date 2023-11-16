@@ -1,4 +1,4 @@
-package com.github.blanexie.vxph.common.satoken
+package com.github.blanexie.vxph.common.satoken.interceptor
 
 import cn.dev33.satoken.annotation.SaIgnore
 import cn.dev33.satoken.exception.BackResultException

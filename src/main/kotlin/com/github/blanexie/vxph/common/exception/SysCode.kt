@@ -11,4 +11,5 @@ enum class SysCode(val code: Int, val msg: String) {
     IpError(613, "错误的ip地址，无法解析"),
     PostNotExist(614, "帖子不存在"),
     TorrentNotExist(615, "Torrent不存在"),
+    UserNotExist(616, "用户已经不存在了"),
 }

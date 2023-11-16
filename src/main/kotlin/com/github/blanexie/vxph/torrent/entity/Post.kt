@@ -12,7 +12,7 @@ data class Post(
     var title: String,
     @OneToOne(fetch = FetchType.LAZY)
     var coverImg: FileResource?,
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     var owner: User,
     @OneToMany(fetch = FetchType.LAZY)
     var imgs: List<FileResource>,
@@ -20,4 +20,4 @@ data class Post(
     var markdown: String, //描述， 长文本
     @OneToMany(fetch = FetchType.LAZY)
     var torrent: List<Torrent>,
-):BaseEntity()
+) : BaseEntity()

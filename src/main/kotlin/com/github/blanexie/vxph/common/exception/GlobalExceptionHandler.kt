@@ -23,7 +23,7 @@ class GlobalExceptionHandler {
     @ResponseBody
     @ExceptionHandler(NotLoginException::class)
     fun handleNotLoginException(e: NotLoginException): WebResp {
-        log.error("全局NotLogin异常拦截了", e)
+        log.error("全局NotLogin异常拦截了, {}", e.message)
         return WebResp.fail(SysCode.NotLoginError)
     }
 

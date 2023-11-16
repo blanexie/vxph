@@ -31,7 +31,7 @@ class TorrentService(
     val torrentPath: String,
 ) {
 
-    val log = LoggerFactory.getLogger(this::class.java)
+    private val log = LoggerFactory.getLogger(this::class.java)
 
     /**
      * 定时任务， 统计
@@ -63,6 +63,14 @@ class TorrentService(
             torrentRepository.updateData(incomplete, complete, downloaded, it)
         }
         log.info("定时统计torrent数据，定时任务结束")
+    }
+
+    fun findAllByInfoHashIn(infoHash: List<String>): List<Torrent> {
+        if (infoHash.isEmpty()) {
+            return emptyList()
+        }
+        return torrentRepository.findAllByInfoHashIn(infoHash)
+
     }
 
     fun buildTorrentBytes(infoHash: String): ByteBuffer {
