@@ -83,8 +83,10 @@ class TrackerController(val peerService: PeerService, val torrentService: Torren
         val remoteAddr = request.remoteAddr
         val remotePort = request.remotePort
         //build 请求对象，屏蔽请求层的信息
-        val announceReq =
-            AnnounceReq(peerId, infoHash, passKey, left, downloaded, uploaded, compact, event, remoteAddr, port?:remotePort)
+        val announceReq = AnnounceReq(
+                peerId, infoHash, passKey, left, downloaded, uploaded, compact,
+                event, remoteAddr, port ?: remotePort
+            )
         //处理请求
         val announceResp = peerService.processAnnounce(announceReq)
         log.info("announce， resp:{} ", objectMapper.writeValueAsString(announceResp))
@@ -101,7 +103,7 @@ class TrackerController(val peerService: PeerService, val torrentService: Torren
     @SaIgnore
     @GetMapping("/scrape")
     fun scrape(
-        @InfoHashParam("infoHash") infoHash: List<String>, request: HttpServletRequest,
+        @InfoHashParam("info_hash") infoHash: List<String>, request: HttpServletRequest,
         response: HttpServletResponse
     ) {
         val scrapeResp = torrentService.processScrape(infoHash)

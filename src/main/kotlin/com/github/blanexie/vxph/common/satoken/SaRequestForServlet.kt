@@ -17,7 +17,7 @@ class SaRequestForServlet(val request: HttpServletRequest) : SaRequest {
         return request;
     }
 
-    override fun getParam(name: String?): String {
+    override fun getParam(name: String?): String? {
         return request.getParameter(name)
     }
 
@@ -41,7 +41,7 @@ class SaRequestForServlet(val request: HttpServletRequest) : SaRequest {
         return map
     }
 
-    override fun getHeader(name: String): String {
+    override fun getHeader(name: String): String? {
         return request.getHeader(name)
     }
 
@@ -49,8 +49,8 @@ class SaRequestForServlet(val request: HttpServletRequest) : SaRequest {
         val cookies: Array<Cookie>? = request.cookies
         if (cookies != null) {
             for (cookie in cookies) {
-                if (cookie != null && name == cookie.getName()) {
-                    return cookie.getValue()
+                if (name == cookie.name) {
+                    return cookie.value
                 }
             }
         }

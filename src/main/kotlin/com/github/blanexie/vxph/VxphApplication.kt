@@ -9,8 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
 //@EnableScheduling
 @EnableJpaAuditing
 @SpringBootApplication
-class VxphApplication {
-}
+class VxphApplication
 
 var context: ConfigurableApplicationContext? = null
 fun main(args: Array<String>) {

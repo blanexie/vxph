@@ -7,7 +7,7 @@ import com.dampcake.bencode.Type
 import com.github.blanexie.vxph.common.bencode
 import com.github.blanexie.vxph.common.exception.SysCode
 import com.github.blanexie.vxph.common.objectMapper
-import com.github.blanexie.vxph.common.web.Result
+import com.github.blanexie.vxph.common.web.WebResp
 import com.github.blanexie.vxph.torrent.entity.Torrent
 import com.github.blanexie.vxph.torrent.service.PostService
 import com.github.blanexie.vxph.torrent.service.TorrentService
@@ -34,9 +34,9 @@ class TorrentController(
         @RequestPart file: MultipartFile,
         @RequestParam postId: Long,
         @RequestParam title: String
-    ): Result {
+    ): WebResp {
         //1. 判断postId是否存在
-        val post = postService.findByPostId(postId) ?: return Result.fail(SysCode.PostNotExist)
+        val post = postService.findByPostId(postId) ?: return WebResp.fail(SysCode.PostNotExist)
         //2. 解析文件内容
         val torrentMap = bencode.decode(file.bytes, Type.DICTIONARY)
         val info = getPrivateInfo(torrentMap)
@@ -59,7 +59,7 @@ class TorrentController(
         //3. 保存文件和修改数据库
         File("${torrentPath}/${infoHash}").writeBytes(infoBytes)
         torrentService.save(torrent)
-        return Result.ok()
+        return WebResp.ok()
     }
 
     @PostMapping("/download")

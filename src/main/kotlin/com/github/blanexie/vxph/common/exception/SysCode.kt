@@ -2,6 +2,7 @@ package com.github.blanexie.vxph.common.exception
 
 enum class SysCode(val code: Int, val msg: String) {
 
+    NotLoginError(403, "请登录后访问"),
     ServerError(500, "Server Error"),
     LongNameAndPwdError(600, "用户名或者密码错误"),
     AliyunClientError(610, "阿里云DDNS错误"),

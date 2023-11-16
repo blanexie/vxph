@@ -7,7 +7,7 @@ import org.springframework.web.context.request.NativeWebRequest
 import org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver
 
 
-class InfoHashRequestParamResolver : AbstractNamedValueMethodArgumentResolver() {
+class InfoHashParamResolver : AbstractNamedValueMethodArgumentResolver() {
 
 
     override fun supportsParameter(parameter: MethodParameter): Boolean {
