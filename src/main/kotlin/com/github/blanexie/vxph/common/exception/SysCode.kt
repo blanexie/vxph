@@ -12,4 +12,5 @@ enum class SysCode(val code: Int, val msg: String) {
     PostNotExist(614, "帖子不存在"),
     TorrentNotExist(615, "Torrent不存在"),
     UserNotExist(616, "用户已经不存在了"),
+    NotAllowFile(617, "不允许上传的文件类型"),
 }

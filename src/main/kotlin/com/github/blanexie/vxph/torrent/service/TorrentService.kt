@@ -1,23 +1,25 @@
 package com.github.blanexie.vxph.torrent.service
 
+import cn.hutool.core.util.IdUtil
 import com.github.blanexie.vxph.common.bencode
 import com.github.blanexie.vxph.common.exception.SysCode
 import com.github.blanexie.vxph.common.exception.VxphException
 import com.github.blanexie.vxph.torrent.Event_Completed
+import com.github.blanexie.vxph.torrent.Event_Empty
 import com.github.blanexie.vxph.torrent.Event_Start
-import com.github.blanexie.vxph.torrent.Event_Stopped
 import com.github.blanexie.vxph.torrent.announceIntervalMinute
 import com.github.blanexie.vxph.torrent.dto.ScrapeData
 import com.github.blanexie.vxph.torrent.dto.ScrapeResp
+import com.github.blanexie.vxph.torrent.entity.Peer
 import com.github.blanexie.vxph.torrent.entity.Torrent
 import com.github.blanexie.vxph.torrent.repository.PeerRepository
 import com.github.blanexie.vxph.torrent.repository.TorrentRepository
 import com.github.blanexie.vxph.user.service.CodeService
+import com.github.blanexie.vxph.user.service.UserService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
-import org.sqlite.core.Codes
 import java.io.File
 import java.nio.ByteBuffer
 import java.time.LocalDateTime
@@ -27,6 +29,7 @@ class TorrentService(
     private val torrentRepository: TorrentRepository,
     private val peerRepository: PeerRepository,
     private val codeService: CodeService,
+    private val userService: UserService,
     @Value("\${vxph.torrent.path}")
     val torrentPath: String,
 ) {
@@ -73,26 +76,33 @@ class TorrentService(
 
     }
 
-    fun buildTorrentBytes(infoHash: String): ByteBuffer {
+    fun buildTorrentBytes(infoHash: String, userId: Long): ByteBuffer {
         val torrent = torrentRepository.findByInfoHash(infoHash)
         if (torrent != null) {
-            val infoBytes = File("${torrentPath}/${infoHash}").readBytes()
+            val passkey = IdUtil.fastSimpleUUID()
+            val user = userService.findById(userId)!!
+            val infoBytes = File("${torrentPath}/${infoHash}.torrent").readBytes()
             val torrentMap = hashMapOf<String, Any>()
             torrentMap["comment"] = "vxph torrent,  ${torrent.comment}"
             torrentMap["create date"] = torrent.creationDate
             torrentMap["create by"] = torrent.createdBy
             val announceUrl = codeService.findAnnounceUrl()
             if (announceUrl.isNotEmpty() && announceUrl.size == 1) {
-                torrentMap["announce"] = announceUrl[0]
+                torrentMap["announce"] = "${announceUrl[0]}?passkey=$passkey"
             } else {
-                torrentMap["announce"] = announceUrl[0]
-                torrentMap["announce-list"] = announceUrl
+                torrentMap["announce"] = "${announceUrl[0]}?passkey=$passkey"
+                torrentMap["announce-list"] = announceUrl.map { "${it}?passkey=$passkey" }.toList()
             }
             val encode = bencode.encode(torrentMap)
             val result = ByteBuffer.allocate(encode.size + infoBytes.size)
             result.put(encode)
             result.put(encode.size - 1, infoBytes)
-            result.put(65.toByte())
+            result.put(101.toByte())
+            val peer = Peer(
+                null, torrent.infoHash, passkey, null, null, null, null, 0, 0,
+                0, Event_Empty, LocalDateTime.now(), torrent, user
+            )
+            peerRepository.save(peer)
             return result
         } else {
             throw VxphException(SysCode.TorrentNotExist)

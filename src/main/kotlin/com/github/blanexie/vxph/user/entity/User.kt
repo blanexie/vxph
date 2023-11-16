@@ -1,6 +1,7 @@
 package com.github.blanexie.vxph.user.entity
 
 import cn.hutool.crypto.digest.DigestUtil
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.github.blanexie.vxph.common.BaseEntity
 import com.github.blanexie.vxph.common.getProperty
 import com.github.blanexie.vxph.torrent.announceIntervalMinute
@@ -21,6 +22,7 @@ data class User(
     var name: String,
     @Column(unique = true, nullable = false)
     var email: String,
+    @JsonIgnore
     @Column(nullable = false)
     var password: String,
     @Column(nullable = false)

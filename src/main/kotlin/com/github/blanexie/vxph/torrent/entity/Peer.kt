@@ -19,6 +19,7 @@ import java.time.LocalDateTime
 )
 data class Peer(
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Long?,
     @Column(name = "info_hash")
     var infoHash: String,
