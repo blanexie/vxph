@@ -1,7 +1,6 @@
 package com.github.blanexie.vxph.torrent.util
 
-import java.nio.ByteBuffer
-
+import cn.hutool.core.io.FileTypeUtil
 
 const val announceIntervalMinute = 10 * 60
 const val peerActiveExpireMinute = announceIntervalMinute * 2
@@ -23,30 +22,9 @@ enum class IpType {
     IPV4, IPV6
 }
 
-fun parseInfoHash(encoded: String): String {
-    return try {
-        val r = StringBuilder()
-        var i = 0
-        while (i < encoded.length) {
-            val c = encoded[i]
-            if (c == '%') {
-                r.append(encoded[i + 1])
-                r.append(encoded[i + 2])
-                i += 2
-            } else {
-                r.append(String.format("%02x", c.code))
-            }
-            i++
-        }
-        r.toString().lowercase()
-    } catch (e: Exception) {
-        throw IllegalArgumentException("Failed to decode info_hash: $encoded")
-    }
-}
-
 
 fun HashMap<String, Any>.readString(key: String): String {
-    val byteBuffer = this[key] as ByteBuffer?
+    val byteBuffer = this[key] as java.nio.ByteBuffer?
     return byteBuffer?.let {
         String(it.array())
     } ?: ""

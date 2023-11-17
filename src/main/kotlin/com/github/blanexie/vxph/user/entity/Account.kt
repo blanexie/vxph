@@ -13,11 +13,11 @@ data class Account(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Long?,
+
     @Column
     var upload: Long,
     @Column
     var download: Long,
-
     @Column
     var uploadReal: Long,
     @Column
@@ -27,7 +27,6 @@ data class Account(
 
     @Column
     var level: String,
-
     @OneToOne
     var user: User,
 ) : BaseEntity()

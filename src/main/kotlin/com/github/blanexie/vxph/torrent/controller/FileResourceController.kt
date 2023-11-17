@@ -2,6 +2,7 @@ package com.github.blanexie.vxph.torrent.controller
 
 import cn.dev33.satoken.stp.StpUtil
 import cn.hutool.core.date.DateUtil
+import cn.hutool.core.img.ImgUtil
 import cn.hutool.core.io.FileUtil
 import cn.hutool.core.io.IoUtil
 import com.github.blanexie.vxph.common.web.StreamProgressImpl
@@ -25,9 +26,9 @@ import java.util.TimeZone
 @Controller
 class FileResourceController(
     private val userService: UserService,
+    private val fileResourceService: FileResourceService,
     @Value("\${vxph.file.path}")
     private val filePath: String,
-    private val fileResourceService: FileResourceService,
 ) {
 
 
@@ -39,8 +40,9 @@ class FileResourceController(
         //获取后缀
         val suffix = FileUtil.getSuffix(file.originalFilename)
         val fileResource = FileResource(hash, file.originalFilename, suffix, file.size, user!!)
-        val resource = fileResourceService.saveFile(fileResource)
+        //先保存文件，再保存数据库记录，保证数据库中的记录必定会有对应的文件
         file.transferTo(File("${filePath}/${fileResource.hash}.${fileResource.suffix}"))
+        val resource = fileResourceService.saveFile(fileResource)
         return WebResp.ok(resource)
     }
 
@@ -55,11 +57,13 @@ class FileResourceController(
         file.inputStream().use {
             IoUtil.copy(it, bufferedInputStream)
         }
+        bufferedInputStream.flush()
     }
 
     @GetMapping("/delete")
     fun delete(@RequestParam("hash") hash: String): WebResp {
-        fileResourceService.deleteByHash(hash)
+        val fileResource = fileResourceService.deleteByHash(hash)
+        File("$filePath/${fileResource.hash}.${fileResource.suffix}").deleteOnExit()
         return WebResp.ok()
     }
 

@@ -7,10 +7,8 @@ import jakarta.persistence.*
 @Entity
 data class Path(
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    var id: Long?,
+    var path: String?,
     var name: String,
-    var path: String,
     var method: String,
     @ManyToMany
     var roles: List<Role>

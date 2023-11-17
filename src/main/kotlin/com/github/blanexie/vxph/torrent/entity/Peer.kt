@@ -5,8 +5,8 @@ import com.github.blanexie.vxph.common.BaseEntity
 import com.github.blanexie.vxph.common.exception.SysCode
 import com.github.blanexie.vxph.common.exception.VxphException
 import com.github.blanexie.vxph.torrent.util.IpType
-import com.github.blanexie.vxph.torrent.dto.AnnounceReq
-import com.github.blanexie.vxph.torrent.dto.PeerResp
+import com.github.blanexie.vxph.torrent.controller.dto.AnnounceReq
+import com.github.blanexie.vxph.torrent.controller.dto.PeerResp
 import com.github.blanexie.vxph.user.entity.User
 import jakarta.persistence.*
 import java.time.LocalDateTime

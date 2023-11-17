@@ -1,6 +1,6 @@
 package com.github.blanexie.vxph.torrent.service
 
-import com.github.blanexie.vxph.torrent.dto.ScrapeResp
+import com.github.blanexie.vxph.torrent.controller.dto.ScrapeResp
 import com.github.blanexie.vxph.torrent.entity.Peer
 import com.github.blanexie.vxph.torrent.entity.Post
 import com.github.blanexie.vxph.torrent.entity.Torrent

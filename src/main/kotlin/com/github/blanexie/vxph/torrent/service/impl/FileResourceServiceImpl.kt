@@ -9,6 +9,7 @@ import com.github.blanexie.vxph.torrent.repository.FileResourceRepository
 import com.github.blanexie.vxph.torrent.service.FileResourceService
 import com.github.blanexie.vxph.user.service.CodeService
 import org.springframework.stereotype.Service
+import java.io.File
 
 @Service
 class FileResourceServiceImpl(
@@ -20,8 +21,10 @@ class FileResourceServiceImpl(
         return fileResourceRepository.findAllByHashIn(hashs)
     }
 
-    override  fun deleteByHash(hash: String) {
-        return fileResourceRepository.deleteByHash(hash)
+    override fun deleteByHash(hash: String): FileResource {
+        val fileResource = fileResourceRepository.findByHash(hash)
+        fileResourceRepository.deleteByHash(hash)
+        return fileResource
     }
 
     override fun findByHash(hash: String): FileResource {

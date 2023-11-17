@@ -1,6 +1,4 @@
-package com.github.blanexie.vxph.torrent.dto
-
-import com.github.blanexie.vxph.torrent.entity.Post
+package com.github.blanexie.vxph.torrent.controller.dto
 
 data class PostReq(
     var id: Long?,

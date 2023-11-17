@@ -36,4 +36,25 @@ class InfoHashParamResolver : AbstractNamedValueMethodArgumentResolver() {
     }
 
 
+    fun parseInfoHash(encoded: String): String {
+        return try {
+            val r = StringBuilder()
+            var i = 0
+            while (i < encoded.length) {
+                val c = encoded[i]
+                if (c == '%') {
+                    r.append(encoded[i + 1])
+                    r.append(encoded[i + 2])
+                    i += 2
+                } else {
+                    r.append(String.format("%02x", c.code))
+                }
+                i++
+            }
+            r.toString().lowercase()
+        } catch (e: Exception) {
+            throw IllegalArgumentException("Failed to decode info_hash: $encoded")
+        }
+    }
+
 }

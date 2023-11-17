@@ -1,4 +1,4 @@
-package com.github.blanexie.vxph.torrent.dto
+package com.github.blanexie.vxph.torrent.controller.dto
 
 import cn.hutool.core.convert.Convert
 import cn.hutool.core.util.ByteUtil

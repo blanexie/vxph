@@ -5,8 +5,8 @@ import cn.hutool.core.io.FileUtil
 import cn.hutool.crypto.digest.DigestUtil
 import com.github.blanexie.vxph.common.bencode
 import com.github.blanexie.vxph.common.objectMapper
-import com.github.blanexie.vxph.torrent.dto.ScrapeData
-import com.github.blanexie.vxph.torrent.dto.ScrapeResp
+import com.github.blanexie.vxph.torrent.controller.dto.ScrapeData
+import com.github.blanexie.vxph.torrent.controller.dto.ScrapeResp
 import com.github.blanexie.vxph.torrent.entity.Peer
 import com.github.blanexie.vxph.torrent.entity.Post
 import com.github.blanexie.vxph.torrent.entity.Torrent

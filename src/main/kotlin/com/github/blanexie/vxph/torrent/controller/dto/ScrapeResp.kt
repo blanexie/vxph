@@ -1,4 +1,4 @@
-package com.github.blanexie.vxph.torrent.dto
+package com.github.blanexie.vxph.torrent.controller.dto
 
 import cn.hutool.core.bean.BeanUtil
 import com.github.blanexie.vxph.common.bencode

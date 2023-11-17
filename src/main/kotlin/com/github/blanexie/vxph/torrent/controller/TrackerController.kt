@@ -4,7 +4,7 @@ import cn.dev33.satoken.annotation.SaIgnore
 import com.github.blanexie.vxph.common.objectMapper
 import com.github.blanexie.vxph.common.web.InfoHashParam
 import com.github.blanexie.vxph.torrent.util.Event_Start
-import com.github.blanexie.vxph.torrent.dto.AnnounceReq
+import com.github.blanexie.vxph.torrent.controller.dto.AnnounceReq
 import com.github.blanexie.vxph.torrent.service.PeerService
 import com.github.blanexie.vxph.torrent.service.TorrentService
 import jakarta.servlet.http.HttpServletRequest
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class TrackerController(val peerService: PeerService, val torrentService: TorrentService) {
 
-    val log = LoggerFactory.getLogger(this::class.java)
+    private val log = LoggerFactory.getLogger(this::class.java)
 
     /**
      * passkey=127ad347eb825b568c9a4f88e2b27eec
@@ -83,9 +83,9 @@ class TrackerController(val peerService: PeerService, val torrentService: Torren
         val remotePort = request.remotePort
         //build 请求对象，屏蔽请求层的信息
         val announceReq = AnnounceReq(
-                peerId, infoHash, passKey, left, downloaded, uploaded, compact,
-                event, remoteAddr, port ?: remotePort
-            )
+            peerId, infoHash, passKey, left, downloaded, uploaded, compact,
+            event, remoteAddr, port ?: remotePort
+        )
         //处理请求
         val announceResp = peerService.processAnnounce(announceReq)
         log.info("announce， resp:{} ", objectMapper.writeValueAsString(announceResp))

@@ -3,7 +3,7 @@ package com.github.blanexie.vxph.torrent.controller
 import cn.dev33.satoken.stp.StpUtil
 import com.github.blanexie.vxph.common.exception.SysCode
 import com.github.blanexie.vxph.common.web.WebResp
-import com.github.blanexie.vxph.torrent.dto.PostReq
+import com.github.blanexie.vxph.torrent.controller.dto.PostReq
 import com.github.blanexie.vxph.torrent.service.PostService
 import com.github.blanexie.vxph.torrent.service.TorrentService
 import com.github.blanexie.vxph.user.service.UserService

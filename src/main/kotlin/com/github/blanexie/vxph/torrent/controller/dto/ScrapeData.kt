@@ -1,4 +1,4 @@
-package com.github.blanexie.vxph.torrent.dto
+package com.github.blanexie.vxph.torrent.controller.dto
 data class ScrapeData(
     val complete: Int, // – 目前做种人数
     val incomplete: Int, // – 目前正在下载人数

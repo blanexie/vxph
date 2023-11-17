@@ -25,13 +25,11 @@ data class User(
     var sex: String,
     @OneToOne
     var account: Account,
-    @OneToMany
-    var roles: List<Role>,
+    @ManyToOne
+    var roles: Role,
 ) : BaseEntity() {
 
     fun checkPwd(pwdSha256: String, time: Long): Boolean {
-
-
         val sha256Hex = DigestUtil.sha256Hex("$name$password$time")
         log.info("login userId:{} name:{} ,passowrd:{} , pwdSha256Hex:{}", id, name, password, sha256Hex)
         return sha256Hex == pwdSha256

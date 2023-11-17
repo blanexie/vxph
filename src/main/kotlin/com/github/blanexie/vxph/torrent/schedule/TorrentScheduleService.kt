@@ -1,4 +1,4 @@
-package com.github.blanexie.vxph.torrent.util.schedule
+package com.github.blanexie.vxph.torrent.schedule
 
 import com.github.blanexie.vxph.torrent.service.PeerService
 import com.github.blanexie.vxph.torrent.service.TorrentService

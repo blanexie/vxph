@@ -2,7 +2,7 @@ package com.github.blanexie.vxph.torrent.service.impl
 
 import com.github.blanexie.vxph.common.exception.SysCode
 import com.github.blanexie.vxph.common.exception.VxphException
-import com.github.blanexie.vxph.torrent.dto.PostReq
+import com.github.blanexie.vxph.torrent.controller.dto.PostReq
 import com.github.blanexie.vxph.torrent.entity.FileResource
 import com.github.blanexie.vxph.torrent.entity.Post
 import com.github.blanexie.vxph.torrent.entity.Torrent

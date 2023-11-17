@@ -16,6 +16,9 @@ data class Role(
     @Column
     var description: String,
 
+    @ManyToOne
+    var parentRole: Role?,
+
     @ManyToMany
     var paths: List<Path>
 ) : BaseEntity()

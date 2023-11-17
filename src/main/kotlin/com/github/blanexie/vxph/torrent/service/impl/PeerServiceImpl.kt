@@ -1,9 +1,9 @@
 package com.github.blanexie.vxph.torrent.service.impl
 
 import cn.hutool.core.util.IdUtil
-import com.github.blanexie.vxph.torrent.dto.AnnounceReq
-import com.github.blanexie.vxph.torrent.dto.AnnounceResp
-import com.github.blanexie.vxph.torrent.dto.PeerResp
+import com.github.blanexie.vxph.torrent.controller.dto.AnnounceReq
+import com.github.blanexie.vxph.torrent.controller.dto.AnnounceResp
+import com.github.blanexie.vxph.torrent.controller.dto.PeerResp
 import com.github.blanexie.vxph.torrent.entity.Peer
 import com.github.blanexie.vxph.torrent.entity.Torrent
 import com.github.blanexie.vxph.torrent.repository.PeerRepository
@@ -21,15 +21,11 @@ class PeerServiceImpl(val peerRepository: PeerRepository) : PeerService {
     override fun processAnnounce(announceReq: AnnounceReq): AnnounceResp {
         val peer = peerRepository.findByPassKey(announceReq.passKey)
         val resp = this.checkPeer(announceReq, peer)
-        if (resp != null) {
-            return resp
-        }
-
-        peer!!
-
-        peer.refresh(announceReq)
-        peerRepository.save(peer)
-        return findActivePeers(announceReq.infoHash)
+        return if (resp == null) {
+            peer!!.refresh(announceReq)
+            peerRepository.save(peer)
+            findActivePeers(announceReq.infoHash)
+        } else resp
     }
 
 
@@ -115,6 +111,7 @@ class PeerServiceImpl(val peerRepository: PeerRepository) : PeerService {
     override fun save(peer: Peer): Peer {
         return peerRepository.save(peer)
     }
+
     /**
      * 检查是否已经存在peer。 如不存在则新建
      */
