@@ -19,5 +19,12 @@ data class Post(
 
     var markdown: String, //描述， 长文本
     @OneToMany(fetch = FetchType.LAZY)
-    var torrent: List<Torrent>,
-) : BaseEntity()
+    var torrents: List<Torrent>,
+) : BaseEntity() {
+
+
+    fun publish() {
+        this.status = 1
+    }
+
+}

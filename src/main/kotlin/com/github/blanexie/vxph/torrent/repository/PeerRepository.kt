@@ -15,10 +15,9 @@ interface PeerRepository : CrudRepository<Peer, Long>, QueryByExampleExecutor<Pe
 
     fun findAllByInfoHash(infoHash: String): List<Peer>
 
+    fun findByInfoHashAndUserId(infoHash: String, userId: Long): Peer?
+
     @Query("select distinct p.infoHash from Peer p where  p.uploadTime > :startTime")
     fun findInfoHashAfter(@Param("startTime") startTime: LocalDateTime): List<String>
-
-    @Query(" from Peer p where p.infoHash in ( :infoHash ) ")
-    fun findByInfoHashIn(@Param("infoHash") infoHash: List<String>): List<Peer>
 
 }

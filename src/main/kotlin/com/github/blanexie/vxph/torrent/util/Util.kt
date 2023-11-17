@@ -1,4 +1,4 @@
-package com.github.blanexie.vxph.torrent
+package com.github.blanexie.vxph.torrent.util
 
 import java.nio.ByteBuffer
 

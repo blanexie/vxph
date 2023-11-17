@@ -1,6 +1,6 @@
 package com.github.blanexie.vxph.common.web
 
-import com.github.blanexie.vxph.torrent.parseInfoHash
+import com.github.blanexie.vxph.torrent.util.parseInfoHash
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.core.MethodParameter
 import org.springframework.web.context.request.NativeWebRequest

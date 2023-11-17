@@ -3,12 +3,8 @@ package com.github.blanexie.vxph.user.entity
 import cn.hutool.crypto.digest.DigestUtil
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.github.blanexie.vxph.common.BaseEntity
-import com.github.blanexie.vxph.common.getProperty
-import com.github.blanexie.vxph.torrent.announceIntervalMinute
-import com.github.blanexie.vxph.user.LoginTimeExpireMS
 import jakarta.persistence.*
 import org.slf4j.LoggerFactory
-import org.springframework.util.DigestUtils
 
 
 private val log = LoggerFactory.getLogger(User::class.java)

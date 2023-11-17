@@ -26,8 +26,6 @@ import java.time.format.DateTimeFormatter
 @Configuration
 class WebConfig : WebMvcConfigurer {
 
-
-    //region 注册自定义HandlerMethodArgumentResolver
     override fun addArgumentResolvers(resolvers: MutableList<HandlerMethodArgumentResolver?>) {
         resolvers.add(0, InfoHashParamResolver())
 

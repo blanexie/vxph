@@ -1,13 +1,11 @@
 package com.github.blanexie.vxph.torrent.dto
 
 import cn.hutool.core.convert.Convert
-import cn.hutool.core.net.Ipv4Util
-import cn.hutool.core.net.NetUtil
 import cn.hutool.core.util.ByteUtil
 import cn.hutool.core.util.HexUtil
 import com.github.blanexie.vxph.common.exception.SysCode
 import com.github.blanexie.vxph.common.exception.VxphException
-import com.github.blanexie.vxph.torrent.IpType
+import com.github.blanexie.vxph.torrent.util.IpType
 import java.nio.ByteBuffer
 
 data class PeerResp(
