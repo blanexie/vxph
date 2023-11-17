@@ -1,7 +1,13 @@
 package com.github.blanexie.vxph.user.service.impl
 
 import cn.hutool.cache.CacheUtil
+import com.github.blanexie.vxph.common.exception.SysCode
+import com.github.blanexie.vxph.common.exception.VxphException
 import com.github.blanexie.vxph.user.LoginTimeExpireMS
+import com.github.blanexie.vxph.user.dto.RegisterReq
+import com.github.blanexie.vxph.user.entity.Account
+import com.github.blanexie.vxph.user.entity.Invite
+import com.github.blanexie.vxph.user.entity.Role
 import com.github.blanexie.vxph.user.entity.User
 import com.github.blanexie.vxph.user.repository.UserRepository
 import com.github.blanexie.vxph.user.service.UserService
@@ -10,7 +16,7 @@ import org.springframework.stereotype.Service
 
 
 @Service
-class UserServiceImpl(@Resource val userRepository: UserRepository):UserService {
+class UserServiceImpl(@Resource val userRepository: UserRepository) : UserService {
 
     private val userCache = CacheUtil.newLRUCache<Long, User>(100, 30 * 60 * 1000)
 
@@ -31,4 +37,22 @@ class UserServiceImpl(@Resource val userRepository: UserRepository):UserService 
             userRepository.findById(userId).orElse(null)
         }
     }
+
+    override fun addUser(registerReq: RegisterReq, role: Role): User {
+        var user = userRepository.findByName(registerReq.name)
+        if (user != null) {
+            throw VxphException(SysCode.UserNotExist, "用户名已经存在了")
+        }
+        user = userRepository.findByEmail(registerReq.email)
+        if (user != null) {
+            throw VxphException(SysCode.UserNotExist, "邮箱已经注册了")
+        }
+        if (registerReq.password.length < 6) {
+            throw VxphException(SysCode.PasswordTooShort)
+        }
+        user = User(null, registerReq.name, registerReq.email, registerReq.password, registerReq.sex, null, role)
+        return userRepository.save(user)
+    }
+
+
 }

@@ -1,19 +1,21 @@
 package com.github.blanexie.vxph.user.entity
 
 import com.github.blanexie.vxph.common.BaseEntity
+import com.github.blanexie.vxph.user.dto.PermissionType
 import jakarta.persistence.*
-import java.time.LocalDateTime
+
 
 @Entity
-data class Invite(
+data class Permission(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Long?,
-    @Column(unique = true)
+    var name: String,
     var code: String,
-    var receiveEmail: String,
-    @ManyToOne
-    var sender: Account,
 
-    var acceptTime: LocalDateTime?
+    @Enumerated(EnumType.STRING)
+    var type: PermissionType,
+
+    @ManyToMany
+    var roles: List<Role>
 ) : BaseEntity()

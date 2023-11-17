@@ -11,13 +11,13 @@ import java.time.LocalDateTime
 data class Torrent(
     @Id
     var infoHash: String,
-    var title:String, //用户命名的
+    var title: String, //用户命名的
     var name: String, //torrent中的名称
     var length: Long,
     var comment: String,   // torrent中的注释
     var files: String,
     var creationDate: Long, //秒时间戳
-    var createdBy: String ,
+    var createdBy: String,
     var pieceLength: Long,
     var singleFile: Boolean,
 

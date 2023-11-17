@@ -6,6 +6,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 
 @Entity
@@ -27,6 +28,12 @@ data class Account(
 
     @Column
     var level: String,
+    //拥有的总邀请数量上限， 包含已经使用的
+    var inviteCount: Int,
+
+    @OneToMany
+    var invites: ArrayList<Invite>,
+
     @OneToOne
     var user: User,
 ) : BaseEntity()

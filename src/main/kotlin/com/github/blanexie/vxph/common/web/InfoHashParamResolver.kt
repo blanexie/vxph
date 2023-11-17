@@ -1,6 +1,5 @@
 package com.github.blanexie.vxph.common.web
 
-import com.github.blanexie.vxph.torrent.util.parseInfoHash
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.core.MethodParameter
 import org.springframework.web.context.request.NativeWebRequest
@@ -36,7 +35,7 @@ class InfoHashParamResolver : AbstractNamedValueMethodArgumentResolver() {
     }
 
 
-    fun parseInfoHash(encoded: String): String {
+    private fun parseInfoHash(encoded: String): String {
         return try {
             val r = StringBuilder()
             var i = 0

@@ -5,6 +5,12 @@ import cn.dev33.satoken.stp.StpUtil
 import com.github.blanexie.vxph.common.exception.SysCode
 import com.github.blanexie.vxph.common.web.WebResp
 import com.github.blanexie.vxph.user.dto.LoginReq
+import com.github.blanexie.vxph.user.dto.RegisterReq
+import com.github.blanexie.vxph.user.entity.Account
+import com.github.blanexie.vxph.user.entity.Role
+import com.github.blanexie.vxph.user.service.AccountService
+import com.github.blanexie.vxph.user.service.InviteService
+import com.github.blanexie.vxph.user.service.RoleService
 import com.github.blanexie.vxph.user.service.UserService
 import jakarta.annotation.Resource
 import org.springframework.web.bind.annotation.GetMapping
@@ -16,12 +22,17 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/user")
-class UserController(@Resource val userService: UserService) {
+class UserController(
+    private val userService: UserService,
+    private val roleService: RoleService,
+    private val inviteService: InviteService,
+    private val accountService: AccountService,
+) {
 
     @SaIgnore
     @PostMapping("/login")
     fun login(@RequestBody loginReq: LoginReq): WebResp {
-        if(loginReq.username == "admin"){
+        if (loginReq.username == "admin") {
             StpUtil.login(1)
             return WebResp.ok(StpUtil.getTokenInfo())
         }
@@ -44,4 +55,22 @@ class UserController(@Resource val userService: UserService) {
         return WebResp.ok()
     }
 
+    /**
+     * 注册
+     */
+    @SaIgnore
+    @PostMapping("register")
+    fun register(@RequestBody registerReq: RegisterReq): WebResp {
+        val role = roleService.findByCode("normal")!!
+        if (!inviteService.checkEmail(registerReq.inviteCode, registerReq.email)) {
+            return WebResp.fail(SysCode.InvalidInviteCode)
+        }
+        val user = userService.addUser(registerReq, role)
+        val account = Account(
+            null, 0, 0, 0, 0, 0, "normal",
+            0, arrayListOf(), user
+        )
+        val saveAccount = accountService.saveAccount(account)
+        return WebResp.ok().add("user", user).add("account", saveAccount)
+    }
 }

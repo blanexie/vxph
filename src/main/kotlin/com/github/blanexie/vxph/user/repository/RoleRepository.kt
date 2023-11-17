@@ -5,4 +5,7 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.query.QueryByExampleExecutor
 
 interface RoleRepository : CrudRepository<Role, Long>, QueryByExampleExecutor<Role> {
+
+    fun findByCode(code: String): Role?
+
 }

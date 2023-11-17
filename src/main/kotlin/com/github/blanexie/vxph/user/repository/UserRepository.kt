@@ -8,4 +8,5 @@ interface UserRepository : CrudRepository<User, Long>, QueryByExampleExecutor<Us
 
     fun findByName(name: String): User?
 
+    fun findByEmail(email: String): User?
 }

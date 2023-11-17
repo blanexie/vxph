@@ -9,16 +9,14 @@ data class Role(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Long?,
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     var name: String,
-    @Column(unique = true, nullable = false)
+    @Column(unique = true)
     var code: String,
     @Column
     var description: String,
 
-    @ManyToOne
-    var parentRole: Role?,
+    @ManyToMany(fetch = FetchType.LAZY)
+    var permissions: List<Permission>
 
-    @ManyToMany
-    var paths: List<Path>
 ) : BaseEntity()

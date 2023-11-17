@@ -4,6 +4,8 @@ import cn.hutool.core.convert.Convert
 import cn.hutool.core.io.FileUtil
 import cn.hutool.crypto.digest.DigestUtil
 import com.github.blanexie.vxph.common.bencode
+import com.github.blanexie.vxph.common.exception.SysCode
+import com.github.blanexie.vxph.common.exception.VxphException
 import com.github.blanexie.vxph.common.objectMapper
 import com.github.blanexie.vxph.torrent.controller.dto.ScrapeData
 import com.github.blanexie.vxph.torrent.controller.dto.ScrapeResp
@@ -17,6 +19,7 @@ import com.github.blanexie.vxph.user.entity.User
 import com.github.blanexie.vxph.user.service.CodeService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.OutputStream
 
@@ -55,7 +58,7 @@ class TorrentServiceImpl(
         val torrentBytes = bencode.encode(torrentMap)
         val infoBytes = File("${torrentPath}/${torrent.infoHash}").readBytes()
         outputStream.write(torrentBytes, 0, torrentBytes.size - 1)
-        outputStream.write(byteArrayOf(0x04, 0x69, 0x6e, 0x66, 0x6f, 0x3a))
+        outputStream.write(byteArrayOf(0x34, 0x3a, 0x69, 0x6e, 0x66, 0x6f))
         outputStream.write(infoBytes)
         outputStream.write(0x65)
     }
@@ -65,6 +68,11 @@ class TorrentServiceImpl(
         val info = getPrivateInfo(torrentMap)
         val infoBytes = bencode.encode(info)
         val infoHash = DigestUtil.sha1Hex(infoBytes)
+        val torrentExist = torrentRepository.findByInfoHash(infoHash)
+        if (torrentExist != null) {
+            return torrentExist
+        }
+
         val pieceLength = Convert.toLong(info["piece length"])
         val length = getLength(info)
         val name = info.readString("name")

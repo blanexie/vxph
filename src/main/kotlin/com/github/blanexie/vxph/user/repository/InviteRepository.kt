@@ -5,4 +5,6 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.query.QueryByExampleExecutor
 
 interface InviteRepository : CrudRepository<Invite, Long>, QueryByExampleExecutor<Invite> {
+
+    fun findByCode(code: String): Invite?
 }

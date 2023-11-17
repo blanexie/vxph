@@ -24,7 +24,7 @@ data class User(
     @Column(nullable = false)
     var sex: String,
     @OneToOne
-    var account: Account,
+    var account: Account?,
     @ManyToOne
     var roles: Role,
 ) : BaseEntity() {
