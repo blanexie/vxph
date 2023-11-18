@@ -14,14 +14,6 @@ version = "0.0.1-SNAPSHOT"
 
 val saTokenVersion = "1.37.0"
 
-//  mainClassName = "com.github.blanexie.vxph.VxphApplicationKt"
-
-
-tasks.withType(BootJar::class.java) {
-    mainClass = "com.github.blanexie.vxph.VxphApplicationKt"
-}
-
-
 configurations {
     compileOnly {
         extendsFrom(configurations.annotationProcessor.get())
