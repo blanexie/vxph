@@ -11,7 +11,7 @@ plugins {
 group = "com.github.blanexie.vxph"
 version = "0.0.1-SNAPSHOT"
 
- val saTokenVersion="1.37.0"
+val saTokenVersion = "1.37.0"
 
 
 java {
@@ -34,13 +34,14 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.springframework.boot:spring-boot-starter-mail")
 
     implementation("org.xerial:sqlite-jdbc:3.43.0.0")
     implementation("org.hibernate.orm:hibernate-community-dialects:6.3.1.Final")
-   // implementation("cn.dev33:sa-token-spring-boot-starter:1.37.0")
+    implementation("com.vladmihalcea:hibernate-types-52:2.4.3")
+    // implementation("cn.dev33:sa-token-spring-boot-starter:1.37.0")
     implementation("cn.dev33:sa-token-spring-boot-autoconfig:${saTokenVersion}")
     implementation("cn.dev33:sa-token-core:${saTokenVersion}")
-
 
     implementation("cn.hutool:hutool-all:5.8.22")
     implementation("com.aliyun:alidns20150109:3.0.8") {

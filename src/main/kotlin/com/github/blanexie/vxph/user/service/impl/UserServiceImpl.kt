@@ -38,7 +38,7 @@ class UserServiceImpl(@Resource val userRepository: UserRepository) : UserServic
         }
     }
 
-    override fun addUser(registerReq: RegisterReq, role: Role): User {
+    override fun addUser(registerReq: RegisterReq, account: Account, role: Role): User {
         var user = userRepository.findByName(registerReq.name)
         if (user != null) {
             throw VxphException(SysCode.UserNotExist, "用户名已经存在了")
@@ -50,7 +50,7 @@ class UserServiceImpl(@Resource val userRepository: UserRepository) : UserServic
         if (registerReq.password.length < 6) {
             throw VxphException(SysCode.PasswordTooShort)
         }
-        user = User(null, registerReq.name, registerReq.email, registerReq.password, registerReq.sex, null, role)
+        user = User(null, registerReq.name, registerReq.email, registerReq.password, registerReq.sex, account, role)
         return userRepository.save(user)
     }
 

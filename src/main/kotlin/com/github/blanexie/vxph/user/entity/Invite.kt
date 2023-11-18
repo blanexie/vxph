@@ -13,7 +13,7 @@ data class Invite(
     var code: String,
     var receiveEmail: String,
     @ManyToOne
-    var sender: Account,
+    var sender: User,
 
     var acceptTime: LocalDateTime?
 ) : BaseEntity()

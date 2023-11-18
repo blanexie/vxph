@@ -1,23 +1,24 @@
 server:
   port: 8018
-  
-  
-  ###### vxph ############
+
+
+###### vxph ############
 vxph:
   torrent:
     path: db/torrent
   file:
     path: db/file
-  
-  
-  
+
+
+
 #### aliyun  DNS ############
 aliyun:
   dns:
     accessKeyId:
     accessKeySecret:
-  
-  
+
+
+
 #### datasource ###################
 
 spring:
@@ -32,7 +33,21 @@ spring:
     username:
     password:
 
-  
+  ###### java Mail #####
+  mail:
+    protocol: smtp
+    host: smtp.qq.com
+    port: 465
+    username: 765150816@qq.com
+    password:
+    default-encoding: UTF-8
+    properties:
+      "mail.smtp.auth": true
+      "mail.smtp.ssl.enable": true
+      "mail.smtp.starttls.enable": true
+      "mail.debug": true
+      "mail.smtp.starttls.required": true
+
 ############## Sa-Token 配置 (文档: https://sa-token.cc) ##############
 sa-token:
   # token 名称（同时也是 cookie 名称）

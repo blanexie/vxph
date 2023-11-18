@@ -1,7 +1,7 @@
 package com.github.blanexie.vxph.user.service.impl
 
-import AccountRepository
 import com.github.blanexie.vxph.user.entity.Account
+import com.github.blanexie.vxph.user.repository.AccountRepository
 import com.github.blanexie.vxph.user.service.AccountService
 import org.springframework.stereotype.Service
 

@@ -65,12 +65,11 @@ class UserController(
         if (!inviteService.checkEmail(registerReq.inviteCode, registerReq.email)) {
             return WebResp.fail(SysCode.InvalidInviteCode)
         }
-        val user = userService.addUser(registerReq, role)
         val account = Account(
-            null, 0, 0, 0, 0, 0, "normal",
-            0, arrayListOf(), user
+            null, 0, 0, 0, 0, 0, "normal", 0
         )
         val saveAccount = accountService.saveAccount(account)
+        val user = userService.addUser(registerReq, saveAccount, role)
         return WebResp.ok().add("user", user).add("account", saveAccount)
     }
 }

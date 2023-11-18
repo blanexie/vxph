@@ -1,24 +1,43 @@
 package com.github.blanexie.vxph.user.service.impl
 
-import cn.hutool.core.util.IdUtil
+import cn.hutool.core.convert.Convert
 import cn.hutool.core.util.RandomUtil
-import com.github.blanexie.vxph.mail.MailService
-import com.github.blanexie.vxph.user.entity.Account
+import cn.hutool.core.util.StrUtil
+import cn.hutool.json.JSONUtil
+import com.github.blanexie.vxph.mail.entity.Email
+import com.github.blanexie.vxph.mail.service.MailService
+import com.github.blanexie.vxph.user.InviteMailTemplateCode
 import com.github.blanexie.vxph.user.entity.Invite
+import com.github.blanexie.vxph.user.entity.User
 import com.github.blanexie.vxph.user.repository.InviteRepository
+import com.github.blanexie.vxph.user.service.CodeService
 import com.github.blanexie.vxph.user.service.InviteService
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 @Service
 class InviteServiceImple(
     private val inviteRepository: InviteRepository,
+    private val codeService: CodeService,
+    private val mailService: MailService,
+    @Value("\${spring.mail.username}") private val sendMailName: String,
 ) : InviteService {
 
-    override fun send(email: String, account: Account): Invite {
-        val invite = Invite(null, RandomUtil.randomString(5), email, account, null)
-        val saveInvite = inviteRepository.save(invite)
-        account.invites.add(saveInvite)
-        return saveInvite
+    override fun saveInviteAndSendMail(receiveMail: String, user: User): Invite {
+        val code = RandomUtil.randomString(5)
+        val email = buildInviteMailMessage(code, user, receiveMail)
+        mailService.sendMail(email)
+        val invite = Invite(null, code, receiveMail, user, null)
+        return inviteRepository.save(invite)
+    }
+
+    private fun buildInviteMailMessage(code: String, user: User, receiveMail: String): Email {
+        val template = codeService.findValueByCode(InviteMailTemplateCode)!!
+        val templateJson = JSONUtil.parseObj(template)
+        val subject = templateJson["subject"]
+        val content =
+            StrUtil.format(Convert.toStr(templateJson["content"]), mapOf("code" to code, "name" to user.name))
+        return Email(null, Convert.toStr(subject), sendMailName, receiveMail, null, null, content, null, user)
     }
 
     override fun findByCode(code: String): Invite? {

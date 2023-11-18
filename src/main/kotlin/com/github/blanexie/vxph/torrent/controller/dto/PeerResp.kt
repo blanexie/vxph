@@ -41,7 +41,8 @@ data class PeerResp(
         byteArray[5] = intToBytes[0]
         return byteArray
     }
-//0100 0001      1111 0001       0100 0001
+
+    //0100 0001      1111 0001       0100 0001
     private fun toIpv6Bytes(): ByteArray {
         val allocate = ByteBuffer.allocate(18)
         ip.split(":").forEach {
