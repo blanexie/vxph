@@ -1,7 +1,6 @@
 server:
   port: 8018
 
-
 ###### vxph ############
 vxph:
   torrent:
@@ -9,18 +8,13 @@ vxph:
   file:
     path: db/file
 
-
-
 #### aliyun  DNS ############
 aliyun:
   dns:
     accessKeyId:
     accessKeySecret:
 
-
-
 #### datasource ###################
-
 spring:
   jpa:
     database-platform: org.hibernate.community.dialect.SQLiteDialect
