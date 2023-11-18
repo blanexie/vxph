@@ -4,6 +4,8 @@ import cn.hutool.core.convert.Convert
 import cn.hutool.core.util.RandomUtil
 import cn.hutool.core.util.StrUtil
 import cn.hutool.json.JSONUtil
+import com.github.blanexie.vxph.common.exception.SysCode
+import com.github.blanexie.vxph.common.exception.VxphException
 import com.github.blanexie.vxph.mail.entity.Email
 import com.github.blanexie.vxph.mail.service.MailService
 import com.github.blanexie.vxph.user.InviteMailTemplateCode
@@ -14,6 +16,7 @@ import com.github.blanexie.vxph.user.service.CodeService
 import com.github.blanexie.vxph.user.service.InviteService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 @Service
 class InviteServiceImple(
@@ -24,7 +27,7 @@ class InviteServiceImple(
 ) : InviteService {
 
     override fun saveInviteAndSendMail(receiveMail: String, user: User): Invite {
-        val code = RandomUtil.randomString(5)
+        val code = RandomUtil.randomString(5).uppercase()
         val email = buildInviteMailMessage(code, user, receiveMail)
         mailService.sendMail(email)
         val invite = Invite(null, code, receiveMail, user, null)
@@ -44,8 +47,16 @@ class InviteServiceImple(
         return inviteRepository.findByCode(code)
     }
 
-    override fun checkEmail(code: String, receiveEmail: String): Boolean {
-        val invite = inviteRepository.findByCode(code) ?: return false
-        return invite.receiveEmail == receiveEmail
+    override fun useInvite(code: String, receiveEmail: String): Invite {
+        val invite = inviteRepository.findByCode(code) ?: throw VxphException(SysCode.InvalidInviteCode)
+        if (invite.receiveEmail != receiveEmail) {
+            throw VxphException(SysCode.InvalidInviteCode)
+        }
+        if (invite.acceptTime != null) {
+            throw VxphException(SysCode.InvalidInviteCode)
+        }
+        invite.acceptTime= LocalDateTime.now()
+        inviteRepository.save(invite)
+        return invite
     }
 }

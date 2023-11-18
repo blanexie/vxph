@@ -4,10 +4,5 @@ import com.github.blanexie.vxph.mail.entity.Email
 import java.util.concurrent.Future
 
 interface MailService {
-
-
-      fun sendMail(email: Email): Boolean
-
-
-
+    fun sendMail(email: Email)
 }

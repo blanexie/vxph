@@ -11,6 +11,7 @@ interface UserService {
 
     fun findById(userId: Long): User?
 
-    fun addUser(registerReq: RegisterReq, account: Account, role: Role): User
+    fun saveUser(registerReq: RegisterReq, account: Account, role: Role): User
+
 
 }

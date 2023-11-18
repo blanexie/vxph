@@ -39,9 +39,7 @@ dependencies {
     implementation("org.xerial:sqlite-jdbc:3.43.0.0")
     implementation("org.hibernate.orm:hibernate-community-dialects:6.3.1.Final")
     implementation("com.vladmihalcea:hibernate-types-52:2.4.3")
-    // implementation("cn.dev33:sa-token-spring-boot-starter:1.37.0")
-    implementation("cn.dev33:sa-token-spring-boot-autoconfig:${saTokenVersion}")
-    implementation("cn.dev33:sa-token-core:${saTokenVersion}")
+   implementation("cn.dev33:sa-token-spring-boot3-starter:1.37.0")
 
     implementation("cn.hutool:hutool-all:5.8.22")
     implementation("com.aliyun:alidns20150109:3.0.8") {

@@ -9,5 +9,7 @@ interface InviteService {
 
     fun findByCode(code: String): Invite?
 
-    fun checkEmail(code: String, receiveEmail: String): Boolean
+    fun useInvite(code: String, receiveEmail: String): Invite
+
+
 }

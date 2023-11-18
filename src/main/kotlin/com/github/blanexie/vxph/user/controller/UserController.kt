@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDateTime
 
 
 @RestController
@@ -62,14 +63,9 @@ class UserController(
     @PostMapping("register")
     fun register(@RequestBody registerReq: RegisterReq): WebResp {
         val role = roleService.findByCode("normal")!!
-        if (!inviteService.checkEmail(registerReq.inviteCode, registerReq.email)) {
-            return WebResp.fail(SysCode.InvalidInviteCode)
-        }
-        val account = Account(
-            null, 0, 0, 0, 0, 0, "normal", 0
-        )
-        val saveAccount = accountService.saveAccount(account)
-        val user = userService.addUser(registerReq, saveAccount, role)
-        return WebResp.ok().add("user", user).add("account", saveAccount)
+        inviteService.useInvite(registerReq.inviteCode, registerReq.email)
+        val account = accountService.getInitAccount()
+        val user = userService.saveUser(registerReq, account, role)
+        return WebResp.ok().add("user", user).add("account", account)
     }
 }

@@ -1,5 +1,7 @@
 package com.github.blanexie.vxph.mail.service.impl
 
+import com.github.blanexie.vxph.common.exception.SysCode
+import com.github.blanexie.vxph.common.exception.VxphException
 import com.github.blanexie.vxph.mail.entity.Email
 import com.github.blanexie.vxph.mail.repository.EmailRepository
 import com.github.blanexie.vxph.mail.service.MailService
@@ -20,7 +22,7 @@ class MailServiceImpl(
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
-    override fun sendMail(email: Email): Boolean {
+    override fun sendMail(email: Email)    {
         try {
             val message: MimeMessage = mailSender.createMimeMessage()
             val messageHelper = MimeMessageHelper(message, true)
@@ -41,10 +43,10 @@ class MailServiceImpl(
             //发送
             mailSender.send(message)
             emailRepository.save(email)
-            return true
+
         } catch (e: MailException) {
             log.error("发送邮件异常", e)
-            return false
+            throw VxphException(SysCode.SendEmailError,e.message?:"")
         }
     }
 }

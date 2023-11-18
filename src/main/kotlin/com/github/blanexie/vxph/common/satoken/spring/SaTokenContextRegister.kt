@@ -26,7 +26,6 @@ import org.springframework.context.annotation.Configuration
  * @author click33
  * @since 1.34.0
  */
-@Configuration
 class SaTokenContextRegister {
 
     /**

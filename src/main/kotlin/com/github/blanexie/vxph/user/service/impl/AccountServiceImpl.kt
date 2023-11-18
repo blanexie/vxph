@@ -14,4 +14,10 @@ class AccountServiceImpl(
     override fun saveAccount(account: Account): Account {
         return accountRepository.save(account)
     }
+
+    override fun getInitAccount(): Account {
+        return Account(
+            null, 0, 0, 0, 0, 0, "1", 0
+        )
+    }
 }
