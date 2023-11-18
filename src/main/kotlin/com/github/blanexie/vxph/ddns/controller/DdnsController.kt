@@ -1,6 +1,7 @@
 package com.github.blanexie.vxph.ddns.controller
 
 import cn.dev33.satoken.util.SaResult
+import com.github.blanexie.vxph.common.web.WebResp
 import com.github.blanexie.vxph.ddns.entity.DomainRecord
 import com.github.blanexie.vxph.ddns.service.DdnsService
 import org.springframework.web.bind.annotation.*
@@ -11,48 +12,38 @@ class DdnsController(val ddnsService: DdnsService) {
 
 
     @GetMapping("/ips")
-    fun findLocalIp(): SaResult {
+    fun findLocalIp(): WebResp {
         val findLocalIp = ddnsService.findLocalIp()
-        val saResult = SaResult.ok()
-        saResult.data = findLocalIp
-        return saResult
+        return WebResp.ok(findLocalIp)
     }
 
     @GetMapping("/findAliyunRecord")
-    fun findAliyunRecord(@RequestParam recordId: String): SaResult {
-        val findLocalIp = ddnsService.findAliyunRecord(recordId)
-        val saResult = SaResult.ok()
-        saResult.data = findLocalIp
-        return saResult
+    fun findAliyunRecord(@RequestParam recordId: String): WebResp {
+        val recordIds = ddnsService.findAliyunRecord(recordId)
+        return WebResp.ok(recordIds)
     }
 
     @GetMapping("/findRecords")
-    fun findRecords(): SaResult {
+    fun findRecords(): WebResp {
         val result = ddnsService.findAll()
-        val saResult = SaResult.ok()
-        saResult.data = result
-        return saResult
+        return WebResp.ok(result)
     }
 
     @PostMapping("/updateRecord")
-    fun updateRecord(@RequestBody domainRecord: DomainRecord): SaResult {
+    fun updateRecord(@RequestBody domainRecord: DomainRecord): WebResp {
         val result = ddnsService.updateRecord(domainRecord)
-        val saResult = SaResult.ok()
-        saResult.data = result
-        return saResult
+        return WebResp.ok(result)
     }
 
     @GetMapping("/deleteRecord")
-    fun deleteRecord(@RequestParam recordId: String): SaResult {
+    fun deleteRecord(@RequestParam recordId: String): WebResp {
         ddnsService.deleteRecord(recordId)
-        return SaResult.ok()
+        return WebResp.ok()
     }
 
     @PostMapping("/addRecord")
-    fun addRecord(@RequestBody domainRecord: DomainRecord): SaResult {
+    fun addRecord(@RequestBody domainRecord: DomainRecord): WebResp {
         val result = ddnsService.addRecord(domainRecord)
-        val saResult = SaResult.ok()
-        saResult.data = result
-        return saResult
+        return WebResp.ok(result)
     }
 }

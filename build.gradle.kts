@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     id("org.springframework.boot") version "3.1.5"
@@ -13,10 +14,13 @@ version = "0.0.1-SNAPSHOT"
 
 val saTokenVersion = "1.37.0"
 
+//  mainClassName = "com.github.blanexie.vxph.VxphApplicationKt"
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
+
+tasks.withType(BootJar::class.java) {
+    mainClass = "com.github.blanexie.vxph.VxphApplicationKt"
 }
+
 
 configurations {
     compileOnly {
@@ -39,11 +43,14 @@ dependencies {
     implementation("org.xerial:sqlite-jdbc:3.43.0.0")
     implementation("org.hibernate.orm:hibernate-community-dialects:6.3.1.Final")
     implementation("com.vladmihalcea:hibernate-types-52:2.4.3")
-   implementation("cn.dev33:sa-token-spring-boot3-starter:1.37.0")
+    implementation("cn.dev33:sa-token-spring-boot3-starter:1.37.0")
 
     implementation("cn.hutool:hutool-all:5.8.22")
     implementation("com.aliyun:alidns20150109:3.0.8") {
         exclude("pull-parser", "pull-parser")
+        exclude("com.sun.xml.bind", "jaxb-core")
+        exclude("com.sun.xml.bind", "jaxb-api")
+        exclude("org.dom4j", "dom4j")
     }
     implementation("com.dampcake:bencode:1.4.1")
     developmentOnly("org.springframework.boot:spring-boot-devtools")

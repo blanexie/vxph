@@ -1,5 +1,6 @@
 package com.github.blanexie.vxph.common.web
 
+import cn.dev33.satoken.interceptor.SaInterceptor
 import cn.dev33.satoken.router.SaRouter
 import cn.dev33.satoken.router.SaRouterStaff
 import cn.dev33.satoken.stp.StpUtil
@@ -8,7 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer
-import com.github.blanexie.vxph.common.satoken.interceptor.SaInterceptor
+
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -37,7 +38,7 @@ class WebConfig : WebMvcConfigurer {
             // 指定一条 match 规则
             SaRouter
                 .match("/api/**") // 拦截的 path 列表，可以写多个 */
-                .notMatch("/api/user/login") // 排除掉的 path 列表，可以写多个
+                // .notMatch("/api/user/login") // 排除掉的 path 列表，可以写多个
                 .check { r: SaRouterStaff? -> StpUtil.checkLogin() } // 要执行的校验动作，可以写完整的 lambda 表达式
             // 根据路由划分模块，不同模块不同鉴权
             //   SaRouter.match("/user/**") { r: SaRouterStaff? -> StpUtil.checkPermission("user") }

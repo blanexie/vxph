@@ -23,9 +23,9 @@ class DdnsService(
     private val log = LoggerFactory.getLogger(this::class.java)
 
     /**
-     * 每10分钟执行一次
+     * 每30分钟执行一次
      */
-    @Scheduled(fixedDelay = 10 * 60 * 1000)
+    @Scheduled(fixedDelay = 30 * 60 * 1000)
     fun schedule() {
         log.info("定时DDNS解析任务开始")
         val findLocalIp = findLocalIp()
@@ -103,7 +103,6 @@ class DdnsService(
         } catch (e: Exception) {
             log.warn("获取ipv6异常， {}", e.message)
         }
-
         return result
     }
 
