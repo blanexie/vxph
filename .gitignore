@@ -35,8 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
-/logs/vxph.log
-
 
 ### logs ###
-logs/
+db/logs/

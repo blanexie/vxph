@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="false">
 
-    <contextName>logback</contextName>
+    <springProperty name="logsPath" source="vxph.data.dir"/>
     <!--定义参数,后面可以通过${app.name}使用-->
     <property name="app.name" value="vxph"/>
+
     <!--ConsoleAppender 用于在屏幕上输出日志-->
     <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -12,7 +13,7 @@
     </appender>
 
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>/app/logs/${app.name}.log</file>
+        <file>${logsPath}/logs/${app.name}.log</file>
         <!--定义日志滚动的策略-->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--定义文件滚动时的文件名的格式-->
