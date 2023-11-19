@@ -14,4 +14,8 @@ class RoleServiceImpl(
         return roleRepository.findByCode(code)
     }
 
+    override fun saveRole(role: Role): Role {
+        return roleRepository.save(role)
+    }
+
 }

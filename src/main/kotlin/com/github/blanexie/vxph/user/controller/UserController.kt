@@ -45,9 +45,12 @@ class UserController(
         return WebResp.fail(SysCode.LongNameAndPwdError)
     }
 
-    @GetMapping("tokenInfo")
-    fun tokenInfo(): WebResp {
-        return WebResp.ok(StpUtil.getTokenInfo())
+    @GetMapping("/info")
+    fun findUserInfo(): WebResp {
+        val userId = StpUtil.getLoginIdAsLong()
+        val user = userService.findById(userId)!!
+        return WebResp.ok().add("user", user)
+            .add("tokenInfo", StpUtil.getTokenInfo())
     }
 
     @GetMapping("logout")

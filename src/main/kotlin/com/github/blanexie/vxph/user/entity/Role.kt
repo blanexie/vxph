@@ -17,6 +17,6 @@ data class Role(
     var description: String,
 
     @ManyToMany(fetch = FetchType.LAZY)
-    var permissions: List<Permission>
+    var permissions: ArrayList<Permission>
 
 ) : BaseEntity()

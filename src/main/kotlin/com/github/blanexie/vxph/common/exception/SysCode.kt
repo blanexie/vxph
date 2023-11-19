@@ -19,4 +19,6 @@ enum class SysCode(val code: Int, val msg: String) {
     InvalidInviteCode(620, "无效的邀请码"),
     SendEmailError(621, "邮件发送失败"),
     InvalidNotHave(622, "邀请函数量不足"),
+    RoleNotExist(623, "角色不存在"),
+    PermissionNotExist(624, "权限不存在"),
 }

@@ -1,4 +1,4 @@
-package com.github.blanexie.vxph.csdn.service
+package com.github.blanexie.vxph.csdn
 
 import cn.hutool.core.thread.ThreadUtil
 import cn.hutool.core.util.RandomUtil
