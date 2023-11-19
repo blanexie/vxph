@@ -9,6 +9,4 @@ COPY ./build/libs/ /app/
 
 EXPOSE 8018
 
-
-ENTRYPOINT ["java"]
-CMD [" -jar  /app/vxph-0.0.1-SNAPSHOT.jar" ]
+CMD ["java -jar  /app/vxph-0.0.1-SNAPSHOT.jar" ]
