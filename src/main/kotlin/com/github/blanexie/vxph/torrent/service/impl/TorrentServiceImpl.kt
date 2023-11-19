@@ -27,7 +27,7 @@ import java.io.OutputStream
 class TorrentServiceImpl(
     private val torrentRepository: TorrentRepository,
     private val codeService: CodeService,
-    @Value("\${vxph.torrent.path}")
+    @Value("\${vxph.data.dir}")
     val torrentPath: String,
 ) : TorrentService {
 
@@ -56,7 +56,7 @@ class TorrentServiceImpl(
             torrentMap["announce-list"] = announceUrl.map { "${it}?passkey=${peer.passKey}" }.toList()
         }
         val torrentBytes = bencode.encode(torrentMap)
-        val infoBytes = File("${torrentPath}/${torrent.infoHash}").readBytes()
+        val infoBytes = File("${torrentPath}/torrent/${torrent.infoHash}").readBytes()
         outputStream.write(torrentBytes, 0, torrentBytes.size - 1)
         outputStream.write(byteArrayOf(0x34, 0x3a, 0x69, 0x6e, 0x66, 0x6f))
         outputStream.write(infoBytes)
@@ -86,7 +86,7 @@ class TorrentServiceImpl(
             0, 0, arrayListOf(), user, post
         )
         //3. 保存文件和修改数据库
-        FileUtil.writeBytes(infoBytes, File("${torrentPath}/${infoHash}"))
+        FileUtil.writeBytes(infoBytes, File("${torrentPath}/torrent/${infoHash}"))
         return torrentRepository.save(torrent)
     }
 

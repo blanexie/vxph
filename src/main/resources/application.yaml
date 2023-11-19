@@ -3,10 +3,8 @@ server:
 
 ###### vxph ############
 vxph:
-  torrent:
-    path: db/torrent
-  file:
-    path: db/file
+  data:
+    dir: /app/db
 
 #### aliyun  DNS ############
 aliyun:
@@ -21,11 +19,6 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
-  datasource:
-    url: jdbc:sqlite:db/vxph.sqlite
-    driver-class-name: org.sqlite.JDBC
-    username:
-    password:
 
   ###### java Mail #####
   mail:

@@ -27,7 +27,7 @@ import java.util.TimeZone
 class FileResourceController(
     private val userService: UserService,
     private val fileResourceService: FileResourceService,
-    @Value("\${vxph.file.path}")
+    @Value("\${vxph.data.dir}")
     private val filePath: String,
 ) {
 
@@ -41,7 +41,7 @@ class FileResourceController(
         val suffix = FileUtil.getSuffix(file.originalFilename)
         val fileResource = FileResource(hash, file.originalFilename, suffix, file.size, user!!)
         //先保存文件，再保存数据库记录，保证数据库中的记录必定会有对应的文件
-        file.transferTo(File("${filePath}/${fileResource.hash}.${fileResource.suffix}"))
+        file.transferTo(File("${filePath}/file/${fileResource.hash}.${fileResource.suffix}"))
         val resource = fileResourceService.saveFile(fileResource)
         return WebResp.ok(resource)
     }
@@ -53,7 +53,7 @@ class FileResourceController(
         response.setHeader("Cache-Control", "max-age=604800, public ")
         response.setHeader("Pragma", "public")
         val bufferedInputStream = BufferedOutputStream(response.outputStream)
-        val file = File("$filePath/${fileResource.hash}.${fileResource.suffix}")
+        val file = File("$filePath/file/${fileResource.hash}.${fileResource.suffix}")
         file.inputStream().use {
             IoUtil.copy(it, bufferedInputStream)
         }
@@ -63,7 +63,7 @@ class FileResourceController(
     @GetMapping("/delete")
     fun delete(@RequestParam("hash") hash: String): WebResp {
         val fileResource = fileResourceService.deleteByHash(hash)
-        File("$filePath/${fileResource.hash}.${fileResource.suffix}").deleteOnExit()
+        File("$filePath/file/${fileResource.hash}.${fileResource.suffix}").deleteOnExit()
         return WebResp.ok()
     }
 

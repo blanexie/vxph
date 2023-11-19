@@ -12,7 +12,7 @@
     </appender>
 
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/${app.name}.log</file>
+        <file>/app/logs/${app.name}.log</file>
         <!--定义日志滚动的策略-->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--定义文件滚动时的文件名的格式-->
