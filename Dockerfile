@@ -5,8 +5,10 @@ ENV TZ="Asia/Shanghai"
 VOLUME /app
 WORKDIR /app
 
-COPY ./build/libs /app
+COPY ./build/libs/vxph-0.0.1-SNAPSHOT.jar /app/
 
 EXPOSE 8018
 
-CMD ["bash" ,"-c", "java -jar  /app/vxph-0.0.1-SNAPSHOT.jar" ]
+
+ENTRYPOINT ["java"]
+CMD [" -jar  /app/vxph-0.0.1-SNAPSHOT.jar" ]
