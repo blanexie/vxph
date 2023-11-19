@@ -11,6 +11,7 @@ data class Permission(
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Long?,
     var name: String,
+    @Column(unique = true)
     var code: String,
 
     @Enumerated(EnumType.STRING)
