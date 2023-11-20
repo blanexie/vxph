@@ -17,6 +17,6 @@ data class Permission(
     @Enumerated(EnumType.STRING)
     var type: PermissionType,
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "permissions")
     var roles: List<Role>
 ) : BaseEntity()
