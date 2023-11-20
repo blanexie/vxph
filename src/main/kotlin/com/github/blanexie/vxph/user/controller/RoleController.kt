@@ -3,6 +3,7 @@ package com.github.blanexie.vxph.user.controller
 import cn.dev33.satoken.stp.StpUtil
 import com.github.blanexie.vxph.common.exception.SysCode
 import com.github.blanexie.vxph.common.web.WebResp
+import com.github.blanexie.vxph.user.entity.Permission
 import com.github.blanexie.vxph.user.service.PermissionService
 import com.github.blanexie.vxph.user.service.RoleService
 import com.github.blanexie.vxph.user.service.UserService
@@ -22,7 +23,9 @@ class RoleController(
     fun addPermission(roleCode: String, permissionId: Long): WebResp {
         val role = roleService.findByCode(roleCode) ?: return WebResp.fail(SysCode.RoleNotExist)
         val permission = permissionService.findById(permissionId) ?: return WebResp.fail(SysCode.PermissionNotExist)
-        role.permissions.add(permission)
+        val permissions = arrayListOf(permission)
+        permissions.addAll(role.permissions)
+        role.permissions = permissions
         val saveRole = roleService.saveRole(role)
         return WebResp.ok(saveRole)
     }
@@ -30,9 +33,7 @@ class RoleController(
     @GetMapping("/removePermission")
     fun removePermission(roleCode: String, permissionId: Long): WebResp {
         val role = roleService.findByCode(roleCode) ?: return WebResp.fail(SysCode.RoleNotExist)
-        role.permissions.removeIf {
-            it.id == permissionId
-        }
+        role.permissions = role.permissions.filter { it.id == permissionId }.toList()
         val saveRole = roleService.saveRole(role)
         return WebResp.ok(saveRole)
     }

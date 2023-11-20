@@ -2,6 +2,7 @@ package com.github.blanexie.vxph.user.entity
 
 import cn.hutool.crypto.digest.DigestUtil
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.github.blanexie.vxph.account.entity.Account
 import com.github.blanexie.vxph.common.BaseEntity
 import jakarta.persistence.*
 import org.slf4j.LoggerFactory

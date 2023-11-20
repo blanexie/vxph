@@ -1,4 +1,4 @@
-package com.github.blanexie.vxph.user.entity
+package com.github.blanexie.vxph.account.entity
 
 import com.github.blanexie.vxph.common.BaseEntity
 import jakarta.persistence.*

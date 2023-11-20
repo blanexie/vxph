@@ -1,15 +1,15 @@
 package com.github.blanexie.vxph.common.web
 
+import cn.dev33.satoken.`fun`.SaFunction
 import cn.dev33.satoken.interceptor.SaInterceptor
 import cn.dev33.satoken.router.SaRouter
-import cn.dev33.satoken.router.SaRouterStaff
 import cn.dev33.satoken.stp.StpUtil
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer
-
+import com.github.blanexie.vxph.user.service.UserService
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -25,25 +25,34 @@ import java.time.format.DateTimeFormatter
 
 
 @Configuration
-class WebConfig : WebMvcConfigurer {
+class WebConfig(
+    private val userService: UserService
+) : WebMvcConfigurer {
 
     override fun addArgumentResolvers(resolvers: MutableList<HandlerMethodArgumentResolver?>) {
         resolvers.add(0, InfoHashParamResolver())
-
     }
 
     override fun addInterceptors(registry: InterceptorRegistry) {
         // 注册 Sa-Token 拦截器，定义详细认证规则
-        registry.addInterceptor(SaInterceptor {
-            // 指定一条 match 规则
-            SaRouter
-                .match("/api/**") // 拦截的 path 列表，可以写多个 */
-                // .notMatch("/api/user/login") // 排除掉的 path 列表，可以写多个
-                .check { r: SaRouterStaff? -> StpUtil.checkLogin() } // 要执行的校验动作，可以写完整的 lambda 表达式
-            // 根据路由划分模块，不同模块不同鉴权
-            //   SaRouter.match("/user/**") { r: SaRouterStaff? -> StpUtil.checkPermission("user") }
+        registry.addInterceptor(
+            SaInterceptor {
+                val rules = getAuthRules()
+                for (path in rules.keys) {
+                    SaRouter.match(path, SaFunction { StpUtil.checkPermission(rules[path]) })
+                }
+            }
+        ).addPathPatterns("/**")
+    }
 
-        }).addPathPatterns("/**")
+    private fun getAuthRules(): Map<String, String> {
+        val userId = StpUtil.getLoginIdAsLong()
+        val user = userService.findById(userId) ?: return emptyMap()
+        val permissionMap = hashMapOf<String, String>()
+        user.role.permissions.forEach {
+            permissionMap[it.code] = it.code
+        }
+        return permissionMap
     }
 
     override fun addCorsMappings(registry: CorsRegistry) {

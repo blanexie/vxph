@@ -5,7 +5,7 @@ import com.github.blanexie.vxph.common.exception.SysCode
 import com.github.blanexie.vxph.common.exception.VxphException
 import com.github.blanexie.vxph.user.LoginTimeExpireMS
 import com.github.blanexie.vxph.user.dto.RegisterReq
-import com.github.blanexie.vxph.user.entity.Account
+import com.github.blanexie.vxph.account.entity.Account
 import com.github.blanexie.vxph.user.entity.Role
 import com.github.blanexie.vxph.user.entity.User
 import com.github.blanexie.vxph.user.repository.UserRepository
@@ -33,7 +33,9 @@ class UserServiceImpl(@Resource val userRepository: UserRepository) : UserServic
 
     override fun findById(userId: Long): User? {
         return userCache.get(userId) {
-            userRepository.findById(userId).orElse(null)
+            val user = userRepository.findById(userId).orElse(null)
+            user?.role?.permissions
+            user
         }
     }
 

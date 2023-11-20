@@ -1,7 +1,7 @@
-package com.github.blanexie.vxph.user.repository
+package com.github.blanexie.vxph.account.repository
 
 
-import com.github.blanexie.vxph.user.entity.Account
+import com.github.blanexie.vxph.account.entity.Account
 import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.query.QueryByExampleExecutor
 
