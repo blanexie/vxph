@@ -20,9 +20,9 @@ class RoleController(
 ) {
 
     @GetMapping("/addPermission")
-    fun addPermission(roleCode: String, permissionId: Long): WebResp {
+    fun addPermission(roleCode: String, permissionCode: String): WebResp {
         val role = roleService.findByCode(roleCode) ?: return WebResp.fail(SysCode.RoleNotExist)
-        val permission = permissionService.findById(permissionId) ?: return WebResp.fail(SysCode.PermissionNotExist)
+        val permission = permissionService.findByCode(permissionCode) ?: return WebResp.fail(SysCode.PermissionNotExist)
         val permissions = arrayListOf(permission)
         permissions.addAll(role.permissions)
         role.permissions = permissions
@@ -31,9 +31,9 @@ class RoleController(
     }
 
     @GetMapping("/removePermission")
-    fun removePermission(roleCode: String, permissionId: Long): WebResp {
+    fun removePermission(roleCode: String, permissionCode: String): WebResp {
         val role = roleService.findByCode(roleCode) ?: return WebResp.fail(SysCode.RoleNotExist)
-        role.permissions = role.permissions.filter { it.id == permissionId }.toList()
+        role.permissions = role.permissions.filter { it.code == permissionCode }.toList()
         val saveRole = roleService.saveRole(role)
         return WebResp.ok(saveRole)
     }
