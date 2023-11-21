@@ -1,6 +1,7 @@
 package com.github.blanexie.vxph.account.entity
 
 import com.github.blanexie.vxph.common.BaseEntity
+import com.github.blanexie.vxph.user.entity.User
 import jakarta.persistence.*
 
 @Entity
@@ -22,4 +23,6 @@ data class Account(
     var level: String,
     //拥有的可用邀请函
     var inviteCount: Int,
+    @OneToOne
+    var user: User,
 ) : BaseEntity()

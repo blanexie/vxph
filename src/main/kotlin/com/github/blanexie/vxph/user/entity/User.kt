@@ -24,8 +24,7 @@ data class User(
     var password: String,
     @Column(nullable = false)
     var sex: String,
-    @OneToOne
-    var account: Account,
+
     @ManyToOne(fetch = FetchType.EAGER)
     var role: Role,
 ) : BaseEntity() {

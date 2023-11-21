@@ -1,14 +1,20 @@
 package com.github.blanexie.vxph.common.web
 
+import cn.dev33.satoken.context.SaHolder
+import cn.dev33.satoken.error.SaErrorCode
+import cn.dev33.satoken.exception.NotLoginException
+import cn.dev33.satoken.exception.NotPermissionException
 import cn.dev33.satoken.`fun`.SaFunction
 import cn.dev33.satoken.interceptor.SaInterceptor
 import cn.dev33.satoken.router.SaRouter
 import cn.dev33.satoken.stp.StpUtil
+import cn.hutool.core.collection.CollUtil
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer
+import com.github.blanexie.vxph.user.AnonymouslyRole
 import com.github.blanexie.vxph.user.service.RoleService
 import com.github.blanexie.vxph.user.service.UserService
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer
@@ -39,20 +45,50 @@ class WebConfig(
         // 注册 Sa-Token 拦截器，定义详细认证规则
         registry.addInterceptor(
             SaInterceptor {
-                val rules = getAuthRules()
-                for (path in rules.keys) {
-                    SaRouter.match(path, SaFunction { StpUtil.checkPermission(rules[path]) })
+                val request = SaHolder.getRequest()
+                val permission = "${request.method} ${request.requestPath}"
+                if (StpUtil.isLogin()) {
+                    checkLoginUserPermission(permission)
+                } else {
+                    checkAnonymouslyPermission(permission)
                 }
             }
         ).addPathPatterns("/**")
     }
 
+    private fun checkAnonymouslyPermission(permission: String) {
+        //获取可以匿名访问的path信息
+        val role = roleService.findByCode(AnonymouslyRole)
+        val pMap = role?.permissions?.map { it.code }?.toList()
+        if (CollUtil.isEmpty(pMap)) {
+            throw NotLoginException(permission,"","")
+        }
+        if (!pMap!!.contains(permission)) {
+            throw NotLoginException(permission,"","")
+        }
+    }
+
+    private fun checkLoginUserPermission(permission: String) {
+        //获取用户的权限相关path
+        val rules = getAuthRules()
+        //挨个校验
+        if (rules.isEmpty()) {
+            throw NotLoginException(permission,"","")
+        }
+        for (rule in rules) {
+            SaRouter.match(rule.value, SaFunction {
+                StpUtil.checkPermission(rule.key)
+            })
+        }
+    }
+
     private fun getAuthRules(): Map<String, String> {
+        val permissionMap = hashMapOf<String, String>()
         val userId = StpUtil.getLoginIdAsLong()
         val user = userService.findById(userId) ?: return emptyMap()
-        val permissionMap = hashMapOf<String, String>()
         user.role.permissions.forEach {
-            permissionMap[it.code] = it.code
+            val path = it.code.split(" ")[1]
+            permissionMap[it.code] = path
         }
         return permissionMap
     }

@@ -63,8 +63,8 @@ class UserController(
     fun register(@RequestBody registerReq: RegisterReq): WebResp {
         val role = roleService.findByCode("normal")!!
         inviteService.useInvite(registerReq.inviteCode, registerReq.email)
-        val account = accountService.getInitAccount()
-        val user = userService.saveUser(registerReq, account, role)
-        return WebResp.ok().add("user", user).add("account", account)
+        val user = userService.saveUser(registerReq, role)
+        accountService.initAccount(user)
+        return WebResp.ok().add("user", user)
     }
 }

@@ -62,7 +62,6 @@ class TrackerController(val peerService: PeerService, val torrentService: Torren
      * remotePort: 54116
      * remoteAddr:127.0.0.1
      */
-    @SaIgnore
     @GetMapping("/announce")
     fun announce(
         @RequestParam(name = "peer_id") peerId: String,
@@ -99,7 +98,6 @@ class TrackerController(val peerService: PeerService, val torrentService: Torren
     /**
      * 抓取
      */
-    @SaIgnore
     @GetMapping("/scrape")
     fun scrape(
         @InfoHashParam("info_hash") infoHash: List<String>, request: HttpServletRequest,

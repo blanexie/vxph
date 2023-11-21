@@ -24,7 +24,7 @@ class InviteController(
     fun send(@RequestParam email: String): WebResp {
         val userId = StpUtil.getLoginIdAsLong()
         val user = userService.findById(userId) ?: return WebResp.fail(SysCode.UserNotExist)
-        val account = user.account
+        val account = accountService.findByUser(user)
         if (account.inviteCount < 1) {
             return WebResp.fail(SysCode.UserNotExist)
         }

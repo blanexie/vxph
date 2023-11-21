@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component
 @Component
 class StpInterfaceSqliteImpl(
     private val userService: UserService,
-    private val roleService: RoleService,
 ) : StpInterface {
 
     override fun getPermissionList(loginId: Any, loginType: String): List<String> {
