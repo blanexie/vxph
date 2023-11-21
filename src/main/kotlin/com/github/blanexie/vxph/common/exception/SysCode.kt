@@ -2,7 +2,10 @@ package com.github.blanexie.vxph.common.exception
 
 enum class SysCode(val code: Int, val msg: String) {
 
+    PermissionNotAllow(625, "无权访问"),
     NotLoginError(403, "请登录后访问"),
+
+
     ServerError(500, "Server Error"),
     LongNameAndPwdError(600, "用户名或者密码错误"),
     AliyunClientError(610, "阿里云DDNS错误"),
@@ -21,4 +24,5 @@ enum class SysCode(val code: Int, val msg: String) {
     InvalidNotHave(622, "邀请函数量不足"),
     RoleNotExist(623, "角色不存在"),
     PermissionNotExist(624, "权限不存在"),
+
 }

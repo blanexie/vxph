@@ -5,6 +5,8 @@ import cn.dev33.satoken.`fun`.SaFunction
 import cn.dev33.satoken.router.SaRouter
 import cn.dev33.satoken.stp.StpUtil
 import cn.hutool.core.collection.CollUtil
+import com.github.blanexie.vxph.common.exception.SysCode
+import com.github.blanexie.vxph.common.exception.VxphException
 import com.github.blanexie.vxph.user.AnonymouslyRole
 import com.github.blanexie.vxph.user.service.RoleService
 import com.github.blanexie.vxph.user.service.UserService
@@ -40,10 +42,10 @@ class SaTokenCheckPermission(
         val role = roleService.findByCode(AnonymouslyRole)
         val pMap = role?.permissions?.map { it.code }?.toList()
         if (CollUtil.isEmpty(pMap)) {
-            throw NotLoginException(permission, "", "")
+            throw VxphException(SysCode.PermissionNotAllow)
         }
         if (!pMap!!.contains(permission)) {
-            throw NotLoginException(permission, "", "")
+            throw VxphException(SysCode.PermissionNotAllow)
         }
     }
 
@@ -52,7 +54,7 @@ class SaTokenCheckPermission(
         val rules = getAuthRules()
         //挨个校验
         if (rules.isEmpty()) {
-            throw NotLoginException(permission, "", "")
+            throw VxphException(SysCode.PermissionNotAllow)
         }
         for (rule in rules) {
             SaRouter.match(rule.value, SaFunction {

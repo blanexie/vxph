@@ -10,6 +10,7 @@ import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse.BodyHandlers
+import kotlin.math.ceil
 
 @Service
 class CsdnService {
@@ -39,7 +40,7 @@ class CsdnService {
                 if (respMap["code"] == 200) {
                     val data = respMap["data"] as Map<String, Any>
                     val total = data["total"] as Int
-                    totalPage = Math.ceil(total / 20.0).toInt()
+                    totalPage = ceil(total / 20.0).toInt()
                     val list = data["list"] as List<Map<String, Any>>
                     list.forEach {
                         reqDoc(it["url"] as String)
@@ -56,7 +57,7 @@ class CsdnService {
 
 
     private fun reqDoc(url: String): String {
-        try {
+        return try {
             val httpRequest =
                 HttpRequest.newBuilder().uri(URI(url)).header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36 Edg/119.0.0.0").header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7").header("Referer", referer).build()
             val httpResponse = httpClient.send(httpRequest, BodyHandlers.ofString())
@@ -64,15 +65,15 @@ class CsdnService {
             val ms = RandomUtil.randomDouble(1.0, 10.0) * 1000
             ThreadUtil.safeSleep(ms.toLong())
             log.info("request url:{},  resp:{}", url, httpResponse.statusCode())
-            return httpResponse.body()
+            httpResponse.body()
         } catch (e: Exception) {
             log.error("请求报错， url:{}", url, e)
-            return ""
+            ""
         }
     }
 
     private fun reqJson(url: String): String {
-        try {
+        return try {
             val httpRequest =
                 HttpRequest.newBuilder().uri(URI(url)).header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36 Edg/119.0.0.0").header("Accept", "application/json, text/plain, */*").header("Referer", referer).build()
             val httpResponse = httpClient.send(httpRequest, BodyHandlers.ofString())
@@ -81,10 +82,10 @@ class CsdnService {
             val ms = RandomUtil.randomDouble(1.0, 10.0) * 1000
             ThreadUtil.safeSleep(ms.toLong())
             log.info("request url:{},  resp:{}", url, httpResponse.statusCode())
-            return body
+            body
         } catch (e: Exception) {
             log.error("请求报错， url:{}", url, e)
-            return ""
+            ""
         }
     }
 }
