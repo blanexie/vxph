@@ -29,10 +29,6 @@ class UserController(
     @SaIgnore
     @PostMapping("/login")
     fun login(@RequestBody loginReq: LoginReq): WebResp {
-        if (loginReq.username == "admin") {
-            StpUtil.login(1)
-            return WebResp.ok(StpUtil.getTokenInfo())
-        }
         val user = userService.login(loginReq.username, loginReq.pwdSha256, loginReq.time)
         if (user != null) {
             StpUtil.login(user.id)
