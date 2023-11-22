@@ -16,4 +16,5 @@ class VxphApplication
 var context: ConfigurableApplicationContext? = null
 fun main(args: Array<String>) {
     context = runApplication<VxphApplication>(*args)
+
 }

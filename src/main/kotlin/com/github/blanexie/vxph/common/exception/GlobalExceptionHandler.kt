@@ -1,6 +1,7 @@
 package com.github.blanexie.vxph.common.exception
 
 import cn.dev33.satoken.exception.NotLoginException
+import cn.dev33.satoken.exception.NotPermissionException
 import com.github.blanexie.vxph.common.web.WebResp
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -18,6 +19,13 @@ class GlobalExceptionHandler {
     fun handleVxphException(e: VxphException): WebResp {
         log.error("全局Vxph异常拦截了", e)
         return WebResp.fail(e.sysCode, e.message!!)
+    }
+
+    @ResponseBody
+    @ExceptionHandler(NotPermissionException::class)
+    fun handleNotPermissionException(e: NotPermissionException): WebResp {
+        log.error("全局Vxph异常拦截了", e)
+        return WebResp.fail(SysCode.PermissionNotAllow)
     }
 
     @ResponseBody

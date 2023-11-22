@@ -6,6 +6,6 @@ import org.springframework.data.repository.query.QueryByExampleExecutor
 
 interface DomainRecordRepository : CrudRepository<DomainRecord, Long>, QueryByExampleExecutor<DomainRecord> {
 
-
     fun deleteByRecordId(recordId: String)
+
 }

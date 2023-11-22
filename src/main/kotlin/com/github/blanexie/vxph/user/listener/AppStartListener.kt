@@ -42,10 +42,8 @@ class AppStartListener(
             val methods = t.methodsCondition.methods as Set<RequestMethod>
             pathPatterns.forEach { path ->
                 methods.forEach { m ->
-                    val p = Permission(
-                        null, path.patternString, "${m.name} ${path.patternString}",
-                        PermissionType.Path, arrayListOf()
-                    )
+                    val code = "${m.name} ${path.patternString}"
+                    val p = Permission(code, code, "", PermissionType.Path)
                     permissions.add(p)
                 }
             }

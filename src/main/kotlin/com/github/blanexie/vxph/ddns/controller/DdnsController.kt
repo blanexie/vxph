@@ -1,15 +1,14 @@
 package com.github.blanexie.vxph.ddns.controller
 
-import cn.dev33.satoken.util.SaResult
 import com.github.blanexie.vxph.common.web.WebResp
 import com.github.blanexie.vxph.ddns.entity.DomainRecord
 import com.github.blanexie.vxph.ddns.service.DdnsService
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/api/ddns")
 class DdnsController(val ddnsService: DdnsService) {
-
 
     @GetMapping("/ips")
     fun findLocalIp(): WebResp {

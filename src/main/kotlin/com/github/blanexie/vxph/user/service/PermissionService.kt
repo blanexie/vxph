@@ -4,6 +4,6 @@ import com.github.blanexie.vxph.user.entity.Permission
 
 interface PermissionService {
 
-    fun findById(id: Long): Permission
+    fun findByCode(code: String): Permission?
 
 }

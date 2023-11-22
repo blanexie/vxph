@@ -11,8 +11,8 @@ class PermissionServiceImpl(
 ) : PermissionService {
 
 
-    override fun findById(id: Long): Permission {
-        return permissionRepository.findById(id).get()
+    override fun findByCode(code: String): Permission? {
+        return permissionRepository.findByCode(code)
     }
 
 

@@ -55,7 +55,11 @@ class InviteServiceImple(
         if (invite.acceptTime != null) {
             throw VxphException(SysCode.InvalidInviteCode)
         }
-        invite.acceptTime= LocalDateTime.now()
+        if (invite.status != 0) {
+            throw VxphException(SysCode.InvalidInviteCode)
+        }
+        invite.acceptTime = LocalDateTime.now()
+        invite.status = 1
         inviteRepository.save(invite)
         return invite
     }

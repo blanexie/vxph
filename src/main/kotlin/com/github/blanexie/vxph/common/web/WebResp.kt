@@ -4,7 +4,6 @@ import com.github.blanexie.vxph.common.exception.SysCode
 
 class WebResp(val code: Int, val message: String, val data: Any?) {
 
-
     fun add(key: String, value: Any): WebResp {
         val hashMap = data as HashMap<String, Any>
         hashMap[key] = value

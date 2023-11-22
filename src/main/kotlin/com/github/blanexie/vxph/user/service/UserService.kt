@@ -1,7 +1,7 @@
 package com.github.blanexie.vxph.user.service
 
 import com.github.blanexie.vxph.user.dto.RegisterReq
-import com.github.blanexie.vxph.user.entity.Account
+import com.github.blanexie.vxph.account.entity.Account
 import com.github.blanexie.vxph.user.entity.Role
 import com.github.blanexie.vxph.user.entity.User
 
@@ -11,7 +11,7 @@ interface UserService {
 
     fun findById(userId: Long): User?
 
-    fun saveUser(registerReq: RegisterReq, account: Account, role: Role): User
+    fun saveUser(registerReq: RegisterReq, role: Role): User
 
 
 }

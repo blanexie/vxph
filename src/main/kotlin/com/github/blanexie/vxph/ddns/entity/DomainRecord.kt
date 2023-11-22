@@ -20,4 +20,6 @@ data class DomainRecord(
     var value: String,
     @Column
     var ttl: Int,
+    @Column
+    var remark: String,
 ) : BaseEntity()
