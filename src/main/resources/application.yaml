@@ -53,8 +53,3 @@ sa-token:
   token-style: simple-uuid
   # 是否输出操作日志
   is-log: true
-
-
-
-vt:
-  z: 1

@@ -25,8 +25,6 @@ class UserController(
     private val roleService: RoleService,
     private val inviteService: InviteService,
     private val accountService: AccountService,
-    @Value("\${vt.z}")
-    private val zt:String,
 ) {
 
     @SaIgnore
@@ -46,7 +44,6 @@ class UserController(
         val user = userService.findById(userId)!!
         return WebResp.ok().add("user", user)
             .add("tokenInfo", StpUtil.getTokenInfo())
-            .add("zt",zt)
     }
 
     @GetMapping("logout")

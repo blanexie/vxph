@@ -42,10 +42,10 @@ class SaTokenCheckPermission(
         val role = roleService.findByCode(AnonymouslyRole)
         val pMap = role?.permissions?.map { it.code }?.toList()
         if (CollUtil.isEmpty(pMap)) {
-            throw VxphException(SysCode.PermissionNotAllow)
+            throw NotLoginException(SysCode.PermissionNotAllow.msg,null,null)
         }
         if (!pMap!!.contains(permission)) {
-            throw VxphException(SysCode.PermissionNotAllow)
+            throw NotLoginException(SysCode.PermissionNotAllow.msg,null,null)
         }
     }
 
