@@ -3,7 +3,7 @@ package com.github.blanexie.vxph.user.controller
 import cn.dev33.satoken.stp.StpUtil
 import com.github.blanexie.vxph.account.service.AccountService
 import com.github.blanexie.vxph.common.exception.SysCode
-import com.github.blanexie.vxph.common.web.WebResp
+import com.github.blanexie.vxph.common.entity.WebResp
 import com.github.blanexie.vxph.user.dto.LoginReq
 import com.github.blanexie.vxph.user.dto.RegisterReq
 import com.github.blanexie.vxph.user.service.InviteService

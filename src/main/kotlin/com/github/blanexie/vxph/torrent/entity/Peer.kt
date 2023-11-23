@@ -1,7 +1,7 @@
 package com.github.blanexie.vxph.torrent.entity
 
 import cn.hutool.core.util.StrUtil
-import com.github.blanexie.vxph.common.BaseEntity
+import com.github.blanexie.vxph.common.entity.BaseEntity
 import com.github.blanexie.vxph.common.exception.SysCode
 import com.github.blanexie.vxph.common.exception.VxphException
 import com.github.blanexie.vxph.torrent.util.IpType

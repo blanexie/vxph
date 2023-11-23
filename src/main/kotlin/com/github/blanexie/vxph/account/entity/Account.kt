@@ -1,6 +1,6 @@
 package com.github.blanexie.vxph.account.entity
 
-import com.github.blanexie.vxph.common.BaseEntity
+import com.github.blanexie.vxph.common.entity.BaseEntity
 import com.github.blanexie.vxph.user.entity.User
 import jakarta.persistence.*
 

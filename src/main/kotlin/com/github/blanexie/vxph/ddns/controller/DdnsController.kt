@@ -1,6 +1,6 @@
 package com.github.blanexie.vxph.ddns.controller
 
-import com.github.blanexie.vxph.common.web.WebResp
+import com.github.blanexie.vxph.common.entity.WebResp
 import com.github.blanexie.vxph.ddns.entity.DomainRecord
 import com.github.blanexie.vxph.ddns.service.DdnsService
 import org.springframework.web.bind.annotation.*

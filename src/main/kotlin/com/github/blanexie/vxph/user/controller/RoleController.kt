@@ -2,7 +2,7 @@ package com.github.blanexie.vxph.user.controller
 
 import cn.dev33.satoken.stp.StpUtil
 import com.github.blanexie.vxph.common.exception.SysCode
-import com.github.blanexie.vxph.common.web.WebResp
+import com.github.blanexie.vxph.common.entity.WebResp
 import com.github.blanexie.vxph.user.entity.Permission
 import com.github.blanexie.vxph.user.service.PermissionService
 import com.github.blanexie.vxph.user.service.RoleService
@@ -21,8 +21,8 @@ class RoleController(
     /**
      * 全量返回所有的角色
      */
-    @GetMapping("/roles")
-    fun roles(): WebResp {
+    @GetMapping("/list")
+    fun list(): WebResp {
         val roles = roleService.findAll()
         return WebResp.ok(roles)
     }

@@ -1,4 +1,4 @@
-package com.github.blanexie.vxph.common
+package com.github.blanexie.vxph.common.entity
 
 import jakarta.persistence.Column
 import jakarta.persistence.EntityListeners
