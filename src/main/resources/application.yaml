@@ -1,8 +1,6 @@
 server:
   port: 8018
 
-
-
 ###### vxph ############
 vxph:
   data:

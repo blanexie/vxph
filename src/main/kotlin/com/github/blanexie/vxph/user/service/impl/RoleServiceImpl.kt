@@ -14,6 +14,10 @@ class RoleServiceImpl(
         return roleRepository.findByCode(code)
     }
 
+    override fun findAll(): List<Role> {
+        return  roleRepository.findAll().toList()
+    }
+
     override fun saveRole(role: Role): Role {
         return roleRepository.save(role)
     }

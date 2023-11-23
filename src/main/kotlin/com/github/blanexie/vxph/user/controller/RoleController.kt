@@ -18,6 +18,14 @@ class RoleController(
     private val roleService: RoleService,
     private val permissionService: PermissionService,
 ) {
+    /**
+     * 全量返回所有的角色
+     */
+    @GetMapping("/roles")
+    fun roles(): WebResp {
+        val roles = roleService.findAll()
+        return WebResp.ok(roles)
+    }
 
     @GetMapping("/addPermission")
     fun addPermission(roleCode: String, permissionCode: String): WebResp {
