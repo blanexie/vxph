@@ -4,7 +4,7 @@ server:
 ###### vxph ############
 vxph:
   data:
-    dir: db
+    dir: /app/db
 
 #### aliyun  DNS ############
 aliyun:
