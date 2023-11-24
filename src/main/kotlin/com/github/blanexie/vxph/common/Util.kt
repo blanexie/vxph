@@ -6,6 +6,10 @@ import com.github.blanexie.vxph.context
 import org.springframework.core.env.Environment
 
 
+fun <T> getBean(clazz: Class<T>): T {
+    return context!!.getBean(clazz)
+}
+
 fun getProperty(key: String): String? {
     val bean = context!!.getBean(Environment::class.java)
     return bean.getProperty(key)

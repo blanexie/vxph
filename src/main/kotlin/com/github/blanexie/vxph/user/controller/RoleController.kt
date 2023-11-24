@@ -4,11 +4,13 @@ import cn.dev33.satoken.stp.StpUtil
 import com.github.blanexie.vxph.common.exception.SysCode
 import com.github.blanexie.vxph.common.entity.WebResp
 import com.github.blanexie.vxph.user.entity.Permission
+import com.github.blanexie.vxph.user.entity.Role
 import com.github.blanexie.vxph.user.service.PermissionService
 import com.github.blanexie.vxph.user.service.RoleService
 import com.github.blanexie.vxph.user.service.UserService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -24,6 +26,15 @@ class RoleController(
     @GetMapping("/list")
     fun list(): WebResp {
         val roles = roleService.findAll()
+        return WebResp.ok(roles)
+    }
+
+    /**
+     *  保存
+     */
+    @PostMapping("/save")
+    fun save(@RequestBody role: Role): WebResp {
+        val roles = roleService.saveRole(role)
         return WebResp.ok(roles)
     }
 
