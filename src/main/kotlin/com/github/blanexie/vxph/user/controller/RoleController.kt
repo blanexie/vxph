@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/role")
 class RoleController(
     private val roleService: RoleService,
-    private val permissionService: PermissionService,
 ) {
     /**
      * 全量返回所有的角色
