@@ -1,12 +1,9 @@
 package com.github.blanexie.vxph.torrent.controller
 
 import cn.dev33.satoken.stp.StpUtil
-import cn.hutool.core.date.DateUtil
-import cn.hutool.core.img.ImgUtil
 import cn.hutool.core.io.FileUtil
 import cn.hutool.core.io.IoUtil
-import com.github.blanexie.vxph.common.web.StreamProgressImpl
-import com.github.blanexie.vxph.common.web.WebResp
+import com.github.blanexie.vxph.common.entity.WebResp
 import com.github.blanexie.vxph.torrent.entity.FileResource
 import com.github.blanexie.vxph.torrent.service.FileResourceService
 import com.github.blanexie.vxph.user.service.UserService
@@ -17,10 +14,6 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import java.io.BufferedOutputStream
 import java.io.File
-import java.io.InputStream
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.TimeZone
 
 @RequestMapping("/api/resource")
 @Controller

@@ -6,6 +6,9 @@ interface RoleService {
 
     fun findByCode(code: String): Role?
 
+    fun findAll(): List<Role>
+
     fun saveRole(role: Role): Role
 
+    fun delete(code: String)
 }

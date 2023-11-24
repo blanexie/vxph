@@ -9,5 +9,7 @@ interface RoleRepository : CrudRepository<Role, Long>, QueryByExampleExecutor<Ro
     fun findByCode(code: String): Role?
 
 
+    fun deleteRoleByCode(code: String)
+
 
 }

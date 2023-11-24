@@ -2,7 +2,7 @@ package com.github.blanexie.vxph.common.exception
 
 import cn.dev33.satoken.exception.NotLoginException
 import cn.dev33.satoken.exception.NotPermissionException
-import com.github.blanexie.vxph.common.web.WebResp
+import com.github.blanexie.vxph.common.entity.WebResp
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler

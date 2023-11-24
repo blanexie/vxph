@@ -1,6 +1,6 @@
 package com.github.blanexie.vxph.user.entity
 
-import com.github.blanexie.vxph.common.BaseEntity
+import com.github.blanexie.vxph.common.entity.BaseEntity
 import jakarta.persistence.*
 import java.time.LocalDateTime
 

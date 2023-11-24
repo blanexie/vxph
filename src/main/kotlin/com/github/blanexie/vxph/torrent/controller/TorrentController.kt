@@ -5,7 +5,7 @@ import com.dampcake.bencode.Type
 import com.github.blanexie.vxph.common.bencode
 import com.github.blanexie.vxph.common.exception.SysCode
 import com.github.blanexie.vxph.common.exception.VxphException
-import com.github.blanexie.vxph.common.web.WebResp
+import com.github.blanexie.vxph.common.entity.WebResp
 import com.github.blanexie.vxph.torrent.service.PeerService
 import com.github.blanexie.vxph.torrent.service.PostService
 import com.github.blanexie.vxph.torrent.service.TorrentService
