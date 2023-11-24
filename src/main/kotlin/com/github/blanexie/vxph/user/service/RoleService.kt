@@ -10,4 +10,5 @@ interface RoleService {
 
     fun saveRole(role: Role): Role
 
+    fun delete(code: String)
 }
