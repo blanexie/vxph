@@ -38,3 +38,5 @@ out/
 
 ### logs ###
 *.log
+
+db/vxph.sqlite
