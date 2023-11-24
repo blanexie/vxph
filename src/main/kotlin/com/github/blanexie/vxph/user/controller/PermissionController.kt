@@ -20,7 +20,10 @@ class PermissionController(
      */
     @PostMapping("/query")
     fun list(@RequestBody pageReq: PageReq): WebResp {
-        val permissionPage = permissionService.find(PageRequest.of(pageReq.page-1, pageReq.pageSize))
+        val permissionPage = permissionService.find(
+            pageReq.searchKey,
+            PageRequest.of(pageReq.page - 1, pageReq.pageSize)
+        )
         return WebResp.ok(permissionPage)
     }
 
