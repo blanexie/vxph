@@ -64,8 +64,8 @@ class AppStartListener(
         )
         //初始化code
         val code1 = Code(1, "announceUrl", "Announce_Url", "[\"http://192.168.1.5:8016/announce\"]")
-        val code2 = Code(1, "允许上传的资源文件后缀", "File_Allow_Suffix", "[\"jpg\",\"png\",\"jpeg\"]")
-        val code3 = Code(1, "发送邀请函的文本模板", "InviteMailTemplateCode", "{\"subject\": \"VXPH邀请函，邀请你注册\", \"content\": \"邀请人：{name} \\n  邀请码：{code}\"} ")
+        val code2 = Code(2, "允许上传的资源文件后缀", "File_Allow_Suffix", "[\"jpg\",\"png\",\"jpeg\"]")
+        val code3 = Code(3, "发送邀请函的文本模板", "InviteMailTemplateCode", "{\"subject\": \"VXPH邀请函，邀请你注册\", \"content\": \"邀请人：{name} \\n  邀请码：{code}\"} ")
         codeRepository.saveAll(listOf(code1, code2, code3))
         //DDNS
         val domainRecord = DomainRecord(1, "1242142214521", "xiezc.top", "AAAA", "@", "2408:820c:8f1b:9f80:c7d3:b6c3:eb8a:fb4c", 600, "ubuntu pi")
