@@ -2,7 +2,7 @@
 <configuration debug="false">
     <!--定义参数,后面可以通过${app.name}使用-->
     <property name="app.name" value="vxph"/>
-    <property name="logsPath" value="/app/db"/>
+    <property name="logsPath" value="/app/data"/>
 
     <!--ConsoleAppender 用于在屏幕上输出日志-->
     <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
