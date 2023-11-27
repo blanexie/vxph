@@ -13,7 +13,7 @@ data class Code(
     @Column(unique = true, nullable = false)
     var code: String,
 
-    @Column(nullable = false)
+    @Column(nullable = false,name ="v_value")
     var value: String,
     @Column(nullable = false)
     var parentId: Long = 0L,

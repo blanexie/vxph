@@ -6,7 +6,7 @@ import jakarta.persistence.*
 @Entity
 data class Role(
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long?,
     @Column(unique = true)
     var name: String,

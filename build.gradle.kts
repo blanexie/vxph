@@ -31,9 +31,11 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.boot:spring-boot-starter-mail")
+    implementation("com.h2database:h2")
 
-    implementation("org.xerial:sqlite-jdbc:3.43.0.0")
-    implementation("org.hibernate.orm:hibernate-community-dialects:6.3.1.Final")
+//    implementation("org.xerial:sqlite-jdbc:3.43.0.0")
+   // implementation("org.hibernate.orm:hibernate-community-dialects:6.3.1.Final")
+
     implementation("com.vladmihalcea:hibernate-types-52:2.4.3")
     implementation("cn.dev33:sa-token-spring-boot3-starter:1.37.0")
 
@@ -45,6 +47,8 @@ dependencies {
         exclude("org.dom4j", "dom4j")
     }
     implementation("com.dampcake:bencode:1.4.1")
+
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")

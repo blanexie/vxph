@@ -15,7 +15,7 @@ const val Event_Stopped = "stopped"
 const val Event_Empty = "empty"
 
 
-const val Announce_Url_Code = "Announce_Url_Code"
+const val Announce_Url_Code = "Announce_Url"
 const val File_Allow_Suffix_Code = "File_Allow_Suffix"
 
 enum class IpType {

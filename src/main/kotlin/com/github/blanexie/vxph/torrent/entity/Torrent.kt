@@ -11,7 +11,9 @@ data class Torrent(
     var infoHash: String,
     var title: String, //用户命名的
     var name: String, //torrent中的名称
+    @Column(name="`length`")
     var length: Long,
+    @Column(name="`comment`")
     var comment: String,   // torrent中的注释
     var files: String,
     var creationDate: Long, //秒时间戳
@@ -27,6 +29,7 @@ data class Torrent(
     var downloaded: Int,
 
     @OneToMany(fetch = FetchType.LAZY)
+    @Column(name="`peer`")
     var peer: List<Peer>,
     @ManyToOne(fetch = FetchType.LAZY)
     var owner: User,

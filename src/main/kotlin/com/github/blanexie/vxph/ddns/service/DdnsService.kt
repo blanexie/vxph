@@ -25,7 +25,7 @@ class DdnsService(
     /**
      * 每30分钟执行一次
      */
-    @Scheduled(fixedDelay = 30 * 60 * 1000)
+    @Scheduled(cron = "0 0/15 * * * ?")
     fun schedule() {
         log.info("定时DDNS解析任务开始")
         val findLocalIp = findLocalIp()

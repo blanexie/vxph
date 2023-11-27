@@ -22,6 +22,6 @@ open class BaseEntity(
     @Column(nullable = false)
     @LastModifiedDate
     var updateTime: LocalDateTime = LocalDateTime.now(),
-    @Column(nullable = false)
+    @Column(nullable = false, name = "v_status")
     var status: Int = 0,
 )

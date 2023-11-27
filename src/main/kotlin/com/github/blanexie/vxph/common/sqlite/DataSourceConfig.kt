@@ -11,7 +11,6 @@ import javax.sql.DataSource
 class DataSourceConfig(
     @Value("\${vxph.data.dir}")
     private val dataDir:String,
-
 ) {
 
     /**
@@ -26,19 +25,22 @@ class DataSourceConfig(
      *     driver-class-name: org.sqlite.JDBC
      *     username:
      *     password:
-     */
-    @Bean
-    fun dataSource(): DataSource {
-        val dataSource = DriverManagerDataSource()
-        dataSource.setDriverClassName("org.sqlite.JDBC")
-        dataSource.url = "jdbc:sqlite:${dataDir}/vxph.sqlite"
-        dataSource.username = ""
-        dataSource.password = ""
-        return dataSource
-    }
 
-    @Bean
-    fun jdbcTemplate(dataSource: DataSource): JdbcTemplate {
-        return JdbcTemplate(dataSource)
-    }
+     *
+     *
+     */
+//    @Bean
+//    fun dataSource(): DataSource {
+//        val dataSource = DriverManagerDataSource()
+//        dataSource.setDriverClassName("org.h2.Driver")
+//        dataSource.url =  "jdbc:h2:file:${dataDir}/vxph.db;AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE"
+//        dataSource.username = "admin"
+//        dataSource.password = "123456"
+//        return dataSource
+//    }
+//
+//    @Bean
+//    fun jdbcTemplate(dataSource: DataSource): JdbcTemplate {
+//        return JdbcTemplate(dataSource)
+//    }
 }

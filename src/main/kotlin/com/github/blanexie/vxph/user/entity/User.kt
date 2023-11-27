@@ -10,21 +10,23 @@ import org.slf4j.LoggerFactory
 private val log = LoggerFactory.getLogger(User::class.java)
 
 @Entity
+@Table(name = "v_user")
 data class User(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Long?,
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, name = "`name`")
     var name: String,
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, name = "`email`")
     var email: String,
     @JsonIgnore
-    @Column(nullable = false)
+    @Column(name = "`password`")
     var password: String,
-    @Column(nullable = false)
-    var sex: String,
+    @Column(name = "`sex`")
+    var sex: Int,
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "`role`")
     var role: Role,
 ) : BaseEntity() {
 

@@ -16,7 +16,7 @@ data class DomainRecord(
     var type: String,
     @Column(nullable = false)
     var rr: String,
-    @Column(nullable = false)
+    @Column(nullable = false, name = "v_value")
     var value: String,
     @Column
     var ttl: Int,

@@ -32,6 +32,7 @@ data class Peer(
     var ipv6: String?,
     var port: Int?,
     var downloaded: Long,
+    @Column(name = "`left`")
     var left: Long,
     var uploaded: Long,
     var event: String,
