@@ -90,14 +90,14 @@ class DdnsService(
     fun findLocalIp(): Map<String, String> {
         val result = hashMapOf<String, String>()
         try {
-            val request = HttpRequest.newBuilder(URI.create("https://4.ipw.cn")).build()
+            val request = HttpRequest.newBuilder(URI.create("https://ipv4.ddnspod.com")).build()
             val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
             result["ipv4"] = response.body()
         } catch (e: Exception) {
             log.warn("获取ipv4异常， {}", e.message)
         }
         try {
-            val request2 = HttpRequest.newBuilder(URI.create("https://6.ipw.cn")).build()
+            val request2 = HttpRequest.newBuilder(URI.create("https://v6.myip.la")).build()
             val response2 = httpClient.send(request2, HttpResponse.BodyHandlers.ofString())
             result["ipv6"] = response2.body()
         } catch (e: Exception) {

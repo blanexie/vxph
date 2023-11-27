@@ -4,7 +4,8 @@ server:
 ###### vxph ############
 vxph:
   data:
-    dir: data
+    dir:
+    init: true
 
 #### aliyun  DNS ############
 aliyun:
@@ -18,13 +19,13 @@ spring:
 ##  database-platform: org.hibernate.community.dialect.SQLiteDialect
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     generate-ddl: true
-  datasource:
-    url: jdbc:h2:file:./data/vxph;AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=TRUE;MODE=MYSQL
-    username: admin
-    password: 123456
-    driver-class-name: org.h2.Driver
+#  datasource:
+#    url: jdbc:h2:file:./data/vxph;AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=TRUE;MODE=MYSQL
+#    username: admin
+#    password: 123456
+#    driver-class-name: org.h2.Driver
   h2:
     console:
       enabled: true

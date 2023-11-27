@@ -3,6 +3,7 @@ package com.github.blanexie.vxph.torrent.controller
 import cn.dev33.satoken.stp.StpUtil
 import com.github.blanexie.vxph.common.exception.SysCode
 import com.github.blanexie.vxph.common.entity.WebResp
+import com.github.blanexie.vxph.torrent.controller.dto.PostQuery
 import com.github.blanexie.vxph.torrent.controller.dto.PostReq
 import com.github.blanexie.vxph.torrent.service.PostService
 import com.github.blanexie.vxph.torrent.service.TorrentService
@@ -31,5 +32,12 @@ class PostController(
         postService.publish(postId)
         return WebResp.ok()
     }
+
+    @GetMapping("/query")
+    fun query(@RequestParam postQuery: PostQuery): WebResp {
+        var query = postService.query(postQuery)
+        return WebResp.ok(query)
+    }
+
 
 }

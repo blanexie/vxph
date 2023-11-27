@@ -1,5 +1,6 @@
 package com.github.blanexie.vxph.user.listener
 
+import cn.hutool.core.util.StrUtil
 import com.github.blanexie.vxph.account.entity.Account
 import com.github.blanexie.vxph.account.repository.AccountRepository
 import com.github.blanexie.vxph.ddns.entity.DomainRecord
@@ -14,11 +15,10 @@ import com.github.blanexie.vxph.user.repository.PermissionRepository
 import com.github.blanexie.vxph.user.repository.RoleRepository
 import com.github.blanexie.vxph.user.repository.UserRepository
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
-import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
 import org.springframework.web.util.pattern.PathPattern
@@ -32,6 +32,8 @@ class AppStartListener(
     private val accountRepository: AccountRepository,
     private val codeRepository: CodeRepository,
     private val domainRecordRepository: DomainRecordRepository,
+    @Value("\${vxph.data.init}")
+    private val dataInit: String,
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     private val log = LoggerFactory.getLogger(this::class.java)
@@ -39,7 +41,9 @@ class AppStartListener(
 
     override fun onApplicationEvent(event: ApplicationReadyEvent) {
         this.processPathPermission()
-        this.initTable()
+        if (StrUtil.isNotBlank(dataInit)) {
+            this.initTable()
+        }
     }
 
 
@@ -65,10 +69,12 @@ class AppStartListener(
         //初始化code
         val code1 = Code(1, "announceUrl", "Announce_Url", "[\"http://192.168.1.5:8016/announce\"]")
         val code2 = Code(2, "允许上传的资源文件后缀", "File_Allow_Suffix", "[\"jpg\",\"png\",\"jpeg\"]")
-        val code3 = Code(3, "发送邀请函的文本模板", "InviteMailTemplateCode", "{\"subject\": \"VXPH邀请函，邀请你注册\", \"content\": \"邀请人：{name} \\n  邀请码：{code}\"} ")
+        val code3 =
+            Code(3, "发送邀请函的文本模板", "InviteMailTemplateCode", "{\"subject\": \"VXPH邀请函，邀请你注册\", \"content\": \"邀请人：{name} \\n  邀请码：{code}\"} ")
         codeRepository.saveAll(listOf(code1, code2, code3))
         //DDNS
-        val domainRecord = DomainRecord(1, "1242142214521", "xiezc.top", "AAAA", "@", "2408:820c:8f1b:9f80:c7d3:b6c3:eb8a:fb4c", 600, "ubuntu pi")
+        val domainRecord =
+            DomainRecord(1, "1242142214521", "xiezc.top", "AAAA", "@", "2408:820c:8f1b:9f80:c7d3:b6c3:eb8a:fb4c", 600, "ubuntu pi")
         domainRecordRepository.save(domainRecord)
     }
 
