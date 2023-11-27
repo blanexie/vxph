@@ -13,18 +13,5 @@ class DataSourceConfig(
     private val dataDir: String,
 ) {
 
-    @Bean
-    fun dataSource(): DataSource {
-        val dataSource = DriverManagerDataSource()
-        dataSource.setDriverClassName("org.h2.Driver")
-        dataSource.url = "jdbc:h2:file:${dataDir}/vxph;AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE"
-        dataSource.username = "admin"
-        dataSource.password = "123456"
-        return dataSource
-    }
 
-    @Bean
-    fun jdbcTemplate(dataSource: DataSource): JdbcTemplate {
-        return JdbcTemplate(dataSource)
-    }
 }
