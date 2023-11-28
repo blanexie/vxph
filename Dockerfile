@@ -2,7 +2,7 @@ FROM openjdk:17-ea-slim-buster
 
 ENV TZ="Asia/Shanghai"
 
-VOLUME /app
+VOLUME /data
 
 COPY ./build/libs/vxph-0.0.1-SNAPSHOT.jar /vxph.jar
 
