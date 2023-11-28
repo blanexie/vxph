@@ -7,7 +7,6 @@ import com.github.blanexie.vxph.mail.repository.EmailRepository
 import com.github.blanexie.vxph.mail.service.MailService
 import jakarta.mail.internet.MimeMessage
 import org.slf4j.LoggerFactory
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.mail.MailException
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper

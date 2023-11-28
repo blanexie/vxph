@@ -17,6 +17,8 @@ data class Post(
     @OneToMany(fetch = FetchType.LAZY)
     var imgs: List<FileResource>,
 
+    @OneToMany(fetch = FetchType.LAZY)
+    var labels:List<Label>,  //标签
     var markdown: String, //描述， 长文本
     @OneToMany(fetch = FetchType.LAZY)
     var torrents: List<Torrent>,
