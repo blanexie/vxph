@@ -1,6 +1,5 @@
-package com.github.blanexie.vxph.user.listener
+package com.github.blanexie.vxph.common.listener
 
-import cn.hutool.core.util.StrUtil
 import com.github.blanexie.vxph.account.entity.Account
 import com.github.blanexie.vxph.account.repository.AccountRepository
 import com.github.blanexie.vxph.ddns.entity.DomainRecord
@@ -22,6 +21,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
 import org.springframework.web.util.pattern.PathPattern
+import kotlin.jvm.optionals.getOrNull
 
 @Component
 class AppStartListener(
@@ -32,25 +32,26 @@ class AppStartListener(
     private val accountRepository: AccountRepository,
     private val codeRepository: CodeRepository,
     private val domainRecordRepository: DomainRecordRepository,
-    @Value("\${vxph.data.init}")
-    private val dataInit: String,
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
-
     override fun onApplicationEvent(event: ApplicationReadyEvent) {
         this.processPathPermission()
-        if (StrUtil.isNotBlank(dataInit)) {
-            this.initTable()
-        }
+        this.initTable()
     }
-
 
     /**
      * 初始化表结构
      */
     fun initTable() {
+        //检查是否需要初始化
+        val roleAdmin = roleRepository.findById(1L).getOrNull()
+        if (roleAdmin != null) {
+            log.info("初始化数据完成------------------")
+            return
+        }
+        log.info("开始初始化数据")
         //初始化ROLE
         val permissions = permissionRepository.findAll()
         val role = Role(1, "超级管理员", "admin", "超级管理员", permissions.toList())
@@ -58,7 +59,7 @@ class AppStartListener(
         val anonymouslyRoleCodes = listOf(
             "GET /announce", "POST /api/user/register", "GET /api/user/logout", "GET /scrape", "POST /api/user/login"
         )
-        val anonymouslyRoles = permissions.filter { it -> anonymouslyRoleCodes.contains(it.code) }.toList()
+        val anonymouslyRoles = permissions.filter { anonymouslyRoleCodes.contains(it.code) }.toList()
         val role2 = Role(2, "匿名用户", "anonymously", "匿名用户", anonymouslyRoles)
         roleRepository.save(role2)
         //初始化user
@@ -76,6 +77,7 @@ class AppStartListener(
         val domainRecord =
             DomainRecord(1, "1242142214521", "xiezc.top", "AAAA", "@", "2408:820c:8f1b:9f80:c7d3:b6c3:eb8a:fb4c", 600, "ubuntu pi")
         domainRecordRepository.save(domainRecord)
+        log.info("初始化数据完成------------------")
     }
 
 

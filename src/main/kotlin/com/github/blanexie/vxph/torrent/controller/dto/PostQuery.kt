@@ -4,4 +4,4 @@ data class PostQuery(
     val keyword: String?,
     val page: Int,
     val pageSize: Int,
-) {}
+)

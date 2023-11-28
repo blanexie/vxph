@@ -33,9 +33,9 @@ class PostController(
         return WebResp.ok()
     }
 
-    @GetMapping("/query")
-    fun query(@RequestParam postQuery: PostQuery): WebResp {
-        var query = postService.query(postQuery)
+    @PostMapping("/query")
+    fun query(@RequestBody postQuery: PostQuery): WebResp {
+        val query = postService.query(postQuery)
         return WebResp.ok(query)
     }
 

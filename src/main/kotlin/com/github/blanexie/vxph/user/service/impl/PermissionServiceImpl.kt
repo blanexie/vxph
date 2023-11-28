@@ -27,30 +27,27 @@ class PermissionServiceImpl(
 
     fun findBySearchKey(searchKey: String?, pageRequest: PageRequest): Page<Permission> {
         val entityManager = getBean(EntityManager::class.java)
-        val fromHql = " from Permission"
-
-        val hql = " where code like :searchKey or name like :searchKey "
-        val hqlCount = "select count(*)  "
+        val fromHql = " from Permission "
+        val countHql = " select count(*) "
+        val whereHql = " where code like :searchKey or name like :searchKey "
 
         val query = if (StrUtil.isNotBlank(searchKey)) {
-            entityManager.createQuery(fromHql + hql)
-                .setParameter("searchKey", "%"+searchKey+"%")
+            entityManager.createQuery(fromHql + whereHql)
+                .setParameter("searchKey", "%$searchKey%")
         } else {
             entityManager.createQuery(fromHql)
         }
         val queryCount = if (StrUtil.isNotBlank(searchKey)) {
-            entityManager.createQuery(hqlCount + fromHql + hql)
-                .setParameter("searchKey", "%"+searchKey+"%")
+            entityManager.createQuery(countHql + fromHql + whereHql)
+                .setParameter("searchKey", "%$searchKey%")
         } else {
-            entityManager.createQuery(hqlCount + fromHql)
+            entityManager.createQuery(countHql + fromHql)
         }
         query.firstResult = pageRequest.offset.toInt()
         query.maxResults = pageRequest.pageSize
 
         val singleResult = Convert.toLong(queryCount.singleResult)
-
         val resultList = query.resultList as List<Permission>
-
 
         return PageImpl(resultList, pageRequest, singleResult)
     }
