@@ -75,7 +75,7 @@ class AppStartListener(
         codeRepository.saveAll(listOf(code1, code2, code3))
         //DDNS
         val domainRecord =
-            DomainRecord(1, "1242142214521", "xiezc.top", "AAAA", "@", "2408:820c:8f1b:9f80:c7d3:b6c3:eb8a:fb4c", 600, "ubuntu pi")
+            DomainRecord(1, "862963533145093120", "xiezc.top", "AAAA", "@", "2408:820c:8f1b:9f80:c7d3:b6c3:eb8a:fb4c", 600, "ubuntu pi")
         domainRecordRepository.save(domainRecord)
         log.info("初始化数据完成------------------")
     }
