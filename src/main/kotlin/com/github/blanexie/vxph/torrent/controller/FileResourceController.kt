@@ -15,8 +15,8 @@ import org.springframework.web.multipart.MultipartFile
 import java.io.BufferedOutputStream
 import java.io.File
 
-@RequestMapping("/api/resource")
 @Controller
+@RequestMapping("/api/resource")
 class FileResourceController(
     private val userService: UserService,
     private val fileResourceService: FileResourceService,
