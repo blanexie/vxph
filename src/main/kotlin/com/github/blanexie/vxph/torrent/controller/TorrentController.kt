@@ -3,9 +3,9 @@ package com.github.blanexie.vxph.torrent.controller
 import cn.dev33.satoken.stp.StpUtil
 import com.dampcake.bencode.Type
 import com.github.blanexie.vxph.common.bencode
+import com.github.blanexie.vxph.common.entity.WebResp
 import com.github.blanexie.vxph.common.exception.SysCode
 import com.github.blanexie.vxph.common.exception.VxphException
-import com.github.blanexie.vxph.common.entity.WebResp
 import com.github.blanexie.vxph.torrent.service.PeerService
 import com.github.blanexie.vxph.torrent.service.PostService
 import com.github.blanexie.vxph.torrent.service.TorrentService
@@ -26,18 +26,18 @@ class TorrentController(
 
     @PostMapping("/upload")
     fun torrentUpload(@RequestPart file: MultipartFile, @RequestParam postId: Long, @RequestParam title: String): WebResp {
-        val user = userService.findById(StpUtil.getLoginIdAsLong())!!
+        val loginUserId = StpUtil.getLoginIdAsLong()
         val post = postService.findByPostId(postId) ?: return WebResp.fail(SysCode.PostNotExist)
         val torrentMap = bencode.decode(file.bytes, Type.DICTIONARY)
-        val torrent = torrentService.saveTorrent(torrentMap, user, post, title)
+        val torrent = torrentService.saveTorrent(torrentMap, loginUserId, post, title)
         return WebResp.ok(torrent.infoHash)
     }
 
     @GetMapping("/download")
     fun torrentDownload(@RequestParam infoHash: String, request: HttpServletRequest, response: HttpServletResponse) {
-        val user = userService.findById(StpUtil.getLoginIdAsLong())!!
+        val loginUserId = StpUtil.getLoginIdAsLong()
         val torrent = torrentService.findByInfoHash(infoHash) ?: throw VxphException(SysCode.TorrentNotExist)
-        val peer = peerService.checkAndSave(user, torrent)
+        val peer = peerService.checkAndSave(loginUserId, torrent)
         torrentService.writeTorrentBytes(peer, torrent, response.outputStream)
         response.flushBuffer()
     }

@@ -63,7 +63,7 @@ class TorrentServiceImpl(
         outputStream.write(0x65)
     }
 
-    override fun saveTorrent(torrentMap: Map<String, Any>, user: User, post: Post, title: String): Torrent {
+    override fun saveTorrent(torrentMap: Map<String, Any>, loginUserId: Long, post: Post, title: String): Torrent {
         //2. 解析文件内容
         val info = getPrivateInfo(torrentMap)
         val infoBytes = bencode.encode(info)
@@ -83,7 +83,7 @@ class TorrentServiceImpl(
         val single = info.containsKey("files")
         val torrent = Torrent(
             infoHash, title, name, length, comment, fileStr, createDate, createBy, pieceLength, single, 0,
-            0, 0, arrayListOf(), user, post
+            0, 0, arrayListOf(), loginUserId, post
         )
         //3. 保存文件和修改数据库
         FileUtil.writeBytes(infoBytes, File("${torrentPath}/torrent/${infoHash}"))

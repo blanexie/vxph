@@ -12,12 +12,6 @@ import jakarta.persistence.*
 import java.time.LocalDateTime
 
 @Entity
-@Table(
-    indexes = [
-        Index(columnList = "info_hash,peer_id", unique = true),
-        Index(columnList = "info_hash,user_id", unique = true)
-    ],
-)
 data class Peer(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -40,9 +34,7 @@ data class Peer(
 
     @ManyToOne(fetch = FetchType.LAZY)
     var torrent: Torrent,
-    @ManyToOne(fetch = FetchType.LAZY)
-    var user: User
-
+    var owner: Long
 ) : BaseEntity() {
 
 

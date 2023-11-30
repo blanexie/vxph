@@ -31,8 +31,7 @@ data class Torrent(
     @OneToMany(fetch = FetchType.LAZY)
     @Column(name="`peer`")
     var peer: List<Peer>,
-    @ManyToOne(fetch = FetchType.LAZY)
-    var owner: User,
+    var owner: Long,
     @ManyToOne(fetch = FetchType.LAZY)
     var post: Post,
 ) : BaseEntity()

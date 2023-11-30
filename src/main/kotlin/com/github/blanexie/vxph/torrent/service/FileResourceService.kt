@@ -1,6 +1,8 @@
 package com.github.blanexie.vxph.torrent.service
 
 import com.github.blanexie.vxph.torrent.entity.FileResource
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.multipart.MultipartFile
 
 
 interface FileResourceService {
@@ -13,4 +15,5 @@ interface FileResourceService {
 
     fun saveFile(fileResource: FileResource): FileResource
 
+    fun saveFile(file: MultipartFile,  hash: String,loginUserId:Long): FileResource
 }

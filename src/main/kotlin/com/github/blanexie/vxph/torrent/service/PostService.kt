@@ -14,7 +14,7 @@ interface PostService {
 
     fun publish(postId: Long)
 
-    fun saveOrUpdate(postReq: PostReq,   loginUser: User): Post
+    fun saveOrUpdate(postReq: PostReq, loginUser: Long): Post
 
     fun query(postQuery: PostQuery): Page<Post>
 

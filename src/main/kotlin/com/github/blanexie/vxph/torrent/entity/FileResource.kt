@@ -11,6 +11,5 @@ data class FileResource(
     var name: String?,  //传给后端的文件名称
     var suffix: String, //文件的后缀，同时也是表示文件的类型，
     var length: Long,
-    @ManyToOne(fetch = FetchType.LAZY)
-    var owner: User,
+    var owner: Long,
 ) : BaseEntity()

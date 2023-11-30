@@ -16,7 +16,7 @@ interface TorrentService {
 
     fun writeTorrentBytes(peer: Peer, torrent: Torrent, outputStream: OutputStream)
 
-    fun saveTorrent(torrentMap: Map<String, Any>, user: User, post: Post, title: String): Torrent
+    fun saveTorrent(torrentMap: Map<String, Any>, loginUserId: Long, post: Post, title: String): Torrent
 
     /**
      * 批量获取

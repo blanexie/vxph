@@ -25,6 +25,5 @@ interface PeerService {
 
     fun save(peer: Peer):Peer
 
-
-    fun checkAndSave(user: User, torrent: Torrent):Peer
+    fun checkAndSave(loginUserId: Long, torrent: Torrent):Peer
 }

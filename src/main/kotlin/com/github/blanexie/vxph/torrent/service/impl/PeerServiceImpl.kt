@@ -9,7 +9,6 @@ import com.github.blanexie.vxph.torrent.entity.Torrent
 import com.github.blanexie.vxph.torrent.repository.PeerRepository
 import com.github.blanexie.vxph.torrent.service.PeerService
 import com.github.blanexie.vxph.torrent.util.*
-import com.github.blanexie.vxph.user.entity.User
 import org.springframework.stereotype.Service
 import java.time.Duration
 import java.time.LocalDateTime
@@ -105,7 +104,7 @@ class PeerServiceImpl(val peerRepository: PeerRepository) : PeerService {
     }
 
     override fun findByInfoHashAndUserId(infoHash: String, userId: Long): Peer? {
-        return peerRepository.findByInfoHashAndUserId(infoHash, userId)
+        return peerRepository.findByInfoHashAndOwner(infoHash, userId)
     }
 
     override fun save(peer: Peer): Peer {
@@ -115,14 +114,14 @@ class PeerServiceImpl(val peerRepository: PeerRepository) : PeerService {
     /**
      * 检查是否已经存在peer。 如不存在则新建
      */
-    override fun checkAndSave(user: User, torrent: Torrent): Peer {
+    override fun checkAndSave(loginUserId: Long, torrent: Torrent): Peer {
         //检查用户是否曾经下载过
-        val peerExist = peerRepository.findByInfoHashAndUserId(torrent.infoHash, user.id!!)
+        val peerExist = peerRepository.findByInfoHashAndOwner(torrent.infoHash, loginUserId)
         return if (peerExist == null) {
             val passkey = IdUtil.fastSimpleUUID()
             val peer = Peer(
                 null, torrent.infoHash, passkey, null, null, null, null, 0, 0,
-                0, Event_Empty, LocalDateTime.now(), torrent, user
+                0, Event_Empty, LocalDateTime.now(), torrent, loginUserId
             )
             peerRepository.save(peer)
         } else {

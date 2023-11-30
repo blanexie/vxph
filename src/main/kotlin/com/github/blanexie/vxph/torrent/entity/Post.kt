@@ -12,8 +12,7 @@ data class Post(
     var title: String,
     @OneToOne(fetch = FetchType.LAZY)
     var coverImg: FileResource?,
-    @ManyToOne(fetch = FetchType.LAZY)
-    var owner: User,
+    var owner: Long,
     @OneToMany(fetch = FetchType.LAZY)
     var imgs: List<FileResource>,
 

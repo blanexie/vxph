@@ -2,6 +2,7 @@ package com.github.blanexie.vxph.common.exception
 
 import cn.dev33.satoken.exception.NotLoginException
 import cn.dev33.satoken.exception.NotPermissionException
+import cn.dev33.satoken.spring.SpringMVCUtil
 import com.github.blanexie.vxph.common.entity.WebResp
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -17,28 +18,32 @@ class GlobalExceptionHandler {
     @ResponseBody
     @ExceptionHandler(VxphException::class)
     fun handleVxphException(e: VxphException): WebResp {
-        log.error("全局Vxph异常拦截了", e)
+        val request = SpringMVCUtil.getRequest()
+        log.error("全局Vxph异常拦截了 {}", request.pathInfo, e)
         return WebResp.fail(e.sysCode, e.message!!)
     }
 
     @ResponseBody
     @ExceptionHandler(NotPermissionException::class)
     fun handleNotPermissionException(e: NotPermissionException): WebResp {
-        log.error("全局Vxph异常拦截了", e)
+        val request = SpringMVCUtil.getRequest()
+        log.error("全局Vxph异常拦截了 {}", request.pathInfo, e)
         return WebResp.fail(SysCode.PermissionNotAllow)
     }
 
     @ResponseBody
     @ExceptionHandler(NotLoginException::class)
     fun handleNotLoginException(e: NotLoginException): WebResp {
-        log.error("全局NotLogin异常拦截了, {}", e.message)
+        val request = SpringMVCUtil.getRequest()
+        log.error("全局NotLogin异常拦截了,pathInfo:{}  {}", request.pathInfo, e.message)
         return WebResp.fail(SysCode.NotLoginError)
     }
 
     @ResponseBody
     @ExceptionHandler(Exception::class)
     fun handleGeneralException(e: Exception): WebResp {
-        log.error("全局通用异常拦截了", e)
+        val request = SpringMVCUtil.getRequest()
+        log.error("全局通用异常拦截了 {}", request.pathInfo, e)
         return WebResp.fail(SysCode.ServerError)
     }
 

@@ -5,27 +5,21 @@ import com.github.blanexie.vxph.common.exception.SysCode
 import com.github.blanexie.vxph.common.exception.VxphException
 import com.github.blanexie.vxph.torrent.controller.dto.PostQuery
 import com.github.blanexie.vxph.torrent.controller.dto.PostReq
-import com.github.blanexie.vxph.torrent.entity.FileResource
 import com.github.blanexie.vxph.torrent.entity.Post
 import com.github.blanexie.vxph.torrent.repository.LabelRepository
 import com.github.blanexie.vxph.torrent.repository.PostRepository
 import com.github.blanexie.vxph.torrent.service.FileResourceService
 import com.github.blanexie.vxph.torrent.service.PostService
-import com.github.blanexie.vxph.user.entity.User
 import jakarta.persistence.EntityManager
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
-import java.util.function.Function
-import java.util.stream.Collectors
 
 @Service
 class PostServiceImpl(
     private val postRepository: PostRepository,
-    private val fileResourceService: FileResourceService,
     private val entityManager: EntityManager,
-    private val labelRepository: LabelRepository,
 ) : PostService {
 
 
@@ -40,7 +34,7 @@ class PostServiceImpl(
         postRepository.save(post)
     }
 
-    override fun saveOrUpdate(postReq: PostReq, loginUser: User): Post {
+    override fun saveOrUpdate(postReq: PostReq, loginUser: Long): Post {
         return if (postReq.id != null) {
             updatePost(postReq, loginUser)
         } else {
@@ -67,7 +61,7 @@ class PostServiceImpl(
         return PageImpl(resultList, PageRequest.of(postQuery.page, postQuery.pageSize), total)
     }
 
-    private fun savePost(postReq: PostReq, loginUser: User): Post {
+    private fun savePost(postReq: PostReq, loginUser: Long): Post {
         val post = Post(
             postReq.id, postReq.title, postReq.coverImg, loginUser, postReq.imgs, postReq.labels,
             postReq.markdown
@@ -75,7 +69,7 @@ class PostServiceImpl(
         return postRepository.save(post)
     }
 
-    private fun updatePost(postReq: PostReq, loginUser: User): Post {
+    private fun updatePost(postReq: PostReq, loginUser: Long): Post {
         val post = postRepository.findById(postReq.id!!).orElseThrow { VxphException(SysCode.PostNotExist) }
         post.title = postReq.title
         post.coverImg = postReq.coverImg

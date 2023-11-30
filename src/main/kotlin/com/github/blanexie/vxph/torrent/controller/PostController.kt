@@ -1,12 +1,10 @@
 package com.github.blanexie.vxph.torrent.controller
 
 import cn.dev33.satoken.stp.StpUtil
-import com.github.blanexie.vxph.common.exception.SysCode
 import com.github.blanexie.vxph.common.entity.WebResp
 import com.github.blanexie.vxph.torrent.controller.dto.PostQuery
 import com.github.blanexie.vxph.torrent.controller.dto.PostReq
 import com.github.blanexie.vxph.torrent.service.PostService
-import com.github.blanexie.vxph.torrent.service.TorrentService
 import com.github.blanexie.vxph.user.service.UserService
 import org.springframework.web.bind.annotation.*
 
@@ -14,13 +12,11 @@ import org.springframework.web.bind.annotation.*
 @RestController
 class PostController(
     private val postService: PostService,
-    private val userService: UserService,
 ) {
 
     @PostMapping("/save")
     fun addPost(@RequestBody postReq: PostReq): WebResp {
-        val loginUser = userService.findById(StpUtil.getLoginIdAsLong()) ?: return WebResp.fail(SysCode.UserNotExist)
-        val post = postService.saveOrUpdate(postReq, loginUser)
+        val post = postService.saveOrUpdate(postReq, StpUtil.getLoginIdAsLong())
         return WebResp.ok(post)
     }
 
