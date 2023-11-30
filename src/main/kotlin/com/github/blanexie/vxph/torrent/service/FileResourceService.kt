@@ -7,7 +7,7 @@ interface FileResourceService {
 
     fun findAllByHashIn(hashs: List<String>): List<FileResource>
 
-    fun deleteByHash(hash: String): FileResource
+    fun deleteByHash(hash: String): FileResource?
 
     fun findByHash(hash: String): FileResource?
 

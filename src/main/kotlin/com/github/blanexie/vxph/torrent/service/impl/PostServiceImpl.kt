@@ -6,9 +6,7 @@ import com.github.blanexie.vxph.common.exception.VxphException
 import com.github.blanexie.vxph.torrent.controller.dto.PostQuery
 import com.github.blanexie.vxph.torrent.controller.dto.PostReq
 import com.github.blanexie.vxph.torrent.entity.FileResource
-import com.github.blanexie.vxph.torrent.entity.Label
 import com.github.blanexie.vxph.torrent.entity.Post
-import com.github.blanexie.vxph.torrent.entity.Torrent
 import com.github.blanexie.vxph.torrent.repository.LabelRepository
 import com.github.blanexie.vxph.torrent.repository.PostRepository
 import com.github.blanexie.vxph.torrent.service.FileResourceService
@@ -42,17 +40,11 @@ class PostServiceImpl(
         postRepository.save(post)
     }
 
-    override fun saveOrUpdate(postReq: PostReq, torrents: List<Torrent>, loginUser: User): Post {
-        val hashs = arrayListOf<String>()
-        postReq.coverImg?.let { hashs.add(it) }
-        postReq.imgs?.forEach { hashs.add(it) }
-        val fileResources = fileResourceService.findAllByHashIn(hashs)
-        val labels = labelRepository.findByCodeIn(postReq.labels)
-        val fileMap = fileResources.stream().collect(Collectors.toMap(FileResource::hash, Function.identity()))
+    override fun saveOrUpdate(postReq: PostReq, loginUser: User): Post {
         return if (postReq.id != null) {
-            updatePost(postReq, labels, torrents, loginUser, fileMap)
+            updatePost(postReq, loginUser)
         } else {
-            savePost(postReq, labels, torrents, loginUser, fileMap)
+            savePost(postReq, loginUser)
         }
     }
 
@@ -75,28 +67,22 @@ class PostServiceImpl(
         return PageImpl(resultList, PageRequest.of(postQuery.page, postQuery.pageSize), total)
     }
 
-    private fun savePost(postReq: PostReq, labels: List<Label>, torrents: List<Torrent>, loginUser: User, fileMap: MutableMap<String, FileResource>): Post {
-        val imgs = postReq.imgs?.mapNotNull { p -> fileMap[p] }?.toList()
+    private fun savePost(postReq: PostReq, loginUser: User): Post {
         val post = Post(
-            postReq.id, postReq.title, fileMap[postReq.coverImg], loginUser, imgs ?: emptyList(), labels,
-            postReq.markdown, torrents
+            postReq.id, postReq.title, postReq.coverImg, loginUser, postReq.imgs, postReq.labels,
+            postReq.markdown
         )
         return postRepository.save(post)
     }
 
-    private fun updatePost(postReq: PostReq, labels: List<Label>, torrents: List<Torrent>, loginUser: User, fileMap: MutableMap<String, FileResource>): Post {
+    private fun updatePost(postReq: PostReq, loginUser: User): Post {
         val post = postRepository.findById(postReq.id!!).orElseThrow { VxphException(SysCode.PostNotExist) }
         post.title = postReq.title
-        postReq.coverImg?.let {
-            post.coverImg = fileMap[it]
-        }
-        postReq.imgs?.let {
-            post.imgs = it.mapNotNull { p -> fileMap[p] }.toList()
-        }
+        post.coverImg = postReq.coverImg
+        post.imgs = postReq.imgs
         post.owner = loginUser
         post.markdown = postReq.markdown
-        post.torrents = torrents
-        post.labels = labels
+        post.labels = postReq.labels
         return postRepository.save(post)
     }
 

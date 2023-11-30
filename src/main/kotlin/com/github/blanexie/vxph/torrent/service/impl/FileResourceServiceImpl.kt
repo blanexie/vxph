@@ -21,13 +21,15 @@ class FileResourceServiceImpl(
         return fileResourceRepository.findAllByHashIn(hashs)
     }
 
-    override fun deleteByHash(hash: String): FileResource {
+    override fun deleteByHash(hash: String): FileResource? {
         val fileResource = fileResourceRepository.findByHash(hash)
-        fileResourceRepository.deleteByHash(hash)
+        fileResource?.let {
+            fileResourceRepository.deleteByHash(hash)
+        }
         return fileResource
     }
 
-    override fun findByHash(hash: String): FileResource {
+    override fun findByHash(hash: String): FileResource? {
         return fileResourceRepository.findByHash(hash)
     }
 

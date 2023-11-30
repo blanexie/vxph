@@ -14,16 +14,13 @@ import org.springframework.web.bind.annotation.*
 @RestController
 class PostController(
     private val postService: PostService,
-    private val torrentService: TorrentService,
     private val userService: UserService,
 ) {
 
     @PostMapping("/save")
     fun addPost(@RequestBody postReq: PostReq): WebResp {
-        postReq.owner = StpUtil.getLoginIdAsLong()
         val loginUser = userService.findById(StpUtil.getLoginIdAsLong()) ?: return WebResp.fail(SysCode.UserNotExist)
-        val torrents = torrentService.findAllByInfoHashIn(postReq.torrent ?: emptyList())
-        val post = postService.saveOrUpdate(postReq, torrents, loginUser)
+        val post = postService.saveOrUpdate(postReq, loginUser)
         return WebResp.ok(post)
     }
 

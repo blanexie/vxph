@@ -9,6 +9,7 @@ import com.github.blanexie.vxph.torrent.service.FileResourceService
 import com.github.blanexie.vxph.user.service.UserService
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
@@ -39,8 +40,10 @@ class FileResourceController(
         val suffix = FileUtil.getSuffix(file.originalFilename)
         val fileResource = FileResource(hash, file.originalFilename, suffix, file.size, user!!)
         //先保存文件，再保存数据库记录，保证数据库中的记录必定会有对应的文件
-        val saveFile = FileUtil.file("${filePath}/file/${fileResource.hash}.${fileResource.suffix}")
-        file.transferTo(saveFile)
+        val saveFile = File("${filePath}/file/${fileResource.hash}.${fileResource.suffix}")
+        saveFile.outputStream().use {
+            IoUtil.copy(file.inputStream, it)
+        }
         val resource = fileResourceService.saveFile(fileResource)
         return WebResp.ok(resource)
     }
@@ -66,7 +69,9 @@ class FileResourceController(
     @GetMapping("/delete")
     fun delete(@RequestParam("hash") hash: String): WebResp {
         val fileResource = fileResourceService.deleteByHash(hash)
-        File("$filePath/file/${fileResource.hash}.${fileResource.suffix}").deleteOnExit()
+        fileResource?.let {
+            File("$filePath/file/${it.hash}.${it.suffix}").deleteOnExit()
+        }
         return WebResp.ok()
     }
 

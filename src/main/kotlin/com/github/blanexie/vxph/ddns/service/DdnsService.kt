@@ -87,8 +87,7 @@ class DdnsService(
         return domainRecords.toList()
     }
 
-    fun findLocalIp(): Map<String, String> {
-        val result = hashMapOf<String, String>()
+    fun findLocalIp(): Map<String, String> { val result = hashMapOf<String, String>()
         try {
             val request = HttpRequest.newBuilder(URI.create("https://ipv4.ddnspod.com")).build()
             val response = httpClient.send(request, HttpResponse.BodyHandlers.ofString())
