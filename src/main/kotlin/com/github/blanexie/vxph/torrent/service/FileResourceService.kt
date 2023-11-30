@@ -9,7 +9,7 @@ interface FileResourceService {
 
     fun deleteByHash(hash: String): FileResource
 
-    fun findByHash(hash: String): FileResource
+    fun findByHash(hash: String): FileResource?
 
     fun saveFile(fileResource: FileResource): FileResource
 

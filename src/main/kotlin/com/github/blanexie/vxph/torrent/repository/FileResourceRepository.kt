@@ -10,5 +10,5 @@ interface FileResourceRepository : CrudRepository<FileResource, Long>, QueryByEx
 
     fun findAllByHashIn(hashs: List<String>): List<FileResource>
 
-    fun findByHash(hash: String): FileResource
+    fun findByHash(hash: String): FileResource?
 }

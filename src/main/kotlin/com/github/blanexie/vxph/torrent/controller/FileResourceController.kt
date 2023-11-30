@@ -30,11 +30,17 @@ class FileResourceController(
     fun uploadFile(@RequestPart file: MultipartFile, @RequestParam hash: String): WebResp {
         val loginUserId = StpUtil.getLoginIdAsLong()
         val user = userService.findById(loginUserId)
+        //检查是否已经存在
+        val findByHash = fileResourceService.findByHash(hash)
+        if (findByHash != null) {
+            return WebResp.ok(findByHash)
+        }
         //获取后缀
         val suffix = FileUtil.getSuffix(file.originalFilename)
         val fileResource = FileResource(hash, file.originalFilename, suffix, file.size, user!!)
         //先保存文件，再保存数据库记录，保证数据库中的记录必定会有对应的文件
-        file.transferTo(File("${filePath}/file/${fileResource.hash}.${fileResource.suffix}"))
+        val saveFile = FileUtil.file("${filePath}/file/${fileResource.hash}.${fileResource.suffix}")
+        file.transferTo(saveFile)
         val resource = fileResourceService.saveFile(fileResource)
         return WebResp.ok(resource)
     }
@@ -42,15 +48,19 @@ class FileResourceController(
     @GetMapping("/{hash}.{suffix}")
     fun download(@PathVariable("hash") hash: String, @PathVariable("suffix") suffix: String, response: HttpServletResponse) {
         val fileResource = fileResourceService.findByHash(hash)
-        response.setHeader("Content-Type", "image/${fileResource.suffix}")
-        response.setHeader("Cache-Control", "max-age=604800, public ")
-        response.setHeader("Pragma", "public")
-        val bufferedInputStream = BufferedOutputStream(response.outputStream)
-        val file = File("$filePath/file/${fileResource.hash}.${fileResource.suffix}")
-        file.inputStream().use {
-            IoUtil.copy(it, bufferedInputStream)
+        if (fileResource != null) {
+            response.setHeader("Content-Type", "image/${fileResource.suffix}")
+            response.setHeader("Cache-Control", "max-age=604800, public ")
+            response.setHeader("Pragma", "public")
+            val bufferedInputStream = BufferedOutputStream(response.outputStream)
+            val file = File("$filePath/file/${fileResource.hash}.${fileResource.suffix}")
+            file.inputStream().use {
+                IoUtil.copy(it, bufferedInputStream)
+            }
+        } else {
+            response.status = 404
         }
-        bufferedInputStream.flush()
+        response.flushBuffer()
     }
 
     @GetMapping("/delete")
