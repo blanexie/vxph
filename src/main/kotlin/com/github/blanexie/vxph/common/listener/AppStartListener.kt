@@ -1,22 +1,16 @@
 package com.github.blanexie.vxph.common.listener
 
-import com.github.blanexie.vxph.account.entity.Account
-import com.github.blanexie.vxph.account.repository.AccountRepository
-import com.github.blanexie.vxph.ddns.entity.DomainRecord
-import com.github.blanexie.vxph.ddns.repositroy.DomainRecordRepository
+import cn.hutool.core.io.IoUtil
+import cn.hutool.core.io.resource.ClassPathResource
+import cn.hutool.core.util.StrUtil
 import com.github.blanexie.vxph.user.dto.PermissionType
-import com.github.blanexie.vxph.user.entity.Code
 import com.github.blanexie.vxph.user.entity.Permission
-import com.github.blanexie.vxph.user.entity.Role
-import com.github.blanexie.vxph.user.entity.User
-import com.github.blanexie.vxph.user.repository.CodeRepository
 import com.github.blanexie.vxph.user.repository.PermissionRepository
 import com.github.blanexie.vxph.user.repository.RoleRepository
-import com.github.blanexie.vxph.user.repository.UserRepository
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.context.event.ApplicationReadyEvent
 import org.springframework.context.ApplicationListener
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Component
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
@@ -27,23 +21,17 @@ import kotlin.jvm.optionals.getOrNull
 class AppStartListener(
     private val requestMappingHandlerMapping: RequestMappingHandlerMapping,
     private val permissionRepository: PermissionRepository,
-    private val userRepository: UserRepository,
     private val roleRepository: RoleRepository,
-    private val accountRepository: AccountRepository,
-    private val codeRepository: CodeRepository,
-    private val domainRecordRepository: DomainRecordRepository,
+    private val jdbcTemplate: JdbcTemplate,
 ) : ApplicationListener<ApplicationReadyEvent> {
 
     private val log = LoggerFactory.getLogger(this::class.java)
 
     override fun onApplicationEvent(event: ApplicationReadyEvent) {
-        this.processPathPermission()
         this.initTable()
+        this.processPathPermission()
     }
 
-    /**
-     * 初始化表结构
-     */
     fun initTable() {
         //检查是否需要初始化
         val roleAdmin = roleRepository.findById(1L).getOrNull()
@@ -52,31 +40,19 @@ class AppStartListener(
             return
         }
         log.info("开始初始化数据")
-        //初始化ROLE
-        val permissions = permissionRepository.findAll()
-        val role = Role(1, "超级管理员", "admin", "超级管理员", permissions.toList())
-        val save = roleRepository.save(role)
-        val anonymouslyRoleCodes = listOf(
-            "GET /announce", "POST /api/user/register", "GET /api/user/logout", "GET /scrape", "POST /api/user/login"
-        )
-        val anonymouslyRoles = permissions.filter { anonymouslyRoleCodes.contains(it.code) }.toList()
-        val role2 = Role(2, "匿名用户", "anonymously", "匿名用户", anonymouslyRoles)
-        roleRepository.save(role2)
-        //初始化user
-        val user = userRepository.save(User(1, "admin", "admin@vxph.com", "123456", 1, save))
-        accountRepository.save(
-            Account(1, 0, 0, 0, 0, 0, "1", 0, user)
-        )
-        //初始化code
-        val code1 = Code(1, "announceUrl", "Announce_Url", "[\"http://192.168.1.5:8016/announce\"]")
-        val code2 = Code(2, "允许上传的资源文件后缀", "File_Allow_Suffix", "[\"jpg\",\"png\",\"jpeg\"]")
-        val code3 =
-            Code(3, "发送邀请函的文本模板", "InviteMailTemplateCode", "{\"subject\": \"VXPH邀请函，邀请你注册\", \"content\": \"邀请人：{name} \\n  邀请码：{code}\"} ")
-        codeRepository.saveAll(listOf(code1, code2, code3))
-        //DDNS
-        val domainRecord =
-            DomainRecord(1, "862963533145093120", "xiezc.top", "AAAA", "@", "2408:820c:8f1b:9f80:c7d3:b6c3:eb8a:fb4c", 600, "ubuntu pi")
-        domainRecordRepository.save(domainRecord)
+
+        IoUtil.getReader(ClassPathResource("data.sql").stream, Charsets.UTF_8).lines()
+            .map { StrUtil.trim(it) }
+            .filter { StrUtil.isNotBlank(it) }
+            .filter { !StrUtil.startWith(it, "--") }
+            .forEach { sql ->
+                try {
+                    jdbcTemplate.execute(sql)
+                    log.info("execute SQL: {}", sql)
+                } catch (e: Exception) {
+                    log.error("", e)
+                }
+            }
         log.info("初始化数据完成------------------")
     }
 

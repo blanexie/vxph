@@ -21,6 +21,10 @@ class PermissionServiceImpl(
         return permissionRepository.findByCode(code)
     }
 
+    override fun findAll(): List<Permission> {
+        return  permissionRepository.findAll().toList()
+    }
+
     override fun find(searchKey: String?, pageRequest: PageRequest): Page<Permission> {
         return this.findBySearchKey(searchKey, pageRequest)
     }

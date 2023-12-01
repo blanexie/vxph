@@ -10,7 +10,7 @@ data class Post(
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Long?,
     var title: String,
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     var coverImg: FileResource?,
     var owner: Long,
     @OneToMany(fetch = FetchType.LAZY)

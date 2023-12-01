@@ -2,6 +2,7 @@ package com.github.blanexie.vxph.torrent.controller
 
 import cn.dev33.satoken.stp.StpUtil
 import com.github.blanexie.vxph.common.entity.WebResp
+import com.github.blanexie.vxph.common.exception.SysCode
 import com.github.blanexie.vxph.torrent.controller.dto.PostQuery
 import com.github.blanexie.vxph.torrent.controller.dto.PostReq
 import com.github.blanexie.vxph.torrent.service.PostService
@@ -13,6 +14,12 @@ import org.springframework.web.bind.annotation.*
 class PostController(
     private val postService: PostService,
 ) {
+
+    @GetMapping("/findById")
+    fun findById(@RequestParam id: Long): WebResp {
+        val post = postService.findByPostId(id)?:return  WebResp.fail(SysCode.PostNotExist)
+        return WebResp.ok(post)
+    }
 
     @PostMapping("/save")
     fun addPost(@RequestBody postReq: PostReq): WebResp {

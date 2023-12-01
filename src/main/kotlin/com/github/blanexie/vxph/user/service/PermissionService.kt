@@ -9,6 +9,8 @@ interface PermissionService {
 
     fun findByCode(code: String): Permission?
 
+    fun findAll():List<Permission>
+
     fun find(searchKey:String?, pageRequest: PageRequest): Page<Permission>
 
 }

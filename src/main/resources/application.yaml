@@ -15,6 +15,7 @@ aliyun:
 #### datasource ###################
 spring:
   jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
     show-sql: true
     hibernate:
       ddl-auto: update
@@ -24,6 +25,10 @@ spring:
     username: admin
     password: 123456
     driver-class-name: org.h2.Driver
+  sql:
+    init:
+      data-locations: classpath*:data.sql
+      mode: never
   h2:
     console:
       enabled: true

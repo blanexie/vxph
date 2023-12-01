@@ -21,7 +21,7 @@ class TorrentScheduleService(
     /**
      * 定时任务， 统计
      */
-    @Scheduled(fixedRate = announceIntervalMinute * 1000L)
+    @Scheduled(fixedRate = announceIntervalMinute * 1000L, initialDelay = announceIntervalMinute * 1000L)
     fun scheduleProcessTorrentData() {
         log.info("定时统计torrent数据，定时任务开始")
         val time = LocalDateTime.now().minusSeconds(announceIntervalMinute * 1L)

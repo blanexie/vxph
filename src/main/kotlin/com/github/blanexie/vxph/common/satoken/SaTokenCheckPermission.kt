@@ -1,13 +1,12 @@
 package com.github.blanexie.vxph.common.satoken
 
 import cn.dev33.satoken.exception.NotLoginException
-import cn.dev33.satoken.exception.NotPermissionException
 import cn.dev33.satoken.`fun`.SaFunction
 import cn.dev33.satoken.router.SaRouter
 import cn.dev33.satoken.stp.StpUtil
-import cn.hutool.core.collection.CollUtil
 import com.github.blanexie.vxph.common.exception.SysCode
 import com.github.blanexie.vxph.user.AnonymouslyRole
+import com.github.blanexie.vxph.user.service.PermissionService
 import com.github.blanexie.vxph.user.service.RoleService
 import com.github.blanexie.vxph.user.service.UserService
 import org.springframework.stereotype.Component
@@ -16,49 +15,39 @@ import org.springframework.stereotype.Component
 class SaTokenCheckPermission(
     private val userService: UserService,
     private val roleService: RoleService,
+    private val permissionService: PermissionService,
 ) {
 
-    fun checkPermission(permission: String) {
+    fun checkPermission() {
         if (StpUtil.isLogin()) {
-            checkLoginUserPermission(permission)
+            checkLoginUserPermission()
         } else {
-            checkAnonymouslyPermission(permission)
+            checkAnonymouslyPermission()
         }
     }
 
-    private fun getAuthRules(): Map<String, String> {
-        val permissionMap = hashMapOf<String, String>()
-        val userId = StpUtil.getLoginIdAsLong()
-        val user = userService.findById(userId) ?: return emptyMap()
-        user.role.permissions.forEach {
-            val path = it.code.split(" ")[1]
-            permissionMap[it.code] = path
-        }
-        return permissionMap
-    }
-
-    private fun checkAnonymouslyPermission(permission: String) {
+    private fun checkAnonymouslyPermission() {
         //获取可以匿名访问的path信息
         val role = roleService.findByCode(AnonymouslyRole)
-        val pMap = role?.permissions?.map { it.code }?.toList()
-        if (CollUtil.isEmpty(pMap)) {
-            throw NotLoginException(SysCode.PermissionNotAllow.msg,null,null)
+        val permissions = role!!.permissions
+        var flag = false
+        for (permission in permissions) {
+            val path = permission.code.split(" ")[1]
+            SaRouter.match(path, SaFunction {
+                flag = true
+            })
         }
-        if (!pMap!!.contains(permission)) {
-            throw NotLoginException(SysCode.PermissionNotAllow.msg,null,null)
+        if (!flag) {
+            throw NotLoginException(SysCode.NotLoginError.msg, "", "")
         }
     }
 
-    private fun checkLoginUserPermission(permission: String) {
-        //获取用户的权限相关path
-        val rules = getAuthRules()
-        //挨个校验
-        if (rules.isEmpty()) {
-            throw NotPermissionException(permission)
-        }
-        for (rule in rules) {
-            SaRouter.match(rule.value, SaFunction {
-                StpUtil.checkPermission(rule.key)
+    private fun checkLoginUserPermission() {
+        val permissions = permissionService.findAll()
+        for (permission in permissions) {
+            val path = permission.code.split(" ")[1]
+            SaRouter.match(path, SaFunction {
+                StpUtil.checkPermission(permission.code)
             })
         }
     }

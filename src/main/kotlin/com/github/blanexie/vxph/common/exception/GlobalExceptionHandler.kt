@@ -19,7 +19,7 @@ class GlobalExceptionHandler {
     @ExceptionHandler(VxphException::class)
     fun handleVxphException(e: VxphException): WebResp {
         val request = SpringMVCUtil.getRequest()
-        log.error("全局Vxph异常拦截了 {}", request.pathInfo, e)
+        log.error("全局Vxph异常拦截了 {}", request.requestURI, e)
         return WebResp.fail(e.sysCode, e.message!!)
     }
 
@@ -27,7 +27,7 @@ class GlobalExceptionHandler {
     @ExceptionHandler(NotPermissionException::class)
     fun handleNotPermissionException(e: NotPermissionException): WebResp {
         val request = SpringMVCUtil.getRequest()
-        log.error("全局Vxph异常拦截了 {}", request.pathInfo, e)
+        log.error("全局Vxph异常拦截了 {}",request.requestURI, e)
         return WebResp.fail(SysCode.PermissionNotAllow)
     }
 
@@ -35,7 +35,7 @@ class GlobalExceptionHandler {
     @ExceptionHandler(NotLoginException::class)
     fun handleNotLoginException(e: NotLoginException): WebResp {
         val request = SpringMVCUtil.getRequest()
-        log.error("全局NotLogin异常拦截了,pathInfo:{}  {}", request.pathInfo, e.message)
+        log.error("全局NotLogin异常拦截了,pathInfo:{}  {}", request.requestURI, e.message)
         return WebResp.fail(SysCode.NotLoginError)
     }
 
@@ -43,7 +43,7 @@ class GlobalExceptionHandler {
     @ExceptionHandler(Exception::class)
     fun handleGeneralException(e: Exception): WebResp {
         val request = SpringMVCUtil.getRequest()
-        log.error("全局通用异常拦截了 {}", request.pathInfo, e)
+        log.error("全局通用异常拦截了 {}",request.requestURI, e)
         return WebResp.fail(SysCode.ServerError)
     }
 

@@ -37,8 +37,7 @@ class WebConfig(
             SaInterceptor {
                 val request = SaHolder.getRequest()
                 if (request.method == "GET" || request.method == "POST") {
-                    val permission = "${request.method} ${request.requestPath}"
-                    saTokenCheckPermission.checkPermission(permission)
+                    saTokenCheckPermission.checkPermission()
                 }
             }
         ).addPathPatterns("/**")
