@@ -34,10 +34,12 @@ class SaTokenCheckPermission(
         for (permission in permissions) {
             val path = permission.code.split(" ")[1]
             SaRouter.match(path, SaFunction {
+                //命中标记
                 flag = true
             })
         }
         if (!flag) {
+            //都没有命中匿名接口的请求， 直接返回对应异常
             throw NotLoginException(SysCode.NotLoginError.msg, "", "")
         }
     }

@@ -29,7 +29,6 @@ data class Torrent(
     var downloaded: Int,
 
     @OneToMany(fetch = FetchType.LAZY)
-    @Column(name="`peer`")
     var peer: List<Peer>,
     var owner: Long,
     @ManyToOne(fetch = FetchType.LAZY)

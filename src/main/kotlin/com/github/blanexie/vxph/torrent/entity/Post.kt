@@ -13,10 +13,10 @@ data class Post(
     @ManyToOne(fetch = FetchType.LAZY)
     var coverImg: FileResource?,
     var owner: Long,
-    @OneToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     var imgs: List<FileResource>,
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     var labels:List<Label>,  //标签
     var markdown: String, //描述， 长文本
 ) : BaseEntity() {
