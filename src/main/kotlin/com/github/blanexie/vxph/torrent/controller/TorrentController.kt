@@ -42,10 +42,7 @@ class TorrentController(
         response.flushBuffer()
     }
 
-    @PostMapping("/query")
-    fun torrentQuery() {
 
-    }
 
 
 }
