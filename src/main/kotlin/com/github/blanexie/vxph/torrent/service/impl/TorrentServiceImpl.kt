@@ -39,6 +39,11 @@ class TorrentServiceImpl(
         return torrentRepository.findAllByInfoHashIn(infoHash)
     }
 
+    override fun findAllByPostId(postIds:List<Long>): List<Torrent> {
+        var torrents = torrentRepository.findAllByPostIn(postIds)
+        return torrents
+    }
+
     override fun findByInfoHash(infoHash: String): Torrent? {
         return torrentRepository.findByInfoHash(infoHash)
     }

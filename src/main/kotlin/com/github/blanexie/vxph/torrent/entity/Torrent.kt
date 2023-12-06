@@ -1,5 +1,6 @@
 package com.github.blanexie.vxph.torrent.entity
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.github.blanexie.vxph.common.entity.BaseEntity
 import com.github.blanexie.vxph.user.entity.User
 import jakarta.persistence.*
@@ -28,9 +29,11 @@ data class Torrent(
     //downloaded – 曾经下载完成过的人数
     var downloaded: Int,
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "torrent")
     var peer: List<Peer>,
     var owner: Long,
-    @ManyToOne(fetch = FetchType.LAZY)
-    var post: Post,
+
+    @ManyToOne
+    @JoinColumn(name="post_Id")
+    var post: Post
 ) : BaseEntity()

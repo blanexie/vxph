@@ -63,7 +63,7 @@ class PostServiceImpl(
 
     private fun savePost(postReq: PostReq, loginUser: Long): Post {
         val post = Post(
-            postReq.id, postReq.title, postReq.coverImg, loginUser, postReq.imgs, postReq.labels,
+            postReq.id, postReq.title, postReq.coverImg, loginUser, postReq.imgs, emptyList(), postReq.labels,
             postReq.markdown
         )
         return postRepository.save(post)

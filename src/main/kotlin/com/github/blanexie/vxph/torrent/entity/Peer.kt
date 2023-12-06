@@ -4,10 +4,9 @@ import cn.hutool.core.util.StrUtil
 import com.github.blanexie.vxph.common.entity.BaseEntity
 import com.github.blanexie.vxph.common.exception.SysCode
 import com.github.blanexie.vxph.common.exception.VxphException
-import com.github.blanexie.vxph.torrent.util.IpType
 import com.github.blanexie.vxph.torrent.controller.dto.AnnounceReq
 import com.github.blanexie.vxph.torrent.controller.dto.PeerResp
-import com.github.blanexie.vxph.user.entity.User
+import com.github.blanexie.vxph.torrent.util.IpType
 import jakarta.persistence.*
 import java.time.LocalDateTime
 
@@ -16,11 +15,9 @@ data class Peer(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Long?,
-    @Column(name = "info_hash")
     var infoHash: String,
     @Column(unique = true)
     var passKey: String,
-    @Column(name = "peer_id")
     var peerId: String?,
     var ipv4: String?,
     var ipv6: String?,
@@ -33,6 +30,7 @@ data class Peer(
     var uploadTime: LocalDateTime,
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "torrent_id")
     var torrent: Torrent,
     var owner: Long
 ) : BaseEntity() {

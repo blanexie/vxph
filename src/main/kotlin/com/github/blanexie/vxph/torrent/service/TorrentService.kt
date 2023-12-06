@@ -12,6 +12,8 @@ interface TorrentService {
 
     fun findAllByInfoHashIn(infoHash: List<String>): List<Torrent>
 
+    fun findAllByPostId(postIds: List<Long>): List<Torrent>
+
     fun findByInfoHash(infoHash: String): Torrent?
 
     fun writeTorrentBytes(peer: Peer, torrent: Torrent, outputStream: OutputStream)
@@ -23,5 +25,5 @@ interface TorrentService {
      */
     fun processScrape(infoHash: List<String>): ScrapeResp
 
-    fun updateData(incomplete:Int, complete:Int, downloaded:Int, infoHash: String)
+    fun updateData(incomplete: Int, complete: Int, downloaded: Int, infoHash: String)
 }
