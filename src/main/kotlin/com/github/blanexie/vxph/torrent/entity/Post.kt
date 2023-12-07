@@ -20,6 +20,9 @@ data class Post(
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
     var torrents:List<Torrent>,
 
+    //取值自 POST_TYPE的code配置
+    var type:String,
+
     @ManyToMany(fetch = FetchType.LAZY)
     var labels: List<Label>,  //标签
     var markdown: String, //描述， 长文本

@@ -17,6 +17,7 @@ INSERT INTO DOMAIN_RECORD (ID, CREATE_TIME, V_STATUS, UPDATE_TIME, VERSION_NO, D
 INSERT INTO CODE (ID, CREATE_TIME, V_STATUS, UPDATE_TIME, VERSION_NO, CODE, NAME, PARENT_ID, V_VALUE) VALUES(1, '2023-11-29 14:23:53.056', 0, '2023-11-29 14:23:53.056', 0, 'Announce_Url', 'announceUrl', 0, '["http://192.168.1.5:8016/announce"]');
 INSERT INTO CODE (ID, CREATE_TIME, V_STATUS, UPDATE_TIME, VERSION_NO, CODE, NAME, PARENT_ID, V_VALUE) VALUES(2, '2023-11-29 14:23:53.061', 0, '2023-11-29 14:23:53.061', 0, 'File_Allow_Suffix', '允许上传的资源文件后缀', 0, '["jpg","png","jpeg"]');
 INSERT INTO CODE (ID, CREATE_TIME, V_STATUS, UPDATE_TIME, VERSION_NO, CODE, NAME, PARENT_ID, V_VALUE) VALUES(3, '2023-11-29 14:23:53.062', 0, '2023-11-29 14:23:53.062', 0, 'InviteMailTemplateCode', '发送邀请函的文本模板', 0, '{"subject": "VXPH邀请函，邀请你注册", "content": "邀请人：{name} \n  邀请码：{code}"} ');
+INSERT INTO CODE (ID, CREATE_TIME, V_STATUS, UPDATE_TIME, VERSION_NO, CODE, NAME, PARENT_ID, V_VALUE) VALUES (4, '2023-11-29 14:23:53.062000', 0, '2023-11-29 14:23:53.062000', 0, 'POST_TYPE', '帖子类型', 0, '["电影","电视剧","动漫","小说","音乐","电子书","戏剧","纪录片","编程"]');
 
 INSERT INTO V_USER (ID, CREATE_TIME, V_STATUS, UPDATE_TIME, VERSION_NO, "email", "name", "password", "sex", "role") VALUES(1, '2023-11-29 14:23:53.011', 0, '2023-11-29 14:23:53.011', 0, 'admin@vxph.com', 'admin', '123456', 1, 1);
 
