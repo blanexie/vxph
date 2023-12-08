@@ -9,8 +9,8 @@ import com.github.blanexie.vxph.torrent.service.PostService
 import com.github.blanexie.vxph.torrent.service.TorrentService
 import org.springframework.web.bind.annotation.*
 
-@RequestMapping("/api/post")
 @RestController
+@RequestMapping("/api/post")
 class PostController(
     private val postService: PostService,
     private val torrentService: TorrentService,
@@ -42,8 +42,7 @@ class PostController(
         val query = postService.query(postQuery)
         val postIds = query.content.stream().map { it.id!! }.toList()
         val torrents = torrentService.findAllByPostId(postIds)
-        return WebResp.ok().add("postPage", query).add("torrents",torrents)
+        return WebResp.ok().add("postPage", query).add("torrents", torrents)
     }
-
 
 }
