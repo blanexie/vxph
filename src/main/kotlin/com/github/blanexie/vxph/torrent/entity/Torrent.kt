@@ -35,5 +35,6 @@ data class Torrent(
 
     @ManyToOne
     @JoinColumn(name="post_Id")
+    @JsonIgnore
     var post: Post
 ) : BaseEntity()

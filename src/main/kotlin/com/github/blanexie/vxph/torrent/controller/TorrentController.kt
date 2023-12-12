@@ -20,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile
 class TorrentController(
     val torrentService: TorrentService,
     val postService: PostService,
-    val userService: UserService,
     val peerService: PeerService,
 ) {
 
