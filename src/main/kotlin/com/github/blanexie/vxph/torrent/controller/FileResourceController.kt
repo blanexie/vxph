@@ -35,8 +35,7 @@ class FileResourceController(
 
     @GetMapping("/{hash}.{suffix}")
     fun download(
-        @PathVariable("hash") hash: String, @PathVariable("suffix") suffix: String,
-        response: HttpServletResponse
+        @PathVariable("hash") hash: String, @PathVariable("suffix") suffix: String, response: HttpServletResponse
     ) {
         val fileResource = fileResourceService.findByHash(hash)
         if (fileResource != null) {

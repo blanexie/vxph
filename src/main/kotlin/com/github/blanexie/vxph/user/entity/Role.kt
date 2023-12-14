@@ -1,5 +1,6 @@
 package com.github.blanexie.vxph.user.entity
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.github.blanexie.vxph.common.entity.BaseEntity
 import jakarta.persistence.*
 
@@ -17,6 +18,7 @@ data class Role(
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable
+    @JsonIgnore
     var permissions: List<Permission>
 
 ) : BaseEntity()
