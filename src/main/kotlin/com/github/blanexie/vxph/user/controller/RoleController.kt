@@ -32,8 +32,21 @@ class RoleController(
 
     @GetMapping("/delete")
     fun delete(roleCode: String): WebResp {
-       roleService.delete(roleCode)
+        roleService.delete(roleCode)
         return WebResp.ok()
     }
+
+    @GetMapping("/findByCode")
+    fun findByCode(code: String): WebResp {
+        val role = roleService.findByCode(code)
+        return WebResp.ok(role!!)
+    }
+
+    @GetMapping("/findPermissions")
+    fun findPermissions(roleCode: String): WebResp {
+        val role = roleService.findByCode(roleCode)
+        return WebResp.ok(role!!.permissions)
+    }
+
 
 }

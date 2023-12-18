@@ -4,6 +4,7 @@ import com.github.blanexie.vxph.common.entity.PageReq
 import com.github.blanexie.vxph.common.entity.WebResp
 import com.github.blanexie.vxph.user.service.PermissionService
 import org.springframework.data.domain.PageRequest
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -26,5 +27,8 @@ class PermissionController(
         )
         return WebResp.ok(permissionPage)
     }
+
+
+
 
 }

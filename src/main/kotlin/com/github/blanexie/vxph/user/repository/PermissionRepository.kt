@@ -17,5 +17,4 @@ interface PermissionRepository : CrudRepository<Permission, Long>, QueryByExampl
     fun findByCode(code: String): Permission?
     fun findByCodeAndType(code: String, permissionType: PermissionType): Permission?
 
-
 }
