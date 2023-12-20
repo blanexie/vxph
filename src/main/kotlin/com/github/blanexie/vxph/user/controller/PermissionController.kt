@@ -28,6 +28,14 @@ class PermissionController(
         return WebResp.ok(permissionPage)
     }
 
+    /**
+     * 全量返回所有的角色
+     */
+    @GetMapping("/findAll")
+    fun findAll(): WebResp {
+        val permissionPage = permissionService.findAll()
+        return WebResp.ok(permissionPage)
+    }
 
 
 

@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.QueryByExampleExecutor
 
 interface DomainRecordRepository : CrudRepository<DomainRecord, Long>, QueryByExampleExecutor<DomainRecord> {
 
+    fun findByRecordId(recordId: String): DomainRecord?
     fun deleteByRecordId(recordId: String)
 
 }
