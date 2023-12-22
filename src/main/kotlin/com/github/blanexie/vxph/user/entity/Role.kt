@@ -18,7 +18,6 @@ data class Role(
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable
-    @JsonIgnore
     var permissions: List<Permission>
 
 ) : BaseEntity()

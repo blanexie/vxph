@@ -26,8 +26,8 @@ class RoleController(
      */
     @PostMapping("/save")
     fun save(@RequestBody role: Role): WebResp {
-        val roles = roleService.saveRole(role)
-        return WebResp.ok(roles)
+        val role = roleService.saveRole(role)
+        return WebResp.ok(role)
     }
 
     @GetMapping("/delete")
