@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api/post")
 class PostController(
-    private val postService: PostService,
-    private val torrentService: TorrentService,
+    private val postService: PostService
 ) {
 
     @GetMapping("/findById")
@@ -40,9 +39,7 @@ class PostController(
     @PostMapping("/query")
     fun query(@RequestBody postQuery: PostQuery): WebResp {
         val query = postService.query(postQuery)
-        val postIds = query.content.stream().map { it.id!! }.toList()
-        val torrents = torrentService.findAllByPostId(postIds)
-        return WebResp.ok().add("postPage", query).add("torrents", torrents)
+        return WebResp.ok(query)
     }
 
 }
